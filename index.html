@@ -101,6 +101,10 @@
     .ficha-item-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:4px;}
     .ficha-item-valor{font-size:15px;font-weight:700;color:var(--texto);}
     .descripcion h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:12px;}
+    .caract-seccion{margin-bottom:32px;}
+    .caract-seccion h4{font-size:18px;font-weight:700;color:var(--texto);margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid var(--gris-medio);}
+    .caract-lista{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;}
+    .caract-item{font-size:14px;color:var(--texto-suave);padding:4px 0;}
     .descripcion p{font-size:15px;color:var(--texto-suave);line-height:1.8;}
     .video-wrap{margin-top:40px;}
     .video-wrap h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:16px;}
@@ -350,6 +354,16 @@ async function cargarPropiedades() {
         negocio: obj.negocio || 'Venta',
         alcobas: parseInt(obj.alcobas) || 0,
         banos: parseInt(obj.banos) || 0,
+        pais: obj.pais || 'Colombia',
+        departamento: obj.departamento || '',
+        estado: obj.estado || '',
+        garaje: parseInt(obj.garaje) || 0,
+        estrato: parseInt(obj.estrato) || 0,
+        pisos: parseInt(obj.pisos) || 0,
+        ano: obj.ano || '',
+        admin: parseInt((obj.admin||'0').replace(/\D/g,'')) || 0,
+        internas: (obj.internas||'').split(',').map(i=>i.trim()).filter(i=>i),
+        externas: (obj.externas||'').split(',').map(e=>e.trim()).filter(e=>e),
         precio: parseInt((obj.precio||'0').replace(/\D/g,'')) || 0,
         area: parseInt(obj.area) || 0,
         descripcion: obj.descripcion || '',
@@ -526,16 +540,42 @@ function renderDetalle() {
       </div>
     </div>
     <div class="ficha-tecnica">
-      <h3>Ficha Técnica</h3>
+      <h3>Detalles del inmueble</h3>
       <div class="ficha-grid">
-        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">#${p.id}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Tipo</div><div class="ficha-item-valor">${p.tipo||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">País</div><div class="ficha-item-valor">${p.pais||'Colombia'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Departamento</div><div class="ficha-item-valor">${p.departamento||'—'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Ciudad</div><div class="ficha-item-valor">${p.ciudad||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Área</div><div class="ficha-item-valor">${p.area>0?p.area+' m²':'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Habitaciones</div><div class="ficha-item-valor">${p.alcobas||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">#${p.id}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Estado</div><div class="ficha-item-valor">${p.estado||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Área construida</div><div class="ficha-item-valor">${p.area>0?p.area+' m²':'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Alcobas</div><div class="ficha-item-valor">${p.alcobas||'—'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Baños</div><div class="ficha-item-valor">${p.banos||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Garaje</div><div class="ficha-item-valor">${p.garaje||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Estrato</div><div class="ficha-item-valor">${p.estrato||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Pisos</div><div class="ficha-item-valor">${p.pisos||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Año construcción</div><div class="ficha-item-valor">${p.ano||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Administración</div><div class="ficha-item-valor">${p.admin>0?'$'+p.admin.toLocaleString('es-CO'):'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Tipo de negocio</div><div class="ficha-item-valor">${p.negocio||'—'}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Tipo de inmueble</div><div class="ficha-item-valor">${p.tipo||'—'}</div></div>
       </div>
-      <div class="descripcion"><h4>Descripción</h4><p>${p.descripcion||'Sin descripción disponible.'}</p></div>
+
+      ${p.internas.length?`
+      <div class="caract-seccion">
+        <h4>Características internas</h4>
+        <div class="caract-lista">
+          ${p.internas.map(i=>`<div class="caract-item">• ${i}</div>`).join('')}
+        </div>
+      </div>`:''}
+
+      ${p.externas.length?`
+      <div class="caract-seccion">
+        <h4>Características externas</h4>
+        <div class="caract-lista">
+          ${p.externas.map(e=>`<div class="caract-item">• ${e}</div>`).join('')}
+        </div>
+      </div>`:''}
+
+      ${p.descripcion?`<div class="descripcion"><h4>Descripción</h4><p>${p.descripcion}</p></div>`:''}
     </div>`;
   iniciarSlideshow();
 }
