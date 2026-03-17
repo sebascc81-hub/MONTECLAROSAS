@@ -1,0 +1,582 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Monteclaro Inmobiliaria SAS · Eje Cafetero</title>
+  <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+  <style>
+    :root {
+      --azul: #2B2ECC; --azul-oscuro: #1a1c8a; --azul-claro: #4547e0;
+      --blanco: #ffffff; --gris-claro: #f4f5fb; --gris-medio: #e8e9f5;
+      --texto: #1a1a2e; --texto-suave: #555577;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; }
+    html { scroll-behavior:smooth; }
+    body { font-family:'Barlow',sans-serif; color:var(--texto); background:var(--blanco); overflow-x:hidden; }
+
+    nav { position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 48px; height:70px; background:rgba(255,255,255,0.97); border-bottom:1px solid var(--gris-medio); backdrop-filter:blur(8px); }
+    .nav-logo { display:flex; align-items:center; gap:10px; text-decoration:none; cursor:pointer; }
+    .nav-logo-icono { width:36px; height:36px; background:var(--azul); clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%); }
+    .nav-logo-texto { font-family:'Barlow Condensed',sans-serif; font-size:22px; font-weight:900; color:var(--azul); letter-spacing:-0.5px; text-transform:lowercase; }
+    .nav-logo-sub { font-size:10px; font-weight:600; letter-spacing:2px; text-transform:uppercase; color:var(--texto-suave); display:block; margin-top:-4px; }
+    .nav-links { display:flex; gap:32px; list-style:none; }
+    .nav-links a { text-decoration:none; font-size:14px; font-weight:600; color:var(--texto-suave); letter-spacing:0.5px; transition:color 0.2s; cursor:pointer; }
+    .nav-links a:hover { color:var(--azul); }
+    .nav-cta { background:var(--azul)!important; color:var(--blanco)!important; padding:10px 22px; border-radius:6px; }
+
+    .vista { display:none; }
+    .vista.activa { display:block; }
+
+    .hero { min-height:100vh; background:var(--azul); display:flex; align-items:center; position:relative; overflow:hidden; padding:120px 48px 80px; }
+    .hero::before { content:''; position:absolute; top:-100px; right:-100px; width:600px; height:600px; background:var(--azul-claro); clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%); opacity:0.25; }
+    .hero::after { content:''; position:absolute; bottom:-80px; left:200px; width:400px; height:400px; background:var(--azul-oscuro); clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%); opacity:0.4; }
+    .hero-contenido { position:relative; z-index:2; max-width:680px; animation:fadeUp 0.8s ease both; }
+    @keyframes fadeUp { from{opacity:0;transform:translateY(30px)} to{opacity:1;transform:translateY(0)} }
+    .hero-tag { display:inline-block; background:rgba(255,255,255,0.15); color:rgba(255,255,255,0.9); font-size:12px; font-weight:600; letter-spacing:3px; text-transform:uppercase; padding:8px 16px; border-radius:4px; margin-bottom:28px; }
+    .hero h1 { font-family:'Barlow Condensed',sans-serif; font-size:clamp(52px,8vw,88px); font-weight:900; color:var(--blanco); line-height:0.95; text-transform:lowercase; letter-spacing:-2px; margin-bottom:24px; }
+    .hero h1 span { color:rgba(255,255,255,0.35); }
+    .hero p { font-size:18px; font-weight:300; color:rgba(255,255,255,0.8); line-height:1.6; max-width:480px; margin-bottom:40px; }
+    .hero-botones { display:flex; gap:16px; flex-wrap:wrap; }
+    .btn-primario { background:var(--blanco); color:var(--azul); font-family:'Barlow',sans-serif; font-size:15px; font-weight:700; padding:16px 32px; border-radius:6px; text-decoration:none; transition:transform 0.2s,box-shadow 0.2s; display:inline-block; cursor:pointer; border:none; }
+    .btn-primario:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(0,0,0,0.2); }
+    .btn-secundario { background:transparent; color:var(--blanco); font-family:'Barlow',sans-serif; font-size:15px; font-weight:600; padding:16px 32px; border-radius:6px; border:2px solid rgba(255,255,255,0.4); text-decoration:none; transition:border-color 0.2s,background 0.2s; display:inline-block; cursor:pointer; }
+    .btn-secundario:hover { border-color:var(--blanco); background:rgba(255,255,255,0.1); }
+    .hero-stats { position:absolute; bottom:48px; right:48px; z-index:2; display:flex; gap:40px; animation:fadeUp 0.8s 0.3s ease both; }
+    .stat-num { font-family:'Barlow Condensed',sans-serif; font-size:42px; font-weight:800; color:var(--blanco); line-height:1; }
+    .stat-label { font-size:12px; color:rgba(255,255,255,0.6); letter-spacing:1px; text-transform:uppercase; }
+
+    .seccion-filtros { background:var(--gris-claro); padding:64px 48px; }
+    .seccion-tag { font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--azul); margin-bottom:12px; }
+    .seccion-titulo { font-family:'Barlow Condensed',sans-serif; font-size:clamp(36px,5vw,56px); font-weight:900; color:var(--texto); text-transform:lowercase; letter-spacing:-1px; line-height:1; margin-bottom:32px; }
+    .filtros-grid { display:grid; grid-template-columns:repeat(auto-fit,minmax(160px,1fr)); gap:16px; margin-bottom:24px; }
+    .filtro-grupo label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--texto-suave); display:block; margin-bottom:6px; }
+    .filtro-grupo select,.filtro-grupo input { width:100%; padding:12px 14px; border:1.5px solid var(--gris-medio); border-radius:6px; font-family:'Barlow',sans-serif; font-size:14px; font-weight:600; color:var(--texto); background:var(--blanco); outline:none; transition:border-color 0.2s; }
+    .filtro-grupo select:focus,.filtro-grupo input:focus { border-color:var(--azul); }
+    .btn-buscar { background:var(--azul); color:var(--blanco); font-family:'Barlow',sans-serif; font-size:15px; font-weight:700; padding:14px 40px; border:none; border-radius:6px; cursor:pointer; transition:background 0.2s,transform 0.2s; }
+    .btn-buscar:hover { background:var(--azul-oscuro); transform:translateY(-2px); }
+
+    .seccion-propiedades { padding:80px 48px; }
+    .props-header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:40px; flex-wrap:wrap; gap:16px; }
+    .props-header .seccion-titulo { margin-bottom:0; }
+    .grid-props { display:grid; grid-template-columns:repeat(auto-fill,minmax(280px,1fr)); gap:24px; }
+    .prop-card { background:var(--blanco); border-radius:12px; overflow:hidden; box-shadow:0 2px 12px rgba(43,46,204,0.06); border:1px solid var(--gris-medio); transition:transform 0.25s,box-shadow 0.25s; cursor:pointer; }
+    .prop-card:hover { transform:translateY(-5px); box-shadow:0 16px 40px rgba(43,46,204,0.14); border-color:var(--azul); }
+    .prop-img-wrap { position:relative; height:210px; overflow:hidden; background:var(--gris-medio); }
+    .prop-img-wrap img { width:100%; height:100%; object-fit:cover; transition:transform 0.4s; }
+    .prop-card:hover .prop-img-wrap img { transform:scale(1.04); }
+    .prop-badge { position:absolute; top:14px; left:14px; font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; padding:5px 10px; border-radius:4px; }
+    .badge-venta { background:var(--azul); color:var(--blanco); }
+    .badge-arriendo { background:#1a8a5a; color:var(--blanco); }
+    .prop-info { padding:20px; }
+    .prop-precio { font-family:'Barlow Condensed',sans-serif; font-size:26px; font-weight:800; color:var(--azul); margin-bottom:4px; }
+    .prop-nombre { font-size:15px; font-weight:700; color:var(--texto); margin-bottom:4px; }
+    .prop-ubicacion { font-size:13px; color:var(--texto-suave); margin-bottom:14px; }
+    .prop-detalles { display:flex; gap:16px; border-top:1px solid var(--gris-medio); padding-top:14px; }
+    .prop-detalle { font-size:13px; color:var(--texto-suave); }
+    .prop-detalle strong { color:var(--texto); font-weight:700; }
+    .sin-resultados { text-align:center; padding:64px; color:var(--texto-suave); font-size:16px; grid-column:1/-1; }
+
+    .vista-detalle { padding:100px 48px 64px; }
+    .btn-volver { background:none; border:none; font-family:'Barlow',sans-serif; font-size:13px; font-weight:700; color:var(--azul); letter-spacing:1px; text-transform:uppercase; cursor:pointer; display:flex; align-items:center; gap:8px; margin-bottom:40px; padding:0; transition:gap 0.2s; }
+    .btn-volver:hover { gap:12px; }
+    .detalle-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; margin-bottom:64px; }
+    .galeria-principal { position:relative; height:480px; overflow:hidden; border-radius:12px; background:var(--gris-medio); }
+    .galeria-principal img { width:100%; height:100%; object-fit:cover; transition:opacity 0.4s; }
+    .galeria-thumbs { display:flex; flex-wrap:wrap; gap:8px; margin-top:12px; }
+    .thumb { width:72px; height:56px; object-fit:cover; border-radius:6px; cursor:pointer; border:2px solid transparent; transition:border-color 0.2s; }
+    .thumb:hover,.thumb.activo { border-color:var(--azul); }
+    .nav-foto { position:absolute; top:50%; transform:translateY(-50%); background:rgba(0,0,0,0.35); color:white; border:none; width:40px; height:40px; border-radius:50%; cursor:pointer; font-size:14px; transition:background 0.2s; z-index:5; }
+    .nav-foto:hover { background:var(--azul); }
+    .nav-foto.izq { left:12px; }
+    .nav-foto.der { right:12px; }
+    .detalle-info { display:flex; flex-direction:column; }
+    .detalle-negocio { font-size:12px; font-weight:700; letter-spacing:3px; text-transform:uppercase; color:var(--azul); margin-bottom:8px; }
+    .detalle-titulo { font-family:'Barlow Condensed',sans-serif; font-size:clamp(28px,4vw,48px); font-weight:900; text-transform:uppercase; line-height:1; margin-bottom:16px; }
+    .detalle-precio { font-family:'Barlow Condensed',sans-serif; font-size:40px; font-weight:900; color:var(--azul); margin-bottom:8px; }
+    .detalle-precio-sub { font-size:13px; color:var(--texto-suave); margin-bottom:24px; }
+    .vis-badge { background:#e8f5e9; color:#2e7d32; font-size:12px; font-weight:700; padding:8px 16px; border-radius:4px; display:inline-block; margin-bottom:20px; }
+    .contacto-rapido { background:var(--gris-claro); border-radius:12px; padding:24px; border:1px solid var(--gris-medio); margin-top:24px; }
+    .contacto-rapido h3 { font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--texto); margin-bottom:16px; }
+    .form-grupo { margin-bottom:12px; }
+    .form-grupo label { font-size:11px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--texto-suave); display:block; margin-bottom:4px; }
+    .form-grupo input,.form-grupo textarea { width:100%; padding:12px; border:1.5px solid var(--gris-medio); border-radius:6px; font-family:'Barlow',sans-serif; font-size:14px; color:var(--texto); background:var(--blanco); outline:none; transition:border-color 0.2s; }
+    .form-grupo input:focus,.form-grupo textarea:focus { border-color:var(--azul); }
+    .btn-contactar { width:100%; background:var(--azul); color:var(--blanco); font-family:'Barlow',sans-serif; font-size:15px; font-weight:700; padding:14px; border:none; border-radius:6px; cursor:pointer; margin-top:8px; transition:background 0.2s; }
+    .btn-contactar:hover { background:var(--azul-oscuro); }
+    .ficha-tecnica { border-top:1px solid var(--gris-medio); padding-top:48px; margin-bottom:48px; }
+    .ficha-tecnica h3 { font-family:'Barlow Condensed',sans-serif; font-size:28px; font-weight:900; text-transform:uppercase; margin-bottom:24px; }
+    .ficha-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(180px,1fr)); gap:0; border:1px solid var(--gris-medio); border-radius:8px; overflow:hidden; margin-bottom:40px; }
+    .ficha-item { padding:14px 18px; border-bottom:1px solid var(--gris-medio); border-right:1px solid var(--gris-medio); }
+    .ficha-item-label { font-size:10px; font-weight:700; letter-spacing:1px; text-transform:uppercase; color:var(--texto-suave); margin-bottom:4px; }
+    .ficha-item-valor { font-size:15px; font-weight:700; color:var(--texto); }
+    .caract-grid { display:grid; grid-template-columns:1fr 1fr; gap:32px; margin-bottom:40px; }
+    .caract-grupo h4 { font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--azul); margin-bottom:12px; padding-bottom:8px; border-bottom:2px solid var(--azul); display:inline-block; }
+    .caract-item { font-size:14px; color:var(--texto); padding:6px 0; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--gris-claro); }
+    .caract-item::before { content:''; width:6px; height:6px; background:var(--azul); border-radius:50%; flex-shrink:0; }
+    .descripcion h4 { font-size:13px; font-weight:700; letter-spacing:2px; text-transform:uppercase; color:var(--texto); margin-bottom:12px; }
+    .descripcion p { font-size:15px; color:var(--texto-suave); line-height:1.8; }
+
+    .seccion-porque { background:var(--azul); padding:96px 48px; }
+    .seccion-porque .seccion-tag { color:rgba(255,255,255,0.6); }
+    .seccion-porque .seccion-titulo { color:var(--blanco); }
+    .grid-razones { display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:32px; }
+    .razon { padding:32px; background:rgba(255,255,255,0.08); border-radius:12px; border:1px solid rgba(255,255,255,0.12); transition:background 0.2s; }
+    .razon:hover { background:rgba(255,255,255,0.13); }
+    .razon-icono { width:48px; height:48px; background:rgba(255,255,255,0.15); border-radius:10px; display:flex; align-items:center; justify-content:center; margin-bottom:16px; font-size:22px; }
+    .razon h3 { font-size:17px; font-weight:700; color:var(--blanco); margin-bottom:8px; }
+    .razon p { font-size:14px; font-weight:300; color:rgba(255,255,255,0.7); line-height:1.6; }
+
+    .seccion-captacion { background:var(--gris-claro); padding:96px 48px; }
+    .captacion-grid { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+    .captacion-card { padding:48px 40px; border-radius:16px; position:relative; overflow:hidden; }
+    .captacion-card-venta { background:var(--azul); color:var(--blanco); }
+    .captacion-card-arriendo { background:var(--blanco); border:2px solid var(--gris-medio); }
+    .captacion-card::before { content:''; position:absolute; bottom:-40px; right:-40px; width:180px; height:180px; background:rgba(255,255,255,0.07); clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%); }
+    .captacion-card h3 { font-family:'Barlow Condensed',sans-serif; font-size:36px; font-weight:900; text-transform:lowercase; letter-spacing:-1px; margin-bottom:12px; }
+    .captacion-card p { font-size:15px; font-weight:300; line-height:1.6; opacity:0.85; margin-bottom:28px; }
+    .captacion-card-arriendo p { color:var(--texto-suave); opacity:1; }
+    .btn-blanco { display:inline-block; background:var(--blanco); color:var(--azul); font-size:14px; font-weight:700; padding:14px 28px; border-radius:6px; cursor:pointer; transition:transform 0.2s; border:none; font-family:'Barlow',sans-serif; }
+    .btn-blanco:hover { transform:translateY(-2px); }
+    .btn-azul { display:inline-block; background:var(--azul); color:var(--blanco); font-size:14px; font-weight:700; padding:14px 28px; border-radius:6px; cursor:pointer; transition:background 0.2s,transform 0.2s; border:none; font-family:'Barlow',sans-serif; }
+    .btn-azul:hover { background:var(--azul-oscuro); transform:translateY(-2px); }
+
+    .seccion-contacto { padding:96px 48px; }
+    .contacto-grid { display:grid; grid-template-columns:1fr 1fr; gap:64px; align-items:start; }
+    .contacto-info h2 { font-family:'Barlow Condensed',sans-serif; font-size:48px; font-weight:900; text-transform:lowercase; letter-spacing:-1px; margin-bottom:16px; }
+    .contacto-info p { font-size:16px; color:var(--texto-suave); line-height:1.7; margin-bottom:32px; }
+    .contacto-datos { display:flex; flex-direction:column; gap:16px; }
+    .contacto-dato { display:flex; align-items:center; gap:12px; font-size:15px; }
+    .contacto-dato-icono { width:40px; height:40px; background:var(--gris-claro); border-radius:8px; display:flex; align-items:center; justify-content:center; font-size:18px; flex-shrink:0; }
+    .contacto-form { display:flex; flex-direction:column; gap:16px; }
+    .form-fila { display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+    .form-select { width:100%; padding:12px 14px; border:1.5px solid var(--gris-medio); border-radius:6px; font-family:'Barlow',sans-serif; font-size:14px; font-weight:600; color:var(--texto); background:var(--blanco); outline:none; transition:border-color 0.2s; }
+    .form-select:focus { border-color:var(--azul); }
+    .form-textarea { width:100%; padding:12px; border:1.5px solid var(--gris-medio); border-radius:6px; font-family:'Barlow',sans-serif; font-size:14px; color:var(--texto); background:var(--blanco); outline:none; resize:vertical; min-height:100px; transition:border-color 0.2s; }
+    .form-textarea:focus { border-color:var(--azul); }
+    .btn-enviar { background:var(--azul); color:var(--blanco); font-family:'Barlow',sans-serif; font-size:16px; font-weight:700; padding:16px; border:none; border-radius:8px; cursor:pointer; transition:background 0.2s,transform 0.2s; }
+    .btn-enviar:hover { background:var(--azul-oscuro); transform:translateY(-2px); }
+
+    footer { background:var(--texto); color:rgba(255,255,255,0.7); padding:48px; display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:24px; }
+    .footer-logo { font-family:'Barlow Condensed',sans-serif; font-size:24px; font-weight:900; color:var(--blanco); text-transform:lowercase; }
+    .footer-logo span { color:var(--azul-claro); }
+    .footer-links { display:flex; gap:24px; list-style:none; }
+    .footer-links a { text-decoration:none; font-size:13px; color:rgba(255,255,255,0.5); transition:color 0.2s; cursor:pointer; }
+    .footer-links a:hover { color:var(--blanco); }
+
+    .wa-flotante { position:fixed; bottom:28px; right:28px; z-index:200; width:58px; height:58px; background:#25D366; border-radius:50%; display:flex; align-items:center; justify-content:center; box-shadow:0 4px 20px rgba(37,211,102,0.4); text-decoration:none; transition:transform 0.2s; }
+    .wa-flotante:hover { transform:scale(1.1); }
+    .wa-flotante svg { width:30px; height:30px; }
+
+    @media(max-width:768px) {
+      nav { padding:0 20px; }
+      .nav-links { display:none; }
+      .hero { padding:100px 20px 120px; }
+      .hero-stats { position:relative; bottom:auto; right:auto; margin-top:48px; justify-content:flex-start; }
+      .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto { padding:64px 20px; }
+      .captacion-grid,.contacto-grid,.detalle-grid,.caract-grid { grid-template-columns:1fr; }
+      .form-fila { grid-template-columns:1fr; }
+      .vista-detalle { padding:90px 20px 48px; }
+      .galeria-principal { height:280px; }
+      footer { flex-direction:column; align-items:flex-start; padding:32px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo" onclick="irInicio()">
+    <div class="nav-logo-icono"></div>
+    <div>
+      <span class="nav-logo-texto">monteclaro</span>
+      <span class="nav-logo-sub">Inmobiliaria · SAS</span>
+    </div>
+  </div>
+  <ul class="nav-links">
+    <li><a onclick="irInicio();setTimeout(()=>document.getElementById('propiedades').scrollIntoView({behavior:'smooth'}),100)">Propiedades</a></li>
+    <li><a onclick="irInicio();setTimeout(()=>document.getElementById('nosotros').scrollIntoView({behavior:'smooth'}),100)">Nosotros</a></li>
+    <li><a onclick="irInicio();setTimeout(()=>document.getElementById('contacto').scrollIntoView({behavior:'smooth'}),100)" class="nav-cta">Contáctanos</a></li>
+  </ul>
+</nav>
+
+<!-- VISTA INICIO -->
+<div id="vista-inicio" class="vista activa">
+
+  <section class="hero">
+    <div class="hero-contenido">
+      <span class="hero-tag">Eje Cafetero · Colombia</span>
+      <h1>tu próximo<br><span>hogar</span><br>te espera</h1>
+      <p>Venta y arriendo de propiedades en Pereira, Manizales, Armenia y todo el Eje Cafetero. Asesoría personalizada, procesos claros.</p>
+      <div class="hero-botones">
+        <button class="btn-primario" onclick="document.getElementById('propiedades').scrollIntoView({behavior:'smooth'})">Ver propiedades</button>
+        <button class="btn-secundario" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Hablar con un asesor</button>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="stat"><div class="stat-num">30+</div><div class="stat-label">Propiedades</div></div>
+      <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Años</div></div>
+      <div class="stat"><div class="stat-num">300+</div><div class="stat-label">Clientes</div></div>
+    </div>
+  </section>
+
+  <section class="seccion-filtros" id="propiedades">
+    <p class="seccion-tag">Encuentra tu propiedad ideal</p>
+    <h2 class="seccion-titulo">busca aquí</h2>
+    <div class="filtros-grid" id="filtros-container"></div>
+    <button class="btn-buscar" onclick="aplicarFiltros()">Buscar propiedad →</button>
+  </section>
+
+  <section class="seccion-propiedades">
+    <div class="props-header">
+      <div><p class="seccion-tag">Portafolio exclusivo</p><h2 class="seccion-titulo">propiedades</h2></div>
+    </div>
+    <div class="grid-props" id="grid-propiedades"></div>
+  </section>
+
+  <section class="seccion-porque" id="nosotros">
+    <p class="seccion-tag">Por qué elegirnos</p>
+    <h2 class="seccion-titulo">tu confianza,<br>nuestra prioridad</h2>
+    <div class="grid-razones">
+      <div class="razon"><div class="razon-icono">🏆</div><h3>Experiencia comprobada</h3><p>Más de 5 años acompañando a familias y empresas en el Eje Cafetero a encontrar la propiedad ideal.</p></div>
+      <div class="razon"><div class="razon-icono">🤝</div><h3>Asesoría personalizada</h3><p>Cada cliente es diferente. Entendemos tus necesidades y te guiamos en cada paso del proceso.</p></div>
+      <div class="razon"><div class="razon-icono">📋</div><h3>Procesos transparentes</h3><p>Contratos claros, documentación al día y acompañamiento legal en cada negociación.</p></div>
+      <div class="razon"><div class="razon-icono">📍</div><h3>Cobertura regional</h3><p>Presencia activa en Pereira, Manizales, Armenia y municipios del Eje Cafetero.</p></div>
+    </div>
+  </section>
+
+  <section class="seccion-captacion">
+    <p class="seccion-tag">Propietarios</p>
+    <h2 class="seccion-titulo">¿tienes una<br>propiedad?</h2>
+    <div class="captacion-grid">
+      <div class="captacion-card captacion-card-venta">
+        <h3>vende con nosotros</h3>
+        <p>Valoramos tu propiedad, la promocionamos en todos los canales digitales y te acompañamos hasta el cierre del negocio.</p>
+        <button class="btn-blanco" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Quiero vender</button>
+      </div>
+      <div class="captacion-card captacion-card-arriendo">
+        <h3>arriéndala con nosotros</h3>
+        <p>Administramos tu inmueble, buscamos el arrendatario ideal y te garantizamos tranquilidad en el proceso.</p>
+        <button class="btn-azul" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Quiero arrendar</button>
+      </div>
+    </div>
+  </section>
+
+  <section class="seccion-contacto" id="contacto">
+    <div class="contacto-grid">
+      <div class="contacto-info">
+        <p class="seccion-tag">Estamos para ayudarte</p>
+        <h2>hablemos<br>hoy mismo</h2>
+        <p>Escríbenos, llámanos o completa el formulario. Un asesor de Monteclaro te responderá a la brevedad.</p>
+        <div class="contacto-datos">
+          <div class="contacto-dato"><div class="contacto-dato-icono">📱</div><span>+57 310 733 3139</span></div>
+          <div class="contacto-dato"><div class="contacto-dato-icono">📸</div><span>@monteclaroinmobiliariasas</span></div>
+          <div class="contacto-dato"><div class="contacto-dato-icono">📍</div><span>Pereira, Risaralda · Eje Cafetero</span></div>
+        </div>
+      </div>
+      <div class="contacto-form">
+        <div class="form-fila">
+          <div class="form-grupo"><label>Nombre</label><input type="text" id="c-nombre" placeholder="Tu nombre completo"></div>
+          <div class="form-grupo"><label>Teléfono</label><input type="text" id="c-telefono" placeholder="WhatsApp o celular"></div>
+        </div>
+        <div class="form-grupo">
+          <label>¿Qué necesitas?</label>
+          <select id="c-interes" class="form-select">
+            <option value="" disabled selected>Selecciona una opción</option>
+            <option>Quiero comprar una propiedad</option>
+            <option>Quiero arrendar una propiedad</option>
+            <option>Quiero vender mi propiedad</option>
+            <option>Quiero arrendar mi propiedad</option>
+            <option>Otro</option>
+          </select>
+        </div>
+        <div class="form-grupo"><label>Mensaje</label><textarea id="c-mensaje" class="form-textarea" placeholder="Cuéntanos más sobre lo que buscas..."></textarea></div>
+        <button class="btn-enviar" onclick="enviarContacto()">Enviar por WhatsApp →</button>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div><div class="footer-logo">monte<span>claro</span></div><p style="margin-top:6px;font-size:12px;">Inmobiliaria SAS · Eje Cafetero, Colombia</p></div>
+    <p style="font-size:13px;">© 2025 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+    <ul class="footer-links">
+      <li><a onclick="document.getElementById('propiedades').scrollIntoView({behavior:'smooth'})">Propiedades</a></li>
+      <li><a onclick="document.getElementById('nosotros').scrollIntoView({behavior:'smooth'})">Nosotros</a></li>
+      <li><a onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Contacto</a></li>
+    </ul>
+  </footer>
+</div>
+
+<!-- VISTA DETALLE -->
+<div id="vista-detalle" class="vista">
+  <div class="vista-detalle">
+    <button class="btn-volver" onclick="irInicio()">← Volver al catálogo</button>
+    <div id="detalle-contenido"></div>
+  </div>
+  <footer>
+    <div><div class="footer-logo">monte<span>claro</span></div><p style="margin-top:6px;font-size:12px;">Inmobiliaria SAS · Eje Cafetero, Colombia</p></div>
+    <p style="font-size:13px;">© 2025 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+  </footer>
+</div>
+
+<a href="https://wa.me/573107333139?text=Hola%2C%20me%20interesa%20una%20propiedad%20de%20Monteclaro%20Inmobiliaria" target="_blank" class="wa-flotante">
+  <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
+</a>
+
+<script>
+// ════════════════════════════════════════════════════════
+//  BASE DE DATOS DE PROPIEDADES
+//  Para agregar una propiedad nueva:
+//  1. Copia un bloque { ... } completo
+//  2. Pégalo dentro del array separado por coma
+//  3. Cambia el id por el siguiente número
+//  4. Reemplaza las fotos con los links de Google Drive
+// ════════════════════════════════════════════════════════
+const propiedades = [
+  {
+    id: 1,
+    titulo: "Casa Campestre Cerritos - Malabar",
+    ciudad: "Pereira",
+    localidad: "Cerritos",
+    tipo: "Casa Campestre",
+    negocio: "Venta",
+    alcobas: 6, banos: 7,
+    precio: 3800000000,
+    area: 2033, areaConstruida: 675,
+    garaje: 15, estrato: 5, pisos: 4, ano: 2021, admin: 350000,
+    descripcion: "Ubicada en Pereira, Risaralda. Terreno de 2033 m² con privacidad inigualable. Construcción de 675 m² en dos niveles con diseño moderno.",
+    internas: ["Admite mascotas","Baño en principal","Lujo","Agua caliente","Jacuzzi"],
+    externas: ["Área Social","Piscina","Portería","Vigilancia","Jardín"],
+    fotos: [
+      "https://via.placeholder.com/800x500/2B2ECC/ffffff?text=Foto+1",
+      "https://via.placeholder.com/800x500/1a1c8a/ffffff?text=Foto+2"
+    ]
+  },
+  {
+    id: 2,
+    titulo: "Apartamento Pinares",
+    ciudad: "Pereira",
+    localidad: "Pinares",
+    tipo: "Apartamento",
+    negocio: "Venta",
+    alcobas: 3, banos: 2,
+    precio: 320000000,
+    area: 85, areaConstruida: 85,
+    garaje: 1, estrato: 4, pisos: 8, ano: 2019, admin: 180000,
+    descripcion: "Hermoso apartamento en sector exclusivo de Pinares. Amplias zonas comunes, seguridad 24 horas y excelente vista.",
+    internas: ["Closets","Cocina integral","Balcón","Agua caliente"],
+    externas: ["Piscina","Gimnasio","Parqueadero visitantes","Seguridad"],
+    fotos: ["https://via.placeholder.com/800x500/2B2ECC/ffffff?text=Apartamento+Pinares"]
+  },
+  {
+    id: 3,
+    titulo: "Local Comercial Centro",
+    ciudad: "Manizales",
+    localidad: "Centro",
+    tipo: "Local",
+    negocio: "Arriendo",
+    alcobas: 0, banos: 1,
+    precio: 1800000,
+    area: 55, areaConstruida: 55,
+    garaje: 0, estrato: 3, pisos: 1, ano: 2010, admin: 0,
+    descripcion: "Local comercial en zona de alto tráfico peatonal en el centro de Manizales. Ideal para comercio, oficinas o servicios.",
+    internas: ["Baño privado","Vitrinas","Depósito"],
+    externas: ["Alta visibilidad","Transporte cercano"],
+    fotos: ["https://via.placeholder.com/800x500/2B2ECC/ffffff?text=Local+Comercial"]
+  }
+];
+
+// ════════════════════════════════════════════════════════
+//  NAVEGACIÓN
+// ════════════════════════════════════════════════════════
+let propiedadActual = null, fotoActual = 0, slideshow = null;
+
+function irInicio() {
+  document.getElementById('vista-inicio').classList.add('activa');
+  document.getElementById('vista-detalle').classList.remove('activa');
+  detenerSlideshow();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+function irDetalle(id) {
+  propiedadActual = propiedades.find(p => p.id === id);
+  if (!propiedadActual) return;
+  fotoActual = 0;
+  document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-detalle').classList.add('activa');
+  renderDetalle();
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════
+//  FILTROS
+// ════════════════════════════════════════════════════════
+function iniciarFiltros() {
+  const c = document.getElementById('filtros-container');
+  const campos = [
+    {key:'negocio', label:'Tipo'},
+    {key:'tipo', label:'Inmueble'},
+    {key:'ciudad', label:'Ciudad'},
+    {key:'localidad', label:'Localidad'},
+    {key:'alcobas', label:'Habitaciones'}
+  ];
+  let html = '';
+  campos.forEach(({key, label}) => {
+    const opciones = [...new Set(propiedades.map(p => p[key]))].sort();
+    html += `<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${opciones.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+  });
+  html += `<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
+  html += `<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
+  c.innerHTML = html;
+}
+
+function aplicarFiltros() {
+  const g = id => document.getElementById(id)?.value || '';
+  const resultado = propiedades.filter(p =>
+    (g('f-negocio')==='' || p.negocio===g('f-negocio')) &&
+    (g('f-tipo')==='' || p.tipo===g('f-tipo')) &&
+    (g('f-ciudad')==='' || p.ciudad===g('f-ciudad')) &&
+    (g('f-localidad')==='' || p.localidad===g('f-localidad')) &&
+    (g('f-alcobas')==='' || p.alcobas==g('f-alcobas')) &&
+    (g('f-min')==='' || p.precio>=Number(g('f-min'))) &&
+    (g('f-max')==='' || p.precio<=Number(g('f-max')))
+  );
+  renderGrid(resultado);
+  document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
+}
+
+// ════════════════════════════════════════════════════════
+//  GRID
+// ════════════════════════════════════════════════════════
+function renderGrid(datos) {
+  const grid = document.getElementById('grid-propiedades');
+  if (!datos.length) {
+    grid.innerHTML = '<div class="sin-resultados">No encontramos propiedades con esos filtros. Intenta con otros criterios.</div>';
+    return;
+  }
+  grid.innerHTML = datos.map(p => {
+    const badge = p.negocio==='Venta' ? 'badge-venta' : 'badge-arriendo';
+    const precio = p.negocio==='Arriendo' ? `$${p.precio.toLocaleString('es-CO')}/mes` : `$${p.precio.toLocaleString('es-CO')}`;
+    return `
+      <div class="prop-card" onclick="irDetalle(${p.id})">
+        <div class="prop-img-wrap">
+          <img src="${p.fotos[0]}" alt="${p.titulo}" onerror="this.src='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto'">
+          <span class="prop-badge ${badge}">${p.negocio}</span>
+        </div>
+        <div class="prop-info">
+          <div class="prop-precio">${precio}</div>
+          <div class="prop-nombre">${p.titulo}</div>
+          <div class="prop-ubicacion">📍 ${p.localidad}, ${p.ciudad}</div>
+          <div class="prop-detalles">
+            ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
+            ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
+            <span class="prop-detalle"><strong>${p.areaConstruida}</strong> m²</span>
+          </div>
+        </div>
+      </div>`;
+  }).join('');
+}
+
+// ════════════════════════════════════════════════════════
+//  DETALLE
+// ════════════════════════════════════════════════════════
+function renderDetalle() {
+  const p = propiedadActual;
+  const precio = p.negocio==='Arriendo' ? `$${p.precio.toLocaleString('es-CO')}/mes` : `$${p.precio.toLocaleString('es-CO')}`;
+  const esVIS = p.precio <= 262635750;
+  const thumbs = p.fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})">`).join('');
+  const internas = p.internas.map(i=>`<div class="caract-item">${i}</div>`).join('');
+  const externas = p.externas.map(e=>`<div class="caract-item">${e}</div>`).join('');
+
+  document.getElementById('detalle-contenido').innerHTML = `
+    <div class="detalle-grid">
+      <div>
+        <div class="galeria-principal">
+          <img id="foto-principal" src="${p.fotos[0]}" alt="${p.titulo}">
+          ${p.fotos.length>1?`<button class="nav-foto izq" onclick="fotoAnterior()"><i class="fas fa-chevron-left"></i></button><button class="nav-foto der" onclick="fotoSiguiente()"><i class="fas fa-chevron-right"></i></button>`:''}
+        </div>
+        <div class="galeria-thumbs">${thumbs}</div>
+      </div>
+      <div class="detalle-info">
+        <span class="detalle-negocio">${p.negocio}</span>
+        <h2 class="detalle-titulo">${p.titulo}</h2>
+        <div class="detalle-precio">${precio}</div>
+        ${p.admin>0?`<div class="detalle-precio-sub">Administración: $${p.admin.toLocaleString('es-CO')}/mes</div>`:''}
+        ${esVIS?'<div class="vis-badge">✓ Apta para subsidios de vivienda 2025</div>':''}
+        <div class="contacto-rapido">
+          <h3>¿Te interesa esta propiedad?</h3>
+          <div class="form-grupo"><label>Nombre</label><input type="text" id="d-nombre" placeholder="Tu nombre"></div>
+          <div class="form-grupo"><label>Teléfono</label><input type="tel" id="d-telefono" placeholder="Tu WhatsApp"></div>
+          <button class="btn-contactar" onclick="contactarPropiedad('${p.titulo}')">Consultar por WhatsApp →</button>
+        </div>
+      </div>
+    </div>
+    <div class="ficha-tecnica">
+      <h3>Ficha Técnica</h3>
+      <div class="ficha-grid">
+        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">#${p.id}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Tipo</div><div class="ficha-item-valor">${p.tipo}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Ciudad</div><div class="ficha-item-valor">${p.ciudad}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Área total</div><div class="ficha-item-valor">${p.area} m²</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Área construida</div><div class="ficha-item-valor">${p.areaConstruida} m²</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Habitaciones</div><div class="ficha-item-valor">${p.alcobas}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Baños</div><div class="ficha-item-valor">${p.banos}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Garaje</div><div class="ficha-item-valor">${p.garaje}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Estrato</div><div class="ficha-item-valor">${p.estrato}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Año</div><div class="ficha-item-valor">${p.ano}</div></div>
+      </div>
+      <div class="caract-grid">
+        <div class="caract-grupo"><h4>Características internas</h4>${internas}</div>
+        <div class="caract-grupo"><h4>Características externas</h4>${externas}</div>
+      </div>
+      <div class="descripcion"><h4>Descripción</h4><p>${p.descripcion}</p></div>
+    </div>`;
+
+  iniciarSlideshow();
+}
+
+// ════════════════════════════════════════════════════════
+//  GALERÍA
+// ════════════════════════════════════════════════════════
+function cambiarFoto(i) {
+  fotoActual = i;
+  const img = document.getElementById('foto-principal');
+  if (img) { img.style.opacity=0; setTimeout(()=>{img.src=propiedadActual.fotos[fotoActual];img.style.opacity=1;},300); }
+  document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('activo',idx===i));
+  reiniciarSlideshow();
+}
+function fotoSiguiente() { cambiarFoto((fotoActual+1)%propiedadActual.fotos.length); }
+function fotoAnterior() { cambiarFoto((fotoActual-1+propiedadActual.fotos.length)%propiedadActual.fotos.length); }
+function iniciarSlideshow() { if(propiedadActual.fotos.length>1) slideshow=setInterval(fotoSiguiente,4500); }
+function detenerSlideshow() { clearInterval(slideshow); }
+function reiniciarSlideshow() { detenerSlideshow(); iniciarSlideshow(); }
+
+// ════════════════════════════════════════════════════════
+//  WHATSAPP
+// ════════════════════════════════════════════════════════
+function contactarPropiedad(titulo) {
+  const nombre = document.getElementById('d-nombre')?.value||'';
+  const tel = document.getElementById('d-telefono')?.value||'';
+  const msg = `Hola Monteclaro, soy *${nombre||'un interesado'}*${tel?` (${tel})`:''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
+  window.open(`https://wa.me/573107333139?text=${msg}`, '_blank');
+}
+
+function enviarContacto() {
+  const nombre = document.getElementById('c-nombre').value;
+  const telefono = document.getElementById('c-telefono').value;
+  const interes = document.getElementById('c-interes').value;
+  const mensaje = document.getElementById('c-mensaje').value;
+  if (!nombre||!telefono||!interes) { alert('Por favor completa nombre, teléfono e interés.'); return; }
+  const msg = `Hola Monteclaro, soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
+  window.open(`https://wa.me/573107333139?text=${msg}`, '_blank');
+}
+
+// ════════════════════════════════════════════════════════
+//  INICIO
+// ════════════════════════════════════════════════════════
+iniciarFiltros();
+renderGrid(propiedades);
+</script>
+</body>
+</html>
