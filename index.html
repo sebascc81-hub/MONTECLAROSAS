@@ -73,7 +73,7 @@
     .btn-volver:hover{gap:12px;}
     .detalle-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-bottom:64px;}
     .galeria-principal{position:relative;height:480px;overflow:hidden;border-radius:12px;background:var(--gris-medio);}
-    .galeria-principal img{width:100%;height:100%;object-fit:contain;background:#f4f5fb;transition:opacity 0.4s;}
+    .galeria-principal img{width:100%;height:100%;object-fit:cover;transition:opacity 0.4s;}
     .galeria-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
     .thumb{width:72px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;}
     .thumb:hover,.thumb.activo{border-color:var(--azul);}
@@ -150,16 +150,32 @@
     .wa-flotante:hover{transform:scale(1.1);}
     .wa-flotante svg{width:30px;height:30px;}
     @media(max-width:768px){
-      nav{padding:0 20px;}.nav-links{display:none;}
-      .hero{padding:100px 20px 120px;}
-      .hero-stats{position:relative;bottom:auto;right:auto;margin-top:48px;justify-content:flex-start;}
-      .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:64px 20px;}
+      nav{padding:0 16px;}.nav-links{display:none;}
+      .hero{padding:90px 16px 48px;}
+      .hero h1{font-size:48px;letter-spacing:-1px;}
+      .hero-tag{font-size:11px;letter-spacing:1px;padding:6px 10px;}
+      .hero p{font-size:15px;margin-bottom:24px;}
+      .hero-botones{flex-direction:column;gap:10px;}
+      .btn-primario,.btn-secundario{padding:14px 24px;text-align:center;width:100%;}
+      .hero-stats{position:relative;bottom:auto;right:auto;margin-top:28px;justify-content:flex-start;gap:24px;}
+      .stat-num{font-size:30px;}
+      .stat-label{font-size:10px;}
+      .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:48px 16px;}
+      .seccion-titulo{font-size:34px;}
       .captacion-grid,.contacto-grid,.detalle-grid{grid-template-columns:1fr;}
+      .captacion-card{padding:28px 20px;}
       .form-fila{grid-template-columns:1fr;}
-      .vista-detalle{padding:90px 20px 48px;}
-      .galeria-principal{height:280px;}
+      .vista-detalle{padding:85px 16px 48px;}
+      .galeria-principal{height:260px;}
+      .galeria-thumbs{gap:6px;}
+      .thumb{width:58px;height:44px;}
+      .detalle-titulo{font-size:20px;margin-bottom:8px;}
+      .detalle-precio{font-size:28px;}
+      .ficha-grid{grid-template-columns:1fr 1fr;}
       .video-wrap iframe{height:220px;}
-      footer{flex-direction:column;align-items:flex-start;padding:32px 20px;}
+      .grid-razones{grid-template-columns:1fr;}
+      footer{flex-direction:column;align-items:flex-start;padding:32px 16px;}
+      .footer-links{flex-wrap:wrap;gap:12px;}
     }
   </style>
 </head>
@@ -485,6 +501,12 @@ function renderDetalle() {
   }
 
   document.getElementById('detalle-contenido').innerHTML=`
+    <div style="margin-bottom:20px;">
+      <span class="detalle-negocio">${p.negocio}</span>
+      <h2 class="detalle-titulo">${p.titulo}</h2>
+      <div class="detalle-precio">${precio}</div>
+      ${esVIS?'<div class="vis-badge">✓ Apta para subsidios de vivienda 2025</div>':''}
+    </div>
     <div class="detalle-grid">
       <div>
         <div class="galeria-principal">
@@ -495,10 +517,6 @@ function renderDetalle() {
         ${videoHTML}
       </div>
       <div class="detalle-info">
-        <span class="detalle-negocio">${p.negocio}</span>
-        <h2 class="detalle-titulo">${p.titulo}</h2>
-        <div class="detalle-precio">${precio}</div>
-        ${esVIS?'<div class="vis-badge">✓ Apta para subsidios de vivienda 2025</div>':''}
         <div class="contacto-rapido">
           <h3>¿Te interesa esta propiedad?</h3>
           <div class="form-grupo"><label>Nombre</label><input type="text" id="d-nombre" placeholder="Tu nombre"></div>
