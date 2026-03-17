@@ -346,12 +346,22 @@
     <div class="carrusel-dots" id="carrusel-dots"></div>
   </section>
 
-  <section class="seccion-propiedades">
-    <div class="props-header">
-      <div><p class="seccion-tag">Portafolio exclusivo</p><h2 class="seccion-titulo">últimos inmuebles</h2></div>
+  <!-- CARRUSEL ÚLTIMOS INMUEBLES -->
+  <section class="seccion-destacados" id="seccion-todos" style="background:var(--gris-claro);">
+    <div class="destacados-titulo">
+      <h2>ÚLTIMOS <span>INMUEBLES</span></h2>
     </div>
-    <div class="grid-props" id="grid-propiedades"><div class="cargando">Cargando propiedades...</div></div>
+    <div style="position:relative;padding:0 28px;">
+      <button class="carrusel-btn izq" onclick="moverCarrusel2(-1)">&#8249;</button>
+      <div class="carrusel-wrapper">
+        <div class="carrusel-track" id="carrusel-track-2"></div>
+      </div>
+      <button class="carrusel-btn der" onclick="moverCarrusel2(1)">&#8250;</button>
+    </div>
+    <div class="carrusel-dots" id="carrusel-dots-2"></div>
   </section>
+  <!-- Grid oculto para compatibilidad con filtros -->
+  <div id="grid-propiedades" style="display:none;"></div>
 
   <section class="seccion-porque" id="nosotros">
     <p class="seccion-tag">Por qué elegirnos</p>
@@ -500,6 +510,7 @@ async function cargarPropiedades() {
     iniciarFiltros();
     renderGrid(propiedades);
     renderCarrusel();
+    renderCarrusel2();
   } catch(e) {
     document.getElementById('grid-propiedades').innerHTML = '<div class="sin-resultados">No se pudieron cargar las propiedades.</div>';
   }
@@ -567,21 +578,51 @@ function cerrarModal() {
   document.getElementById('modal-proximamente').classList.remove('activo');
 }
 function filtrarYIr(negocio) {
-  // Asegurar vista inicio activa
   document.getElementById('vista-inicio').classList.add('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   detenerSlideshow();
   window.scrollTo({top:0,behavior:'smooth'});
 
-  // Filtrar directamente con los datos en memoria
+  // Filtrar y mostrar en carrusel 2
   const resultado = propiedades.filter(p => p.negocio === negocio);
-  renderGrid(resultado);
+  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
+  const track = document.getElementById('carrusel-track-2');
+  const seccion = document.getElementById('seccion-todos');
 
-  // Actualizar el selector visualmente
+  // Actualizar titulo
+  seccion.querySelector('h2').innerHTML = negocio === 'Venta'
+    ? 'PROPIEDADES EN <span>VENTA</span>'
+    : 'PROPIEDADES EN <span>ARRIENDO</span>';
+
+  if(!resultado.length){
+    track.innerHTML = '<div style="padding:40px;text-align:center;color:var(--texto-suave);font-size:16px;width:100%;">No encontramos propiedades con esos filtros.</div>';
+    document.getElementById('carrusel-dots-2').innerHTML = '';
+  } else {
+    track.innerHTML = resultado.map(p => {
+      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+      const foto = p.fotos.length?p.fotos[0]:fd;
+      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
+        <div class="carrusel-img"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"></div>
+        <div class="carrusel-info">
+          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
+          <div class="carrusel-nombre">${p.titulo}</div>
+          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
+          <div class="carrusel-detalles">
+            ${p.area>0?`<span class="carrusel-detalle">Área m² <strong>${p.area}</strong></span>`:''}
+            ${p.alcobas>0?`<span class="carrusel-detalle">Alcobas <strong>${p.alcobas}</strong></span>`:''}
+            ${p.banos>0?`<span class="carrusel-detalle">Baño(s) <strong>${p.banos}</strong></span>`:''}
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    carrusel2Index = 0;
+    actualizarCarrusel2();
+  }
+
   setTimeout(() => {
     const sel = document.getElementById('f-negocio');
     if(sel) sel.value = negocio;
-    document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
+    seccion.scrollIntoView({behavior:'smooth'});
   }, 100);
 }
 
@@ -810,6 +851,70 @@ function actualizarCarrusel() {
 window.addEventListener('resize', () => {
   carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
   actualizarCarrusel();
+});
+
+// ── CARRUSEL 2 (TODOS) ──
+let carrusel2Index = 0;
+
+function renderCarrusel2() {
+  const todos = propiedades.filter(p => !p.destacado);
+  const seccion = document.getElementById('seccion-todos');
+  if(!todos.length){ seccion.style.display='none'; return; }
+  seccion.style.display='block';
+
+  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
+  const track = document.getElementById('carrusel-track-2');
+  track.innerHTML = todos.map(p => {
+    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+    const foto = p.fotos.length?p.fotos[0]:fd;
+    return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
+      <div class="carrusel-img"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"></div>
+      <div class="carrusel-info">
+        <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
+        <div class="carrusel-nombre">${p.titulo}</div>
+        <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
+        <div class="carrusel-detalles">
+          ${p.area>0?`<span class="carrusel-detalle">Área m² <strong>${p.area}</strong></span>`:''}
+          ${p.alcobas>0?`<span class="carrusel-detalle">Alcobas <strong>${p.alcobas}</strong></span>`:''}
+          ${p.banos>0?`<span class="carrusel-detalle">Baño(s) <strong>${p.banos}</strong></span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+
+  const dots = document.getElementById('carrusel-dots-2');
+  const grupos = Math.ceil(todos.length / carruselVisible);
+  dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo2(${i})"></button>`).join('');
+  carrusel2Index = 0;
+  actualizarCarrusel2();
+}
+
+function moverCarrusel2(dir) {
+  const todos = propiedades.filter(p=>!p.destacado);
+  const maxIndex = Math.max(0, todos.length - carruselVisible);
+  carrusel2Index = Math.max(0, Math.min(carrusel2Index + dir, maxIndex));
+  actualizarCarrusel2();
+}
+
+function irAGrupo2(grupo) {
+  carrusel2Index = grupo * carruselVisible;
+  actualizarCarrusel2();
+}
+
+function actualizarCarrusel2() {
+  const track = document.getElementById('carrusel-track-2');
+  if(!track) return;
+  const slideWidth = track.parentElement.offsetWidth / carruselVisible;
+  track.style.transform = `translateX(-${carrusel2Index * (slideWidth + 24)}px)`;
+  const dots = document.querySelectorAll('#carrusel-dots-2 .carrusel-dot');
+  const grupoActual = Math.floor(carrusel2Index / carruselVisible);
+  dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
+}
+
+window.addEventListener('resize', () => {
+  carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
+  actualizarCarrusel();
+  actualizarCarrusel2();
 });
 
 // ── INICIO ──
