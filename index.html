@@ -466,12 +466,13 @@ function parsearCSV(fila) {
 }
 
 // ── NAVEGACIÓN ──
-function irInicio() {
-  document.getElementById('vista-inicio').classList.add('activa');
-  document.getElementById('vista-detalle').classList.remove('activa');
-  detenerSlideshow();
-  history.pushState('',document.title,window.location.pathname+window.location.search);
-  window.scrollTo({top:0,behavior:'smooth'});
+function filtrarYIr(negocio) {
+  irInicio();
+  setTimeout(() => {
+    const sel = document.getElementById('f-negocio');
+    if(sel){ sel.value = negocio; aplicarFiltros(); }
+    setTimeout(()=>document.getElementById('propiedades').scrollIntoView({behavior:'smooth'}),100);
+  }, 600);
 }
 
 function irDetalle(id) {
