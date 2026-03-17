@@ -466,13 +466,12 @@ function parsearCSV(fila) {
 }
 
 // ── NAVEGACIÓN ──
-function filtrarYIr(negocio) {
-  irInicio();
-  setTimeout(() => {
-    const sel = document.getElementById('f-negocio');
-    if(sel){ sel.value = negocio; aplicarFiltros(); }
-    setTimeout(()=>document.getElementById('propiedades').scrollIntoView({behavior:'smooth'}),100);
-  }, 600);
+function irInicio() {
+  document.getElementById('vista-inicio').classList.add('activa');
+  document.getElementById('vista-detalle').classList.remove('activa');
+  detenerSlideshow();
+  history.pushState('',document.title,window.location.pathname+window.location.search);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function irDetalle(id) {
@@ -517,12 +516,15 @@ function cerrarModal() {
   document.getElementById('modal-proximamente').classList.remove('activo');
 }
 function filtrarYIr(negocio) {
-  irInicio();
+  // Si estamos en detalle, volver al inicio primero
+  if(document.getElementById('vista-detalle').classList.contains('activa')){
+    irInicio();
+  }
   setTimeout(() => {
     const sel = document.getElementById('f-negocio');
     if(sel){ sel.value = negocio; aplicarFiltros(); }
-    document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
-  }, 300);
+    setTimeout(()=>document.getElementById('propiedades').scrollIntoView({behavior:'smooth'}),100);
+  }, 600);
 }
 
 // ── FILTROS ──
