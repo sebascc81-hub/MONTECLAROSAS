@@ -516,15 +516,22 @@ function cerrarModal() {
   document.getElementById('modal-proximamente').classList.remove('activo');
 }
 function filtrarYIr(negocio) {
-  // Si estamos en detalle, volver al inicio primero
-  if(document.getElementById('vista-detalle').classList.contains('activa')){
-    irInicio();
-  }
+  // Asegurar vista inicio activa
+  document.getElementById('vista-inicio').classList.add('activa');
+  document.getElementById('vista-detalle').classList.remove('activa');
+  detenerSlideshow();
+  window.scrollTo({top:0,behavior:'smooth'});
+
+  // Filtrar directamente con los datos en memoria
+  const resultado = propiedades.filter(p => p.negocio === negocio);
+  renderGrid(resultado);
+
+  // Actualizar el selector visualmente
   setTimeout(() => {
     const sel = document.getElementById('f-negocio');
-    if(sel){ sel.value = negocio; aplicarFiltros(); }
-    setTimeout(()=>document.getElementById('propiedades').scrollIntoView({behavior:'smooth'}),100);
-  }, 600);
+    if(sel) sel.value = negocio;
+    document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
+  }, 100);
 }
 
 // ── FILTROS ──
