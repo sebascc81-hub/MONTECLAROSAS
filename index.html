@@ -101,12 +101,11 @@
     .ficha-item{padding:14px 18px;border-bottom:1px solid var(--gris-medio);border-right:1px solid var(--gris-medio);}
     .ficha-item-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:4px;}
     .ficha-item-valor{font-size:15px;font-weight:700;color:var(--texto);}
-    .caract-grid{display:grid;grid-template-columns:1fr 1fr;gap:32px;margin-bottom:40px;}
-    .caract-grupo h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--azul);margin-bottom:12px;padding-bottom:8px;border-bottom:2px solid var(--azul);display:inline-block;}
-    .caract-item{font-size:14px;color:var(--texto);padding:6px 0;display:flex;align-items:center;gap:8px;border-bottom:1px solid var(--gris-claro);}
-    .caract-item::before{content:'';width:6px;height:6px;background:var(--azul);border-radius:50%;flex-shrink:0;}
     .descripcion h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:12px;}
     .descripcion p{font-size:15px;color:var(--texto-suave);line-height:1.8;}
+    .video-wrap{margin-top:40px;}
+    .video-wrap h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:16px;}
+    .video-wrap iframe{width:100%;height:400px;border-radius:12px;border:none;}
     .seccion-porque{background:var(--azul);padding:96px 48px;}
     .seccion-porque .seccion-tag{color:rgba(255,255,255,0.6);}
     .seccion-porque .seccion-titulo{color:var(--blanco);}
@@ -156,10 +155,11 @@
       .hero{padding:100px 20px 120px;}
       .hero-stats{position:relative;bottom:auto;right:auto;margin-top:48px;justify-content:flex-start;}
       .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:64px 20px;}
-      .captacion-grid,.contacto-grid,.detalle-grid,.caract-grid{grid-template-columns:1fr;}
+      .captacion-grid,.contacto-grid,.detalle-grid{grid-template-columns:1fr;}
       .form-fila{grid-template-columns:1fr;}
       .vista-detalle{padding:90px 20px 48px;}
       .galeria-principal{height:280px;}
+      .video-wrap iframe{height:220px;}
       footer{flex-direction:column;align-items:flex-start;padding:32px 20px;}
     }
   </style>
@@ -181,7 +181,6 @@
   </ul>
 </nav>
 
-<!-- VISTA INICIO -->
 <div id="vista-inicio" class="vista activa">
   <section class="hero">
     <div class="hero-contenido">
@@ -287,7 +286,6 @@
   </footer>
 </div>
 
-<!-- VISTA DETALLE -->
 <div id="vista-detalle" class="vista">
   <div class="vista-detalle">
     <button class="btn-volver" onclick="irInicio()">← Volver al catálogo</button>
@@ -309,18 +307,25 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJv
 let propiedades = [];
 let propiedadActual = null, fotoActual = 0, slideshow = null;
 
-// ── CARGAR SHEET ──
 async function cargarPropiedades() {
   try {
     const resp = await fetch(CSV_URL);
     const texto = await resp.text();
     const filas = texto.trim().split('\n');
-    const encabezados = filas[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
+    const enc = filas[0].split(',').map(h => h.trim().toLowerCase().replace(/"/g,''));
 
     propiedades = filas.slice(1).map((fila, idx) => {
       const cols = parsearCSV(fila);
       const obj = {};
-      encabezados.forEach((h, i) => obj[h] = (cols[i] || '').trim().replace(/^"|"$/g,''));
+      enc.forEach((h, i) => obj[h] = (cols[i]||'').trim().replace(/^"|"$/g,''));
+
+      // Recoger foto1..foto10
+      const fotos = [];
+      for (let i = 1; i <= 10; i++) {
+        const f = (obj[`foto${i}`]||'').trim();
+        if (f) fotos.push(f);
+      }
+
       return {
         id: idx + 1,
         titulo: obj.titulo || '',
@@ -333,7 +338,8 @@ async function cargarPropiedades() {
         precio: parseInt((obj.precio||'0').replace(/\D/g,'')) || 0,
         area: parseInt(obj.area) || 0,
         descripcion: obj.descripcion || '',
-        fotos: (obj.fotos||'').split('|').map(f=>f.trim()).filter(f=>f)
+        video: obj.video || '',
+        fotos
       };
     }).filter(p => p.titulo);
 
@@ -341,105 +347,95 @@ async function cargarPropiedades() {
     iniciarFiltros();
     renderGrid(propiedades);
   } catch(e) {
-    document.getElementById('grid-propiedades').innerHTML = '<div class="sin-resultados">No se pudieron cargar las propiedades. Verifica tu conexión.</div>';
+    document.getElementById('grid-propiedades').innerHTML = '<div class="sin-resultados">No se pudieron cargar las propiedades.</div>';
   }
 }
 
 function parsearCSV(fila) {
-  const res = []; let actual = '', comillas = false;
-  for (let i = 0; i < fila.length; i++) {
-    if (fila[i] === '"') { comillas = !comillas; }
-    else if (fila[i] === ',' && !comillas) { res.push(actual); actual = ''; }
-    else { actual += fila[i]; }
+  const res=[]; let actual='', comillas=false;
+  for(let i=0;i<fila.length;i++){
+    if(fila[i]==='"'){comillas=!comillas;}
+    else if(fila[i]===','&&!comillas){res.push(actual);actual='';}
+    else{actual+=fila[i];}
   }
   res.push(actual);
   return res;
 }
 
-// ── NAVEGACIÓN CON HASH ──
 function irInicio() {
   document.getElementById('vista-inicio').classList.add('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   detenerSlideshow();
-  history.pushState('', document.title, window.location.pathname + window.location.search);
-  window.scrollTo({top:0, behavior:'smooth'});
+  history.pushState('',document.title,window.location.pathname+window.location.search);
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function irDetalle(id) {
-  propiedadActual = propiedades.find(p => p.id === id);
-  if (!propiedadActual) return;
+  propiedadActual = propiedades.find(p=>p.id===id);
+  if(!propiedadActual) return;
   fotoActual = 0;
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
-  window.location.hash = 'propiedad-' + id;
+  window.location.hash = 'propiedad-'+id;
   renderDetalle();
-  window.scrollTo({top:0, behavior:'smooth'});
+  window.scrollTo({top:0,behavior:'smooth'});
 }
 
 function verificarRuta() {
   const hash = window.location.hash;
-  if (hash.startsWith('#propiedad-')) {
-    const id = parseInt(hash.replace('#propiedad-', ''));
-    if (!isNaN(id)) irDetalle(id);
+  if(hash.startsWith('#propiedad-')){
+    const id = parseInt(hash.replace('#propiedad-',''));
+    if(!isNaN(id)) irDetalle(id);
   }
 }
 
-// Manejar botón atrás del navegador
-window.addEventListener('popstate', () => {
-  if (!window.location.hash) {
+window.addEventListener('popstate',()=>{
+  if(!window.location.hash){
     document.getElementById('vista-inicio').classList.add('activa');
     document.getElementById('vista-detalle').classList.remove('activa');
     detenerSlideshow();
   } else { verificarRuta(); }
 });
 
-// ── FILTROS ──
 function iniciarFiltros() {
   const c = document.getElementById('filtros-container');
-  const campos = [
-    {key:'negocio',label:'Tipo'},
-    {key:'tipo',label:'Inmueble'},
-    {key:'ciudad',label:'Ciudad'},
-    {key:'localidad',label:'Localidad'},
-    {key:'alcobas',label:'Habitaciones'}
-  ];
-  let html = '';
-  campos.forEach(({key,label}) => {
-    const ops = [...new Set(propiedades.map(p=>p[key]).filter(v=>v))].sort();
-    html += `<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${ops.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+  const campos=[{key:'negocio',label:'Tipo'},{key:'tipo',label:'Inmueble'},{key:'ciudad',label:'Ciudad'},{key:'localidad',label:'Localidad'},{key:'alcobas',label:'Habitaciones'}];
+  let html='';
+  campos.forEach(({key,label})=>{
+    const ops=[...new Set(propiedades.map(p=>p[key]).filter(v=>v))].sort();
+    html+=`<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${ops.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
   });
-  html += `<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
-  html += `<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
-  c.innerHTML = html;
+  html+=`<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
+  html+=`<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
+  c.innerHTML=html;
 }
 
 function aplicarFiltros() {
-  const g = id => document.getElementById(id)?.value||'';
-  const res = propiedades.filter(p =>
-    (g('f-negocio')===''||p.negocio===g('f-negocio')) &&
-    (g('f-tipo')===''||p.tipo===g('f-tipo')) &&
-    (g('f-ciudad')===''||p.ciudad===g('f-ciudad')) &&
-    (g('f-localidad')===''||p.localidad===g('f-localidad')) &&
-    (g('f-alcobas')===''||p.alcobas==g('f-alcobas')) &&
-    (g('f-min')===''||p.precio>=Number(g('f-min'))) &&
+  const g=id=>document.getElementById(id)?.value||'';
+  const res=propiedades.filter(p=>
+    (g('f-negocio')===''||p.negocio===g('f-negocio'))&&
+    (g('f-tipo')===''||p.tipo===g('f-tipo'))&&
+    (g('f-ciudad')===''||p.ciudad===g('f-ciudad'))&&
+    (g('f-localidad')===''||p.localidad===g('f-localidad'))&&
+    (g('f-alcobas')===''||p.alcobas==g('f-alcobas'))&&
+    (g('f-min')===''||p.precio>=Number(g('f-min')))&&
     (g('f-max')===''||p.precio<=Number(g('f-max')))
   );
   renderGrid(res);
   document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
 }
 
-// ── GRID ──
 function renderGrid(datos) {
-  const grid = document.getElementById('grid-propiedades');
-  const fd = 'https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
-  if (!datos.length) { grid.innerHTML='<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>'; return; }
-  grid.innerHTML = datos.map(p => {
-    const badge = p.negocio==='Venta'?'badge-venta':'badge-arriendo';
-    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-    const foto = p.fotos.length?p.fotos[0]:fd;
+  const grid=document.getElementById('grid-propiedades');
+  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
+  if(!datos.length){grid.innerHTML='<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>';return;}
+  grid.innerHTML=datos.map(p=>{
+    const badge=p.negocio==='Venta'?'badge-venta':'badge-arriendo';
+    const precio=p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+    const foto=p.fotos.length?p.fotos[0]:fd;
     return `<div class="prop-card" onclick="irDetalle(${p.id})">
       <div class="prop-img-wrap">
-        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'">
+        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
         <span class="prop-badge ${badge}">${p.negocio}</span>
       </div>
       <div class="prop-info">
@@ -456,16 +452,29 @@ function renderGrid(datos) {
   }).join('');
 }
 
-// ── DETALLE ──
 function renderDetalle() {
-  const p = propiedadActual;
-  const fd = 'https://via.placeholder.com/800x480/e8e9f5/555577?text=Sin+foto';
-  const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-  const esVIS = p.precio>0&&p.precio<=262635750;
-  const fotos = p.fotos.length?p.fotos:[fd];
-  const thumbs = fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${fd}'">`).join('');
+  const p=propiedadActual;
+  const fd='https://via.placeholder.com/800x480/e8e9f5/555577?text=Sin+foto';
+  const precio=p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+  const esVIS=p.precio>0&&p.precio<=262635750;
+  const fotos=p.fotos.length?p.fotos:[fd];
+  const thumbs=fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${fd}'" loading="lazy">`).join('');
 
-  document.getElementById('detalle-contenido').innerHTML = `
+  // Video embed
+  let videoHTML='';
+  if(p.video){
+    let embedUrl=p.video;
+    if(p.video.includes('youtube.com/watch')){
+      const vid=p.video.split('v=')[1]?.split('&')[0];
+      if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
+    } else if(p.video.includes('youtu.be/')){
+      const vid=p.video.split('youtu.be/')[1]?.split('?')[0];
+      if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
+    }
+    videoHTML=`<div class="video-wrap"><h4>Video de la propiedad</h4><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
+  }
+
+  document.getElementById('detalle-contenido').innerHTML=`
     <div class="detalle-grid">
       <div>
         <div class="galeria-principal">
@@ -473,6 +482,7 @@ function renderDetalle() {
           ${fotos.length>1?`<button class="nav-foto izq" onclick="fotoAnterior()"><i class="fas fa-chevron-left"></i></button><button class="nav-foto der" onclick="fotoSiguiente()"><i class="fas fa-chevron-right"></i></button>`:''}
         </div>
         <div class="galeria-thumbs">${thumbs}</div>
+        ${videoHTML}
       </div>
       <div class="detalle-info">
         <span class="detalle-negocio">${p.negocio}</span>
@@ -502,11 +512,10 @@ function renderDetalle() {
   iniciarSlideshow();
 }
 
-// ── GALERÍA ──
-function cambiarFoto(i) {
-  const fotos = propiedadActual.fotos.length?propiedadActual.fotos:[''];
-  fotoActual = i;
-  const img = document.getElementById('foto-principal');
+function cambiarFoto(i){
+  const fotos=propiedadActual.fotos.length?propiedadActual.fotos:[''];
+  fotoActual=i;
+  const img=document.getElementById('foto-principal');
   if(img){img.style.opacity=0;setTimeout(()=>{img.src=fotos[fotoActual];img.style.opacity=1;},300);}
   document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('activo',idx===i));
   reiniciarSlideshow();
@@ -517,26 +526,24 @@ function iniciarSlideshow(){if((propiedadActual.fotos.length||0)>1)slideshow=set
 function detenerSlideshow(){clearInterval(slideshow);}
 function reiniciarSlideshow(){detenerSlideshow();iniciarSlideshow();}
 
-// ── WHATSAPP ──
-function contactarPropiedad(titulo) {
-  const nombre = document.getElementById('d-nombre')?.value||'';
-  const tel = document.getElementById('d-telefono')?.value||'';
-  const msg = `Hola Monteclaro%2C soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
+function contactarPropiedad(titulo){
+  const nombre=document.getElementById('d-nombre')?.value||'';
+  const tel=document.getElementById('d-telefono')?.value||'';
+  const msg=`Hola Monteclaro%2C soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
   window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
 }
 
-function enviarContacto() {
-  const nombre = document.getElementById('c-nombre').value;
-  const telefono = document.getElementById('c-telefono').value;
-  const interes = document.getElementById('c-interes').value;
-  const mensaje = document.getElementById('c-mensaje').value;
+function enviarContacto(){
+  const nombre=document.getElementById('c-nombre').value;
+  const telefono=document.getElementById('c-telefono').value;
+  const interes=document.getElementById('c-interes').value;
+  const mensaje=document.getElementById('c-mensaje').value;
   if(!nombre||!telefono||!interes){alert('Por favor completa nombre, teléfono e interés.');return;}
-  const msg = `Hola Monteclaro%2C soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
+  const msg=`Hola Monteclaro%2C soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
   window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
 }
 
-// ── INICIO ──
-cargarPropiedades().then(() => verificarRuta());
+cargarPropiedades().then(()=>verificarRuta());
 </script>
 </body>
 </html>
