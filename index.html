@@ -8,11 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow:wght@300;400;600;700;900&family=Barlow+Condensed:wght@700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    :root {
-      --azul:#2B2ECC; --azul-oscuro:#1a1c8a; --azul-claro:#4547e0;
-      --blanco:#ffffff; --gris-claro:#f4f5fb; --gris-medio:#e8e9f5;
-      --texto:#1a1a2e; --texto-suave:#555577;
-    }
+    :root{--azul:#2B2ECC;--azul-oscuro:#1a1c8a;--azul-claro:#4547e0;--blanco:#ffffff;--gris-claro:#f4f5fb;--gris-medio:#e8e9f5;--texto:#1a1a2e;--texto-suave:#555577;}
     *{margin:0;padding:0;box-sizing:border-box;}
     html{scroll-behavior:smooth;}
     body{font-family:'Barlow',sans-serif;color:var(--texto);background:var(--blanco);overflow-x:hidden;}
@@ -25,7 +21,7 @@
     .nav-links a{text-decoration:none;font-size:14px;font-weight:600;color:var(--texto-suave);letter-spacing:0.5px;transition:color 0.2s;cursor:pointer;}
     .nav-links a:hover{color:var(--azul);}
     .nav-cta{background:var(--azul)!important;color:var(--blanco)!important;padding:10px 22px;border-radius:6px;}
-    .vista{display:none;} .vista.activa{display:block;}
+    .vista{display:none;}.vista.activa{display:block;}
     .hero{min-height:100vh;background:var(--azul);display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
     .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:600px;height:600px;background:var(--azul-claro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.25;}
     .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
@@ -84,7 +80,7 @@
     .thumb:hover,.thumb.activo{border-color:var(--azul);}
     .nav-foto{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.35);color:white;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:14px;transition:background 0.2s;z-index:5;}
     .nav-foto:hover{background:var(--azul);}
-    .nav-foto.izq{left:12px;} .nav-foto.der{right:12px;}
+    .nav-foto.izq{left:12px;}.nav-foto.der{right:12px;}
     .detalle-info{display:flex;flex-direction:column;}
     .detalle-negocio{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--azul);margin-bottom:8px;}
     .detalle-titulo{font-family:'Barlow Condensed',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:16px;}
@@ -156,7 +152,7 @@
     .wa-flotante:hover{transform:scale(1.1);}
     .wa-flotante svg{width:30px;height:30px;}
     @media(max-width:768px){
-      nav{padding:0 20px;} .nav-links{display:none;}
+      nav{padding:0 20px;}.nav-links{display:none;}
       .hero{padding:100px 20px 120px;}
       .hero-stats{position:relative;bottom:auto;right:auto;margin-top:48px;justify-content:flex-start;}
       .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:64px 20px;}
@@ -215,9 +211,7 @@
     <div class="props-header">
       <div><p class="seccion-tag">Portafolio exclusivo</p><h2 class="seccion-titulo">propiedades</h2></div>
     </div>
-    <div class="grid-props" id="grid-propiedades">
-      <div class="cargando">Cargando propiedades...</div>
-    </div>
+    <div class="grid-props" id="grid-propiedades"><div class="cargando">Cargando propiedades...</div></div>
   </section>
 
   <section class="seccion-porque" id="nosotros">
@@ -310,17 +304,12 @@
 </a>
 
 <script>
-// ══════════════════════════════════════════════════════
-//  CONFIGURACIÓN — solo cambia esta URL si cambias el Sheet
-// ══════════════════════════════════════════════════════
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJvooDmMPA6kJ46J66ur70Ykx_1DDOUJap23arMVX-HSdZA5OVHCMeI_yIkkZlWh83R/pub?gid=0&single=true&output=csv';
 
 let propiedades = [];
 let propiedadActual = null, fotoActual = 0, slideshow = null;
 
-// ══════════════════════════════════════════════════════
-//  CARGAR DATOS DESDE GOOGLE SHEETS
-// ══════════════════════════════════════════════════════
+// ── CARGAR SHEET ──
 async function cargarPropiedades() {
   try {
     const resp = await fetch(CSV_URL);
@@ -334,19 +323,19 @@ async function cargarPropiedades() {
       encabezados.forEach((h, i) => obj[h] = (cols[i] || '').trim().replace(/^"|"$/g,''));
       return {
         id: idx + 1,
-        titulo: obj.titulo || 'Sin título',
+        titulo: obj.titulo || '',
         ciudad: obj.ciudad || '',
         localidad: obj.localidad || '',
         tipo: obj.tipo || '',
         negocio: obj.negocio || 'Venta',
         alcobas: parseInt(obj.alcobas) || 0,
         banos: parseInt(obj.banos) || 0,
-        precio: parseInt((obj.precio || '0').replace(/\D/g,'')) || 0,
+        precio: parseInt((obj.precio||'0').replace(/\D/g,'')) || 0,
         area: parseInt(obj.area) || 0,
         descripcion: obj.descripcion || '',
-        fotos: (obj.fotos || '').split('|').map(f => f.trim()).filter(f => f)
+        fotos: (obj.fotos||'').split('|').map(f=>f.trim()).filter(f=>f)
       };
-    }).filter(p => p.titulo !== 'Sin título');
+    }).filter(p => p.titulo);
 
     document.getElementById('stat-total').textContent = propiedades.length + '+';
     iniciarFiltros();
@@ -357,24 +346,22 @@ async function cargarPropiedades() {
 }
 
 function parsearCSV(fila) {
-  const resultado = [];
-  let actual = '', dentroComillas = false;
+  const res = []; let actual = '', comillas = false;
   for (let i = 0; i < fila.length; i++) {
-    if (fila[i] === '"') { dentroComillas = !dentroComillas; }
-    else if (fila[i] === ',' && !dentroComillas) { resultado.push(actual); actual = ''; }
+    if (fila[i] === '"') { comillas = !comillas; }
+    else if (fila[i] === ',' && !comillas) { res.push(actual); actual = ''; }
     else { actual += fila[i]; }
   }
-  resultado.push(actual);
-  return resultado;
+  res.push(actual);
+  return res;
 }
 
-// ══════════════════════════════════════════════════════
-//  NAVEGACIÓN
-// ══════════════════════════════════════════════════════
+// ── NAVEGACIÓN CON HASH ──
 function irInicio() {
   document.getElementById('vista-inicio').classList.add('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   detenerSlideshow();
+  history.pushState('', document.title, window.location.pathname + window.location.search);
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
@@ -384,26 +371,42 @@ function irDetalle(id) {
   fotoActual = 0;
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
+  window.location.hash = 'propiedad-' + id;
   renderDetalle();
   window.scrollTo({top:0, behavior:'smooth'});
 }
 
-// ══════════════════════════════════════════════════════
-//  FILTROS
-// ══════════════════════════════════════════════════════
+function verificarRuta() {
+  const hash = window.location.hash;
+  if (hash.startsWith('#propiedad-')) {
+    const id = parseInt(hash.replace('#propiedad-', ''));
+    if (!isNaN(id)) irDetalle(id);
+  }
+}
+
+// Manejar botón atrás del navegador
+window.addEventListener('popstate', () => {
+  if (!window.location.hash) {
+    document.getElementById('vista-inicio').classList.add('activa');
+    document.getElementById('vista-detalle').classList.remove('activa');
+    detenerSlideshow();
+  } else { verificarRuta(); }
+});
+
+// ── FILTROS ──
 function iniciarFiltros() {
   const c = document.getElementById('filtros-container');
   const campos = [
-    {key:'negocio', label:'Tipo'},
-    {key:'tipo', label:'Inmueble'},
-    {key:'ciudad', label:'Ciudad'},
-    {key:'localidad', label:'Localidad'},
-    {key:'alcobas', label:'Habitaciones'}
+    {key:'negocio',label:'Tipo'},
+    {key:'tipo',label:'Inmueble'},
+    {key:'ciudad',label:'Ciudad'},
+    {key:'localidad',label:'Localidad'},
+    {key:'alcobas',label:'Habitaciones'}
   ];
   let html = '';
-  campos.forEach(({key, label}) => {
-    const opciones = [...new Set(propiedades.map(p => p[key]).filter(v => v))].sort();
-    html += `<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${opciones.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+  campos.forEach(({key,label}) => {
+    const ops = [...new Set(propiedades.map(p=>p[key]).filter(v=>v))].sort();
+    html += `<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${ops.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
   });
   html += `<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
   html += `<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
@@ -411,70 +414,62 @@ function iniciarFiltros() {
 }
 
 function aplicarFiltros() {
-  const g = id => document.getElementById(id)?.value || '';
-  const resultado = propiedades.filter(p =>
-    (g('f-negocio')==='' || p.negocio===g('f-negocio')) &&
-    (g('f-tipo')==='' || p.tipo===g('f-tipo')) &&
-    (g('f-ciudad')==='' || p.ciudad===g('f-ciudad')) &&
-    (g('f-localidad')==='' || p.localidad===g('f-localidad')) &&
-    (g('f-alcobas')==='' || p.alcobas==g('f-alcobas')) &&
-    (g('f-min')==='' || p.precio>=Number(g('f-min'))) &&
-    (g('f-max')==='' || p.precio<=Number(g('f-max')))
+  const g = id => document.getElementById(id)?.value||'';
+  const res = propiedades.filter(p =>
+    (g('f-negocio')===''||p.negocio===g('f-negocio')) &&
+    (g('f-tipo')===''||p.tipo===g('f-tipo')) &&
+    (g('f-ciudad')===''||p.ciudad===g('f-ciudad')) &&
+    (g('f-localidad')===''||p.localidad===g('f-localidad')) &&
+    (g('f-alcobas')===''||p.alcobas==g('f-alcobas')) &&
+    (g('f-min')===''||p.precio>=Number(g('f-min'))) &&
+    (g('f-max')===''||p.precio<=Number(g('f-max')))
   );
-  renderGrid(resultado);
+  renderGrid(res);
   document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
 }
 
-// ══════════════════════════════════════════════════════
-//  GRID
-// ══════════════════════════════════════════════════════
+// ── GRID ──
 function renderGrid(datos) {
   const grid = document.getElementById('grid-propiedades');
-  if (!datos.length) {
-    grid.innerHTML = '<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>';
-    return;
-  }
-  const fotoDefecto = 'https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
+  const fd = 'https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
+  if (!datos.length) { grid.innerHTML='<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>'; return; }
   grid.innerHTML = datos.map(p => {
-    const badge = p.negocio==='Venta' ? 'badge-venta' : 'badge-arriendo';
-    const precio = p.negocio==='Arriendo' ? `$${p.precio.toLocaleString('es-CO')}/mes` : `$${p.precio.toLocaleString('es-CO')}`;
-    const foto = p.fotos.length ? p.fotos[0] : fotoDefecto;
-    return `
-      <div class="prop-card" onclick="irDetalle(${p.id})">
-        <div class="prop-img-wrap">
-          <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fotoDefecto}'">
-          <span class="prop-badge ${badge}">${p.negocio}</span>
+    const badge = p.negocio==='Venta'?'badge-venta':'badge-arriendo';
+    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+    const foto = p.fotos.length?p.fotos[0]:fd;
+    return `<div class="prop-card" onclick="irDetalle(${p.id})">
+      <div class="prop-img-wrap">
+        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'">
+        <span class="prop-badge ${badge}">${p.negocio}</span>
+      </div>
+      <div class="prop-info">
+        <div class="prop-precio">${precio}</div>
+        <div class="prop-nombre">${p.titulo}</div>
+        <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
+        <div class="prop-detalles">
+          ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
+          ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
+          ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
         </div>
-        <div class="prop-info">
-          <div class="prop-precio">${precio}</div>
-          <div class="prop-nombre">${p.titulo}</div>
-          <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
-          <div class="prop-detalles">
-            ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
-            ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
-            ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
-          </div>
-        </div>
-      </div>`;
+      </div>
+    </div>`;
   }).join('');
 }
 
-// ══════════════════════════════════════════════════════
-//  DETALLE
-// ══════════════════════════════════════════════════════
+// ── DETALLE ──
 function renderDetalle() {
   const p = propiedadActual;
-  const fotoDefecto = 'https://via.placeholder.com/800x480/e8e9f5/555577?text=Sin+foto';
-  const precio = p.negocio==='Arriendo' ? `$${p.precio.toLocaleString('es-CO')}/mes` : `$${p.precio.toLocaleString('es-CO')}`;
-  const esVIS = p.precio > 0 && p.precio <= 262635750;
-  const fotos = p.fotos.length ? p.fotos : [fotoDefecto];
-  const thumbs = fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${fotoDefecto}'">`).join('');
+  const fd = 'https://via.placeholder.com/800x480/e8e9f5/555577?text=Sin+foto';
+  const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+  const esVIS = p.precio>0&&p.precio<=262635750;
+  const fotos = p.fotos.length?p.fotos:[fd];
+  const thumbs = fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${fd}'">`).join('');
 
   document.getElementById('detalle-contenido').innerHTML = `
     <div class="detalle-grid">
       <div>
         <div class="galeria-principal">
-          <img id="foto-principal" src="${fotos[0]}" alt="${p.titulo}" onerror="this.src='${fotoDefecto}'">
+          <img id="foto-principal" src="${fotos[0]}" alt="${p.titulo}" onerror="this.src='${fd}'">
           ${fotos.length>1?`<button class="nav-foto izq" onclick="fotoAnterior()"><i class="fas fa-chevron-left"></i></button><button class="nav-foto der" onclick="fotoSiguiente()"><i class="fas fa-chevron-right"></i></button>`:''}
         </div>
         <div class="galeria-thumbs">${thumbs}</div>
@@ -488,7 +483,7 @@ function renderDetalle() {
           <h3>¿Te interesa esta propiedad?</h3>
           <div class="form-grupo"><label>Nombre</label><input type="text" id="d-nombre" placeholder="Tu nombre"></div>
           <div class="form-grupo"><label>Teléfono</label><input type="tel" id="d-telefono" placeholder="Tu WhatsApp"></div>
-          <button class="btn-contactar" onclick="contactarPropiedad('${p.titulo.replace(/'/g,"\\'")}')">Consultar por WhatsApp →</button>
+          <button class="btn-contactar" onclick="contactarPropiedad('${p.titulo.replace(/'/g,"\\'").replace(/"/g,'\\"')}')">Consultar por WhatsApp →</button>
         </div>
       </div>
     </div>
@@ -504,34 +499,29 @@ function renderDetalle() {
       </div>
       <div class="descripcion"><h4>Descripción</h4><p>${p.descripcion||'Sin descripción disponible.'}</p></div>
     </div>`;
-
   iniciarSlideshow();
 }
 
-// ══════════════════════════════════════════════════════
-//  GALERÍA
-// ══════════════════════════════════════════════════════
+// ── GALERÍA ──
 function cambiarFoto(i) {
-  const fotos = propiedadActual.fotos.length ? propiedadActual.fotos : [''];
+  const fotos = propiedadActual.fotos.length?propiedadActual.fotos:[''];
   fotoActual = i;
   const img = document.getElementById('foto-principal');
-  if (img) { img.style.opacity=0; setTimeout(()=>{img.src=fotos[fotoActual];img.style.opacity=1;},300); }
+  if(img){img.style.opacity=0;setTimeout(()=>{img.src=fotos[fotoActual];img.style.opacity=1;},300);}
   document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('activo',idx===i));
   reiniciarSlideshow();
 }
-function fotoSiguiente() { const n = propiedadActual.fotos.length||1; cambiarFoto((fotoActual+1)%n); }
-function fotoAnterior() { const n = propiedadActual.fotos.length||1; cambiarFoto((fotoActual-1+n)%n); }
-function iniciarSlideshow() { if((propiedadActual.fotos.length||0)>1) slideshow=setInterval(fotoSiguiente,4500); }
-function detenerSlideshow() { clearInterval(slideshow); }
-function reiniciarSlideshow() { detenerSlideshow(); iniciarSlideshow(); }
+function fotoSiguiente(){const n=propiedadActual.fotos.length||1;cambiarFoto((fotoActual+1)%n);}
+function fotoAnterior(){const n=propiedadActual.fotos.length||1;cambiarFoto((fotoActual-1+n)%n);}
+function iniciarSlideshow(){if((propiedadActual.fotos.length||0)>1)slideshow=setInterval(fotoSiguiente,4500);}
+function detenerSlideshow(){clearInterval(slideshow);}
+function reiniciarSlideshow(){detenerSlideshow();iniciarSlideshow();}
 
-// ══════════════════════════════════════════════════════
-//  WHATSAPP
-// ══════════════════════════════════════════════════════
+// ── WHATSAPP ──
 function contactarPropiedad(titulo) {
   const nombre = document.getElementById('d-nombre')?.value||'';
   const tel = document.getElementById('d-telefono')?.value||'';
-  const msg = `Hola Monteclaro, soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
+  const msg = `Hola Monteclaro%2C soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
   window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
 }
 
@@ -540,15 +530,13 @@ function enviarContacto() {
   const telefono = document.getElementById('c-telefono').value;
   const interes = document.getElementById('c-interes').value;
   const mensaje = document.getElementById('c-mensaje').value;
-  if (!nombre||!telefono||!interes) { alert('Por favor completa nombre, teléfono e interés.'); return; }
-  const msg = `Hola Monteclaro, soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
+  if(!nombre||!telefono||!interes){alert('Por favor completa nombre, teléfono e interés.');return;}
+  const msg = `Hola Monteclaro%2C soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
   window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
 }
 
-// ══════════════════════════════════════════════════════
-//  INICIO
-// ══════════════════════════════════════════════════════
-cargarPropiedades();
+// ── INICIO ──
+cargarPropiedades().then(() => verificarRuta());
 </script>
 </body>
 </html>
