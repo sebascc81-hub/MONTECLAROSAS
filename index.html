@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -55,7 +54,7 @@
     .prop-card{background:var(--blanco);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(43,46,204,0.06);border:1px solid var(--gris-medio);transition:transform 0.25s,box-shadow 0.25s;cursor:pointer;}
     .prop-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(43,46,204,0.14);border-color:var(--azul);}
     .prop-img-wrap{position:relative;height:210px;overflow:hidden;background:var(--gris-medio);}
-    .prop-img-wrap img{width:100%;height:100%;object-fit:contain;background:#f4f5fb;transition:transform 0.4s;}
+    .prop-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
     .prop-card:hover .prop-img-wrap img{transform:scale(1.04);}
     .prop-badge{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:4px;}
     .badge-venta{background:var(--azul);color:var(--blanco);}
@@ -74,7 +73,7 @@
     .btn-volver:hover{gap:12px;}
     .detalle-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-bottom:64px;}
     .galeria-principal{position:relative;height:480px;overflow:hidden;border-radius:12px;background:var(--gris-medio);}
-    .galeria-principal img{width:100%;height:100%;object-fit:contain;background:#f4f5fb;transition:opacity 0.4s;}
+    .galeria-principal img{width:100%;height:100%;object-fit:cover;transition:opacity 0.4s;}
     .galeria-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
     .thumb{width:72px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;}
     .thumb:hover,.thumb.activo{border-color:var(--azul);}
@@ -463,15 +462,26 @@ function renderDetalle() {
   // Video embed
   let videoHTML='';
   if(p.video){
-    let embedUrl=p.video;
-    if(p.video.includes('youtube.com/watch')){
-      const vid=p.video.split('v=')[1]?.split('&')[0];
-      if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
-    } else if(p.video.includes('youtu.be/')){
-      const vid=p.video.split('youtu.be/')[1]?.split('?')[0];
-      if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
+    if(p.video.includes('instagram.com')){
+      // Reel de Instagram
+      const url = p.video.endsWith('/') ? p.video : p.video + '/';
+      videoHTML=`<div class="video-wrap">
+        <h4>Reel de la propiedad</h4>
+        <blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="width:100%;min-width:280px;max-width:540px;margin:0 auto;border-radius:12px;"></blockquote>
+        <script async src="//www.instagram.com/embed.js"><\/script>
+      </div>`;
+    } else {
+      // YouTube
+      let embedUrl=p.video;
+      if(p.video.includes('youtube.com/watch')){
+        const vid=p.video.split('v=')[1]?.split('&')[0];
+        if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
+      } else if(p.video.includes('youtu.be/')){
+        const vid=p.video.split('youtu.be/')[1]?.split('?')[0];
+        if(vid) embedUrl=`https://www.youtube.com/embed/${vid}`;
+      }
+      videoHTML=`<div class="video-wrap"><h4>Video de la propiedad</h4><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
     }
-    videoHTML=`<div class="video-wrap"><h4>Video de la propiedad</h4><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
   }
 
   document.getElementById('detalle-contenido').innerHTML=`
