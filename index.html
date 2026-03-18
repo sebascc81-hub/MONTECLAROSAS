@@ -44,7 +44,7 @@
     .vista{display:none;}.vista.activa{display:block;}
 
     /* ── HERO ── */
-    .hero{min-height:100vh;background:var(--azul);display:flex;align-items:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
+    .hero{min-height:100vh;background:var(--azul);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
     .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:600px;height:600px;background:var(--azul-claro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.2;}
     .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
     .hero-contenido{position:relative;z-index:2;max-width:680px;animation:fadeUp 0.8s ease both;}
@@ -58,7 +58,9 @@
     .btn-primario:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
     .btn-secundario{background:transparent;color:var(--blanco);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:16px 32px;border-radius:6px;border:2px solid rgba(255,255,255,0.4);text-decoration:none;transition:border-color 0.2s,background 0.2s;display:inline-block;cursor:pointer;}
     .btn-secundario:hover{border-color:var(--blanco);background:rgba(255,255,255,0.1);}
-    .hero-stats{position:absolute;bottom:48px;right:48px;z-index:2;display:flex;gap:40px;animation:fadeUp 0.8s 0.3s ease both;}
+
+    /* STATS — ahora dentro del flujo normal, no absolute */
+    .hero-stats{position:relative;z-index:2;display:flex;gap:32px;flex-wrap:wrap;margin-top:48px;animation:fadeUp 0.8s 0.3s ease both;}
     .stat-num{font-family:'Outfit',sans-serif;font-size:42px;font-weight:800;color:var(--blanco);line-height:1;}
     .stat-label{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;}
 
@@ -193,11 +195,10 @@
     .wa-flotante:hover{transform:scale(1.1);}
     .wa-flotante svg{width:30px;height:30px;}
 
-
     /* ── CARRUSEL DESTACADOS ── */
     .seccion-destacados{padding:64px 48px 32px;}
-    .destacados-titulo{text-align:center;margin-bottom:40px;}
-    .destacados-titulo h2{font-family:'Outfit',sans-serif;font-size:clamp(28px,4vw,42px);font-weight:900;color:var(--texto);text-transform:uppercase;letter-spacing:-1px;}
+    .destacados-titulo{text-align:center;margin-bottom:40px;padding:0 8px;}
+    .destacados-titulo h2{font-family:'Outfit',sans-serif;font-size:clamp(22px,5vw,42px);font-weight:900;color:var(--texto);text-transform:uppercase;letter-spacing:-1px;word-break:break-word;}
     .destacados-titulo h2 span{color:var(--azul);}
     .carrusel-wrapper{position:relative;overflow:hidden;}
     .carrusel-track{display:flex;transition:transform 0.4s ease;gap:24px;}
@@ -214,38 +215,45 @@
     .carrusel-detalles{display:flex;gap:12px;border-top:1px solid var(--gris-medio);padding-top:12px;flex-wrap:wrap;}
     .carrusel-detalle{font-size:11px;color:var(--texto-suave);display:flex;align-items:center;gap:4px;}
     .carrusel-detalle strong{color:var(--texto);font-weight:700;}
-    .carrusel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--azul);color:var(--blanco);border:none;width:40px;height:40px;border-radius:4px;cursor:pointer;font-size:16px;z-index:10;transition:background 0.2s;display:flex;align-items:center;justify-content:center;}
+
+    /* Botones carrusel — dentro del wrapper, no desbordados */
+    .carrusel-outer{position:relative;padding:0 48px;}
+    .carrusel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--azul);color:var(--blanco);border:none;width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:16px;z-index:10;transition:background 0.2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .carrusel-btn:hover{background:var(--azul-oscuro);}
-    .carrusel-btn.izq{left:-20px;}
-    .carrusel-btn.der{right:-20px;}
+    .carrusel-btn.izq{left:4px;}
+    .carrusel-btn.der{right:4px;}
+
     .carrusel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px;}
     .carrusel-dot{width:10px;height:10px;border-radius:50%;background:var(--gris-medio);border:none;cursor:pointer;transition:background 0.2s;}
     .carrusel-dot.activo{background:var(--azul);}
-    @media(max-width:768px){
-      .seccion-destacados{padding:48px 16px 24px;}
-      .carrusel-slide{min-width:calc(100% - 0px);}
-      .carrusel-btn.izq{left:0;}
-      .carrusel-btn.der{right:0;}
-    }
+
     /* ── RESPONSIVE ── */
     @media(max-width:768px){
       nav{padding:0 16px;}
       .nav-links{display:none!important;}
       .nav-menu-btn{display:block;}
-      .hero{padding:90px 16px 48px;}
-      .hero h1{font-size:48px;letter-spacing:-1px;}
-      .hero-tag{font-size:11px;letter-spacing:1px;padding:6px 10px;}
+
+      /* Hero */
+      .hero{padding:90px 16px 48px;min-height:auto;}
+      .hero h1{font-size:clamp(40px,12vw,60px);letter-spacing:-1px;}
+      .hero-tag{font-size:11px;letter-spacing:1px;padding:6px 12px;margin-bottom:20px;}
       .hero p{font-size:15px;margin-bottom:24px;}
       .hero-botones{flex-direction:column;gap:10px;}
       .btn-primario,.btn-secundario{padding:14px 24px;text-align:center;width:100%;}
-      .hero-stats{position:relative;bottom:auto;right:auto;margin-top:28px;justify-content:flex-start;gap:24px;}
+
+      /* Stats — fila horizontal con wrap */
+      .hero-stats{margin-top:32px;gap:24px;justify-content:flex-start;}
       .stat-num{font-size:30px;}
       .stat-label{font-size:10px;}
+
+      /* Secciones */
       .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:48px 16px;}
       .seccion-titulo{font-size:34px;}
       .captacion-grid,.contacto-grid,.detalle-grid{grid-template-columns:1fr;}
       .captacion-card{padding:28px 20px;}
       .form-fila{grid-template-columns:1fr;}
+
+      /* Detalle */
       .vista-detalle{padding:85px 16px 48px;}
       .galeria-principal{height:260px;}
       .galeria-thumbs{gap:6px;}
@@ -256,8 +264,18 @@
       .caract-lista{grid-template-columns:1fr 1fr;}
       .video-wrap iframe{height:220px;}
       .grid-razones{grid-template-columns:1fr;}
+
+      /* Footer */
       footer{flex-direction:column;align-items:flex-start;padding:32px 16px;}
       .footer-links{flex-wrap:wrap;gap:12px;}
+
+      /* Carrusel móvil */
+      .seccion-destacados{padding:40px 16px 24px;}
+      .carrusel-outer{padding:0 44px;}
+      .carrusel-slide{min-width:100%;}
+      .carrusel-btn.izq{left:0;}
+      .carrusel-btn.der{right:0;}
+      .destacados-titulo{padding:0 4px;}
     }
   </style>
 </head>
@@ -336,7 +354,7 @@
     <div class="destacados-titulo">
       <h2>INMUEBLES <span>DESTACADOS</span></h2>
     </div>
-    <div style="position:relative;padding:0 28px;">
+    <div class="carrusel-outer">
       <button class="carrusel-btn izq" onclick="moverCarrusel(-1)">&#8249;</button>
       <div class="carrusel-wrapper">
         <div class="carrusel-track" id="carrusel-track"></div>
@@ -351,7 +369,7 @@
     <div class="destacados-titulo">
       <h2>ÚLTIMOS <span>INMUEBLES</span></h2>
     </div>
-    <div style="position:relative;padding:0 28px;">
+    <div class="carrusel-outer">
       <button class="carrusel-btn izq" onclick="moverCarrusel2(-1)">&#8249;</button>
       <div class="carrusel-wrapper">
         <div class="carrusel-track" id="carrusel-track-2"></div>
@@ -360,7 +378,7 @@
     </div>
     <div class="carrusel-dots" id="carrusel-dots-2"></div>
   </section>
-  <!-- Grid oculto para compatibilidad con filtros -->
+
   <div id="grid-propiedades" style="display:none;"></div>
 
   <section class="seccion-porque" id="nosotros">
@@ -564,32 +582,25 @@ window.addEventListener('popstate',()=>{
 });
 
 // ── MENÚ ──
-function toggleMenu() {
-  document.getElementById('nav-mobile').classList.toggle('abierto');
-}
-function cerrarMenu() {
-  document.getElementById('nav-mobile').classList.remove('abierto');
-}
+function toggleMenu() { document.getElementById('nav-mobile').classList.toggle('abierto'); }
+function cerrarMenu() { document.getElementById('nav-mobile').classList.remove('abierto'); }
 function mostrarProximamente(seccion) {
   document.getElementById('modal-titulo').textContent = seccion;
   document.getElementById('modal-proximamente').classList.add('activo');
 }
-function cerrarModal() {
-  document.getElementById('modal-proximamente').classList.remove('activo');
-}
+function cerrarModal() { document.getElementById('modal-proximamente').classList.remove('activo'); }
+
 function filtrarYIr(negocio) {
   document.getElementById('vista-inicio').classList.add('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   detenerSlideshow();
   window.scrollTo({top:0,behavior:'smooth'});
 
-  // Filtrar y mostrar en carrusel 2
   const resultado = propiedades.filter(p => p.negocio === negocio);
   const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
   const track = document.getElementById('carrusel-track-2');
   const seccion = document.getElementById('seccion-todos');
 
-  // Actualizar titulo
   seccion.querySelector('h2').innerHTML = negocio === 'Venta'
     ? 'PROPIEDADES EN <span>VENTA</span>'
     : 'PROPIEDADES EN <span>ARRIENDO</span>';
@@ -790,7 +801,7 @@ function enviarContacto(){
 
 // ── CARRUSEL ──
 let carruselIndex = 0;
-let carruselVisible = 4;
+let carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
 
 function renderCarrusel() {
   const destacados = propiedades.filter(p => p.destacado);
@@ -818,7 +829,6 @@ function renderCarrusel() {
     </div>`;
   }).join('');
 
-  // Dots
   const dots = document.getElementById('carrusel-dots');
   const grupos = Math.ceil(destacados.length / carruselVisible);
   dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
@@ -841,19 +851,15 @@ function irAGrupo(grupo) {
 function actualizarCarrusel() {
   const track = document.getElementById('carrusel-track');
   if(!track) return;
-  const slideWidth = track.parentElement.offsetWidth / carruselVisible;
+  const wrapper = track.parentElement;
+  const slideWidth = wrapper.offsetWidth / carruselVisible;
   track.style.transform = `translateX(-${carruselIndex * (slideWidth + 24)}px)`;
-  const dots = document.querySelectorAll('.carrusel-dot');
+  const dots = document.querySelectorAll('#carrusel-dots .carrusel-dot');
   const grupoActual = Math.floor(carruselIndex / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
 }
 
-window.addEventListener('resize', () => {
-  carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
-  actualizarCarrusel();
-});
-
-// ── CARRUSEL 2 (TODOS) ──
+// ── CARRUSEL 2 ──
 let carrusel2Index = 0;
 
 function renderCarrusel2() {
@@ -904,21 +910,26 @@ function irAGrupo2(grupo) {
 function actualizarCarrusel2() {
   const track = document.getElementById('carrusel-track-2');
   if(!track) return;
-  const slideWidth = track.parentElement.offsetWidth / carruselVisible;
+  const wrapper = track.parentElement;
+  const slideWidth = wrapper.offsetWidth / carruselVisible;
   track.style.transform = `translateX(-${carrusel2Index * (slideWidth + 24)}px)`;
   const dots = document.querySelectorAll('#carrusel-dots-2 .carrusel-dot');
   const grupoActual = Math.floor(carrusel2Index / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
 }
 
+// ── RESIZE (unificado, con throttle) ──
+let resizeTimer;
 window.addEventListener('resize', () => {
-  carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
-  actualizarCarrusel();
-  actualizarCarrusel2();
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(() => {
+    carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
+    actualizarCarrusel();
+    actualizarCarrusel2();
+  }, 150);
 });
 
 // ── INICIO ──
-carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
 cargarPropiedades().then(()=>verificarRuta());
 </script>
 </body>
