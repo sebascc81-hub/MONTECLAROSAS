@@ -211,9 +211,11 @@
     .carrusel-precio span{font-size:12px;font-weight:500;color:var(--texto-suave);margin-left:4px;}
     .carrusel-nombre{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;line-height:1.3;}
     .carrusel-ubicacion{font-size:12px;color:var(--texto-suave);margin-bottom:12px;}
-    .carrusel-detalles{display:flex;gap:12px;border-top:1px solid var(--gris-medio);padding-top:12px;flex-wrap:wrap;}
-    .carrusel-detalle{font-size:11px;color:var(--texto-suave);display:flex;align-items:center;gap:4px;}
-    .carrusel-detalle strong{color:var(--texto);font-weight:700;}
+    .carrusel-detalles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--gris-medio);margin-top:12px;}
+    .carrusel-detalle{font-size:12px;color:var(--texto-suave);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border-right:1px solid var(--gris-medio);text-align:center;}
+    .carrusel-detalle:last-child{border-right:none;}
+    .carrusel-detalle .det-label{font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:2px;}
+    .carrusel-detalle strong{color:var(--texto);font-weight:800;font-size:15px;}
     .carrusel-outer{position:relative;padding:0 48px;}
     .carrusel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--azul);color:var(--blanco);border:none;width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:16px;z-index:10;transition:background 0.2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .carrusel-btn:hover{background:var(--azul-oscuro);}
@@ -262,6 +264,13 @@
       .carrusel-btn.izq{left:0;}
       .carrusel-btn.der{right:0;}
       .destacados-titulo{padding:0 4px;}
+      .carrusel-img{height:280px;}
+      .carrusel-info{padding:20px 16px 8px;}
+      .carrusel-precio{font-size:24px;}
+      .carrusel-nombre{font-size:15px;margin-bottom:6px;}
+      .carrusel-ubicacion{font-size:13px;margin-bottom:0;}
+      .carrusel-detalle .det-label{font-size:11px;}
+      .carrusel-detalle strong{font-size:16px;}
     }
   </style>
 </head>
@@ -611,9 +620,9 @@ function filtrarYIr(negocio) {
           <div class="carrusel-nombre">${p.titulo}</div>
           <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
           <div class="carrusel-detalles">
-            ${p.area>0?`<span class="carrusel-detalle">Área m² <strong>${p.area}</strong></span>`:''}
-            ${p.alcobas>0?`<span class="carrusel-detalle">Alcobas <strong>${p.alcobas}</strong></span>`:''}
-            ${p.banos>0?`<span class="carrusel-detalle">Baño(s) <strong>${p.banos}</strong></span>`:''}
+            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
           </div>
         </div>
       </div>`;
@@ -813,9 +822,9 @@ function renderCarrusel() {
         <div class="carrusel-nombre">${p.titulo}</div>
         <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
         <div class="carrusel-detalles">
-          ${p.area>0?`<span class="carrusel-detalle">Área m² <strong>${p.area}</strong></span>`:''}
-          ${p.alcobas>0?`<span class="carrusel-detalle">Alcobas <strong>${p.alcobas}</strong></span>`:''}
-          ${p.banos>0?`<span class="carrusel-detalle">Baño(s) <strong>${p.banos}</strong></span>`:''}
+          <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+          <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+          <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
         </div>
       </div>
     </div>`;
@@ -874,9 +883,9 @@ function renderCarrusel2() {
         <div class="carrusel-nombre">${p.titulo}</div>
         <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
         <div class="carrusel-detalles">
-          ${p.area>0?`<span class="carrusel-detalle">Área m² <strong>${p.area}</strong></span>`:''}
-          ${p.alcobas>0?`<span class="carrusel-detalle">Alcobas <strong>${p.alcobas}</strong></span>`:''}
-          ${p.banos>0?`<span class="carrusel-detalle">Baño(s) <strong>${p.banos}</strong></span>`:''}
+          <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+          <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+          <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
         </div>
       </div>
     </div>`;
