@@ -623,7 +623,7 @@ function filtrarYIr(negocio) {
   const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
 
   document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
-  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
+  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'Venta' : 'Arriendo';
 
   const grid = document.getElementById('listado-grid');
   if(!resultado.length){
