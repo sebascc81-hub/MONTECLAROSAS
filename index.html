@@ -277,6 +277,13 @@
       .carrusel-detalle .det-label{font-size:11px;}
       .carrusel-detalle strong{font-size:16px;}
     }
+    /* ── DROPDOWN MENÚ ── */
+    .nav-item{position:relative;}
+    .nav-dropdown{display:none;position:absolute;top:100%;left:0;background:var(--blanco);border:1px solid var(--gris-medio);border-radius:8px;box-shadow:0 8px 24px rgba(38,56,191,0.12);min-width:220px;z-index:200;padding:8px 0;margin-top:8px;}
+    .nav-item:hover .nav-dropdown{display:block;}
+    .nav-dropdown a{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;font-weight:600;color:var(--texto);cursor:pointer;transition:background 0.15s;text-decoration:none;}
+    .nav-dropdown a:hover{background:var(--gris-claro);color:var(--azul);}
+    .nav-dropdown-count{background:var(--gris-medio);color:var(--texto-suave);font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;}
   </style>
 </head>
 <body>
@@ -292,8 +299,12 @@
   </div>
   <ul class="nav-links">
     <li><a onclick="irInicio()">Inicio</a></li>
-    <li><a onclick="filtrarYIr('Venta')">Ventas</a></li>
-    <li><a onclick="filtrarYIr('Arriendo')">Arriendos</a></li>
+    <li class="nav-item"><a onclick="filtrarYIr('Venta')">Ventas</a>
+      <div class="nav-dropdown" id="dropdown-venta"></div>
+    </li>
+    <li class="nav-item"><a onclick="filtrarYIr('Arriendo')">Arriendos</a>
+      <div class="nav-dropdown" id="dropdown-arriendo"></div>
+    </li>
     <li><a onclick="mostrarProximamente('Permutar')">Permutar</a></li>
     <li><a onclick="mostrarProximamente('Blog')">Blog</a></li>
     <li><a onclick="irInicio();setTimeout(()=>document.getElementById('nosotros').scrollIntoView({behavior:'smooth'}),100)">Nosotros</a></li>
@@ -549,6 +560,7 @@ async function cargarPropiedades() {
     renderGrid(propiedades);
     renderCarrusel();
     renderCarrusel2();
+    llenarDropdowns();
   } catch(e) {
     document.getElementById('grid-propiedades').innerHTML = '<div class="sin-resultados">No se pudieron cargar las propiedades.</div>';
   }
@@ -580,7 +592,6 @@ function irDetalle(id) {
   if(!propiedadActual) return;
   fotoActual = 0;
   document.getElementById('vista-inicio').classList.remove('activa');
-  document.getElementById('vista-listado').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
   window.location.hash = 'propiedad-'+id;
   renderDetalle();
@@ -612,7 +623,7 @@ function mostrarProximamente(seccion) {
 }
 function cerrarModal() { document.getElementById('modal-proximamente').classList.remove('activo'); }
 
-function filtrarYIr(negocio) {
+function filtrarYIr(negocio, tipo='') {
   detenerSlideshow();
   // Mostrar vista listado
   document.getElementById('vista-inicio').classList.remove('activa');
@@ -620,11 +631,11 @@ function filtrarYIr(negocio) {
   document.getElementById('vista-listado').classList.add('activa');
   window.scrollTo({top:0,behavior:'smooth'});
 
-  const resultado = propiedades.filter(p => p.negocio === negocio);
+  const resultado = propiedades.filter(p => p.negocio === negocio && (tipo==='' || p.tipo===tipo));
   const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
 
   document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
-  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'Venta' : 'Arriendo';
+  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
 
   const grid = document.getElementById('listado-grid');
   if(!resultado.length){
@@ -652,6 +663,24 @@ function filtrarYIr(negocio) {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── DROPDOWNS ──
+function llenarDropdowns() {
+  ['Venta','Arriendo'].forEach(negocio => {
+    const id = negocio === 'Venta' ? 'dropdown-venta' : 'dropdown-arriendo';
+    const tipos = {};
+    propiedades.filter(p=>p.negocio===negocio).forEach(p=>{
+      if(p.tipo) tipos[p.tipo] = (tipos[p.tipo]||0) + 1;
+    });
+    const total = propiedades.filter(p=>p.negocio===negocio).length;
+    const el = document.getElementById(id);
+    if(!el) return;
+    el.innerHTML = `<a onclick="filtrarYIr('${negocio}')">Todos <span class="nav-dropdown-count">${total}</span></a>`
+      + Object.entries(tipos).sort().map(([tipo,count])=>
+        `<a onclick="filtrarYIr('${negocio}','${tipo}')">${tipo} <span class="nav-dropdown-count">${count}</span></a>`
+      ).join('');
+  });
 }
 
 // ── FILTROS ──
@@ -758,7 +787,9 @@ function aplicarFiltros() {
     document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
     actualizarCarrusel();
   }
-  }
+
+  seccion.scrollIntoView({behavior:'smooth'});
+}
 
 // ── GRID ──
 function renderGrid(datos) {
