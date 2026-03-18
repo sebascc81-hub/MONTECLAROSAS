@@ -245,6 +245,7 @@
       .captacion-card{padding:28px 20px;}
       .form-fila{grid-template-columns:1fr;}
       .vista-detalle{padding:85px 16px 48px;}
+      #listado-inner{padding:85px 16px 48px!important;}
       .galeria-principal{height:260px;}
       .galeria-thumbs{gap:6px;}
       .thumb{width:58px;height:44px;}
@@ -454,6 +455,20 @@
   </footer>
 </div>
 
+<!-- VISTA LISTADO -->
+<div id="vista-listado" class="vista">
+  <div style="padding:100px 48px 64px;" id="listado-inner">
+    <button class="btn-volver" onclick="irInicio()">← Volver al inicio</button>
+    <p class="seccion-tag" id="listado-tag">Propiedades</p>
+    <h2 class="seccion-titulo" id="listado-titulo">todas</h2>
+    <div class="grid-props" id="listado-grid" style="margin-top:32px;"></div>
+  </div>
+  <footer>
+    <div><div class="footer-logo">monte<span>claro</span></div><p style="margin-top:6px;font-size:12px;">Inmobiliaria SAS · Eje Cafetero, Colombia</p></div>
+    <p style="font-size:13px;">© 2025 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+  </footer>
+</div>
+
 <!-- VISTA DETALLE -->
 <div id="vista-detalle" class="vista">
   <div class="vista-detalle">
@@ -554,6 +569,7 @@ function parsearCSV(fila) {
 function irInicio() {
   document.getElementById('vista-inicio').classList.add('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
+  document.getElementById('vista-listado').classList.remove('activa');
   detenerSlideshow();
   history.pushState('',document.title,window.location.pathname+window.location.search);
   window.scrollTo({top:0,behavior:'smooth'});
@@ -596,50 +612,45 @@ function mostrarProximamente(seccion) {
 function cerrarModal() { document.getElementById('modal-proximamente').classList.remove('activo'); }
 
 function filtrarYIr(negocio) {
-  document.getElementById('vista-inicio').classList.add('activa');
-  document.getElementById('vista-detalle').classList.remove('activa');
   detenerSlideshow();
+  // Mostrar vista listado
+  document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-detalle').classList.remove('activa');
+  document.getElementById('vista-listado').classList.add('activa');
   window.scrollTo({top:0,behavior:'smooth'});
 
   const resultado = propiedades.filter(p => p.negocio === negocio);
-  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
-  const track = document.getElementById('carrusel-track-2');
-  const seccion = document.getElementById('seccion-todos');
+  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
 
-  seccion.querySelector('h2').innerHTML = negocio === 'Venta'
-    ? 'PROPIEDADES EN <span>VENTA</span>'
-    : 'PROPIEDADES EN <span>ARRIENDO</span>';
+  document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
+  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
 
+  const grid = document.getElementById('listado-grid');
   if(!resultado.length){
-    track.innerHTML = '<div style="padding:40px;text-align:center;color:var(--texto-suave);font-size:16px;width:100%;">No encontramos propiedades con esos filtros.</div>';
-    document.getElementById('carrusel-dots-2').innerHTML = '';
-  } else {
-    track.innerHTML = resultado.map(p => {
-      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-      const foto = p.fotos.length?p.fotos[0]:fd;
-      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-        <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
-        <div class="carrusel-info">
-          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
-          <div class="carrusel-nombre">${p.titulo}</div>
-          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
-          <div class="carrusel-detalles">
-            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    carrusel2Index = 0;
-    carruselVisible = getCarruselVisible();
-    actualizarCarrusel2();
+    grid.innerHTML='<div class="sin-resultados">No encontramos propiedades.</div>';
+    return;
   }
-
-  setTimeout(() => {
-    const sel = document.getElementById('f-negocio');
-    if(sel) sel.value = negocio;
-      }, 100);
+  grid.innerHTML = resultado.map(p => {
+    const badge = p.negocio==='Venta'?'badge-venta':'badge-arriendo';
+    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+    const foto = p.fotos.length?p.fotos[0]:fd;
+    return `<div class="prop-card" onclick="irDetalle(${p.id})">
+      <div class="prop-img-wrap">
+        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
+        <span class="prop-badge ${badge}">${p.negocio}</span>
+      </div>
+      <div class="prop-info">
+        <div class="prop-precio">${precio}</div>
+        <div class="prop-nombre">${p.titulo}</div>
+        <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
+        <div class="prop-detalles">
+          ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
+          ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
+          ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
 }
 
 // ── FILTROS ──
@@ -746,7 +757,9 @@ function aplicarFiltros() {
     document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
     actualizarCarrusel();
   }
-  }
+
+  seccion.scrollIntoView({behavior:'smooth'});
+}
 
 // ── GRID ──
 function renderGrid(datos) {
@@ -1013,17 +1026,8 @@ window.addEventListener('resize', () => {
     actualizarCarrusel2();
   }, 150);
 });
-if(window.location.hash.startsWith('#propiedad-')){
-  document.getElementById('vista-inicio').classList.remove('activa');
-  document.getElementById('vista-detalle').classList.add('activa');
-  document.getElementById('detalle-contenido').innerHTML=`
-    <div style="padding:40px 0;">
-      <div style="height:24px;width:120px;background:var(--gris-medio);border-radius:6px;margin-bottom:24px;animation:pulse 1s infinite alternate;"></div>
-      <div style="height:40px;width:80%;background:var(--gris-medio);border-radius:6px;margin-bottom:16px;animation:pulse 1s infinite alternate;"></div>
-      <div style="height:480px;background:var(--gris-medio);border-radius:12px;animation:pulse 1s infinite alternate;"></div>
-    </div>
-    <style>@keyframes pulse{from{opacity:0.5}to{opacity:1}}</style>`;
-}
+
+// ── INICIO ──
 cargarPropiedades().then(()=>verificarRuta());
 </script>
 </body>
