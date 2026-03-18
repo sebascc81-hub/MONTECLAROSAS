@@ -273,6 +273,7 @@
       .seccion-destacados{padding:40px 16px 24px;}
       .carrusel-outer{padding:0 44px;}
       .carrusel-slide{min-width:100%;}
+      .carrusel-track{gap:0;}
       .carrusel-btn.izq{left:0;}
       .carrusel-btn.der{right:0;}
       .destacados-titulo{padding:0 4px;}
@@ -852,8 +853,9 @@ function actualizarCarrusel() {
   const track = document.getElementById('carrusel-track');
   if(!track) return;
   const wrapper = track.parentElement;
-  const slideWidth = wrapper.offsetWidth / carruselVisible;
-  track.style.transform = `translateX(-${carruselIndex * (slideWidth + 24)}px)`;
+  const gap = carruselVisible === 1 ? 0 : 24;
+const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
+track.style.transform = `translateX(-${carruselIndex * (slideWidth + gap)}px)`;
   const dots = document.querySelectorAll('#carrusel-dots .carrusel-dot');
   const grupoActual = Math.floor(carruselIndex / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
@@ -911,8 +913,9 @@ function actualizarCarrusel2() {
   const track = document.getElementById('carrusel-track-2');
   if(!track) return;
   const wrapper = track.parentElement;
-  const slideWidth = wrapper.offsetWidth / carruselVisible;
-  track.style.transform = `translateX(-${carrusel2Index * (slideWidth + 24)}px)`;
+  const gap = carruselVisible === 1 ? 0 : 24;
+const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
+track.style.transform = `translateX(-${carrusel2Index * (slideWidth + gap)}px)`;
   const dots = document.querySelectorAll('#carrusel-dots-2 .carrusel-dot');
   const grupoActual = Math.floor(carrusel2Index / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
