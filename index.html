@@ -668,8 +668,51 @@ function aplicarFiltros() {
     (g('f-min')===''||p.precio>=Number(g('f-min')))&&
     (g('f-max')===''||p.precio<=Number(g('f-max')))
   );
-  renderGrid(res);
-  document.getElementById('propiedades').scrollIntoView({behavior:'smooth'});
+
+  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
+  const track2 = document.getElementById('carrusel-track-2');
+  const seccion = document.getElementById('seccion-todos');
+
+  // Actualizar título
+  const negocioFiltro = g('f-negocio');
+  if(negocioFiltro) {
+    seccion.querySelector('h2').innerHTML = negocioFiltro === 'Venta'
+      ? 'PROPIEDADES EN <span>VENTA</span>'
+      : 'PROPIEDADES EN <span>ARRIENDO</span>';
+  } else {
+    seccion.querySelector('h2').innerHTML = 'ÚLTIMOS <span>INMUEBLES</span>';
+  }
+
+  if(!res.length){
+    track2.innerHTML='<div style="padding:40px;text-align:center;color:var(--texto-suave);font-size:16px;width:100%;">No encontramos propiedades con esos filtros.</div>';
+    document.getElementById('carrusel-dots-2').innerHTML='';
+  } else {
+    track2.innerHTML = res.map(p => {
+      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+      const foto = p.fotos.length?p.fotos[0]:fd;
+      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
+        <div class="carrusel-img" style="position:relative;">
+          <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
+          <span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span>
+        </div>
+        <div class="carrusel-info">
+          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
+          <div class="carrusel-nombre">${p.titulo}</div>
+          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
+          <div class="carrusel-detalles">
+            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    carrusel2Index = 0;
+    carruselVisible = getCarruselVisible();
+    actualizarCarrusel2();
+  }
+
+  seccion.scrollIntoView({behavior:'smooth'});
 }
 
 // ── GRID ──
