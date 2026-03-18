@@ -59,7 +59,6 @@
     .btn-secundario{background:transparent;color:var(--blanco);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:16px 32px;border-radius:6px;border:2px solid rgba(255,255,255,0.4);text-decoration:none;transition:border-color 0.2s,background 0.2s;display:inline-block;cursor:pointer;}
     .btn-secundario:hover{border-color:var(--blanco);background:rgba(255,255,255,0.1);}
 
-    /* STATS — ahora dentro del flujo normal, no absolute */
     .hero-stats{position:relative;z-index:2;display:flex;gap:32px;flex-wrap:wrap;margin-top:48px;animation:fadeUp 0.8s 0.3s ease both;}
     .stat-num{font-family:'Outfit',sans-serif;font-size:42px;font-weight:800;color:var(--blanco);line-height:1;}
     .stat-label{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;}
@@ -195,7 +194,7 @@
     .wa-flotante:hover{transform:scale(1.1);}
     .wa-flotante svg{width:30px;height:30px;}
 
-    /* ── CARRUSEL DESTACADOS ── */
+    /* ── CARRUSEL ── */
     .seccion-destacados{padding:64px 48px 32px;}
     .destacados-titulo{text-align:center;margin-bottom:40px;padding:0 8px;}
     .destacados-titulo h2{font-family:'Outfit',sans-serif;font-size:clamp(22px,5vw,42px);font-weight:900;color:var(--texto);text-transform:uppercase;letter-spacing:-1px;word-break:break-word;}
@@ -215,14 +214,11 @@
     .carrusel-detalles{display:flex;gap:12px;border-top:1px solid var(--gris-medio);padding-top:12px;flex-wrap:wrap;}
     .carrusel-detalle{font-size:11px;color:var(--texto-suave);display:flex;align-items:center;gap:4px;}
     .carrusel-detalle strong{color:var(--texto);font-weight:700;}
-
-    /* Botones carrusel — dentro del wrapper, no desbordados */
     .carrusel-outer{position:relative;padding:0 48px;}
     .carrusel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--azul);color:var(--blanco);border:none;width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:16px;z-index:10;transition:background 0.2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
     .carrusel-btn:hover{background:var(--azul-oscuro);}
     .carrusel-btn.izq{left:4px;}
     .carrusel-btn.der{right:4px;}
-
     .carrusel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px;}
     .carrusel-dot{width:10px;height:10px;border-radius:50%;background:var(--gris-medio);border:none;cursor:pointer;transition:background 0.2s;}
     .carrusel-dot.activo{background:var(--azul);}
@@ -232,28 +228,20 @@
       nav{padding:0 16px;}
       .nav-links{display:none!important;}
       .nav-menu-btn{display:block;}
-
-      /* Hero */
       .hero{padding:90px 16px 48px;min-height:auto;}
       .hero h1{font-size:clamp(40px,12vw,60px);letter-spacing:-1px;}
       .hero-tag{font-size:11px;letter-spacing:1px;padding:6px 12px;margin-bottom:20px;}
       .hero p{font-size:15px;margin-bottom:24px;}
       .hero-botones{flex-direction:column;gap:10px;}
       .btn-primario,.btn-secundario{padding:14px 24px;text-align:center;width:100%;}
-
-      /* Stats — fila horizontal con wrap */
       .hero-stats{margin-top:32px;gap:24px;justify-content:flex-start;}
       .stat-num{font-size:30px;}
       .stat-label{font-size:10px;}
-
-      /* Secciones */
       .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:48px 16px;}
       .seccion-titulo{font-size:34px;}
       .captacion-grid,.contacto-grid,.detalle-grid{grid-template-columns:1fr;}
       .captacion-card{padding:28px 20px;}
       .form-fila{grid-template-columns:1fr;}
-
-      /* Detalle */
       .vista-detalle{padding:85px 16px 48px;}
       .galeria-principal{height:260px;}
       .galeria-thumbs{gap:6px;}
@@ -264,16 +252,13 @@
       .caract-lista{grid-template-columns:1fr 1fr;}
       .video-wrap iframe{height:220px;}
       .grid-razones{grid-template-columns:1fr;}
-
-      /* Footer */
       footer{flex-direction:column;align-items:flex-start;padding:32px 16px;}
       .footer-links{flex-wrap:wrap;gap:12px;}
-
-      /* Carrusel móvil */
+      /* Carrusel móvil — 1 slide, sin gap */
       .seccion-destacados{padding:40px 16px 24px;}
       .carrusel-outer{padding:0 44px;}
-      .carrusel-slide{min-width:100%;}
       .carrusel-track{gap:0;}
+      .carrusel-slide{min-width:100%;}
       .carrusel-btn.izq{left:0;}
       .carrusel-btn.der{right:0;}
       .destacados-titulo{padding:0 4px;}
@@ -479,6 +464,12 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJv
 let propiedades = [];
 let propiedadActual = null, fotoActual = 0, slideshow = null;
 
+// ── CARRUSEL VISIBLE ──
+function getCarruselVisible() {
+  return window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
+}
+let carruselVisible = getCarruselVisible();
+
 async function cargarPropiedades() {
   try {
     const resp = await fetch(CSV_URL);
@@ -628,6 +619,7 @@ function filtrarYIr(negocio) {
       </div>`;
     }).join('');
     carrusel2Index = 0;
+    carruselVisible = getCarruselVisible();
     actualizarCarrusel2();
   }
 
@@ -800,9 +792,8 @@ function enviarContacto(){
   window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
 }
 
-// ── CARRUSEL ──
+// ── CARRUSEL 1 ──
 let carruselIndex = 0;
-let carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
 
 function renderCarrusel() {
   const destacados = propiedades.filter(p => p.destacado);
@@ -830,6 +821,7 @@ function renderCarrusel() {
     </div>`;
   }).join('');
 
+  carruselVisible = getCarruselVisible();
   const dots = document.getElementById('carrusel-dots');
   const grupos = Math.ceil(destacados.length / carruselVisible);
   dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
@@ -854,8 +846,8 @@ function actualizarCarrusel() {
   if(!track) return;
   const wrapper = track.parentElement;
   const gap = carruselVisible === 1 ? 0 : 24;
-const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
-track.style.transform = `translateX(-${carruselIndex * (slideWidth + gap)}px)`;
+  const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
+  track.style.transform = `translateX(-${carruselIndex * (slideWidth + gap)}px)`;
   const dots = document.querySelectorAll('#carrusel-dots .carrusel-dot');
   const grupoActual = Math.floor(carruselIndex / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
@@ -890,6 +882,7 @@ function renderCarrusel2() {
     </div>`;
   }).join('');
 
+  carruselVisible = getCarruselVisible();
   const dots = document.getElementById('carrusel-dots-2');
   const grupos = Math.ceil(todos.length / carruselVisible);
   dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo2(${i})"></button>`).join('');
@@ -914,19 +907,19 @@ function actualizarCarrusel2() {
   if(!track) return;
   const wrapper = track.parentElement;
   const gap = carruselVisible === 1 ? 0 : 24;
-const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
-track.style.transform = `translateX(-${carrusel2Index * (slideWidth + gap)}px)`;
+  const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
+  track.style.transform = `translateX(-${carrusel2Index * (slideWidth + gap)}px)`;
   const dots = document.querySelectorAll('#carrusel-dots-2 .carrusel-dot');
   const grupoActual = Math.floor(carrusel2Index / carruselVisible);
   dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
 }
 
-// ── RESIZE (unificado, con throttle) ──
+// ── RESIZE ──
 let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    carruselVisible = window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
+    carruselVisible = getCarruselVisible();
     actualizarCarrusel();
     actualizarCarrusel2();
   }, 150);
