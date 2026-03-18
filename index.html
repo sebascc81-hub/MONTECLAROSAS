@@ -580,6 +580,7 @@ function irDetalle(id) {
   if(!propiedadActual) return;
   fotoActual = 0;
   document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-listado').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
   window.location.hash = 'propiedad-'+id;
   renderDetalle();
