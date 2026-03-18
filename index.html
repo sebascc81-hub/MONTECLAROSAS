@@ -757,9 +757,7 @@ function aplicarFiltros() {
     document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
     actualizarCarrusel();
   }
-
-  seccion.scrollIntoView({behavior:'smooth'});
-}
+  }
 
 // ── GRID ──
 function renderGrid(datos) {
