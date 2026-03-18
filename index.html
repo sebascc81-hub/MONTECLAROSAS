@@ -44,7 +44,7 @@
     .vista{display:none;}.vista.activa{display:block;}
 
     /* ── HERO ── */
-    .hero{min-height:100vh;background:var(--azul);display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
+    .hero{min-height:100vh;background:url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
     .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:600px;height:600px;background:var(--azul-claro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.2;}
     .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
     .hero-contenido{position:relative;z-index:2;max-width:680px;animation:fadeUp 0.8s ease both;}
@@ -338,57 +338,7 @@
 <!-- VISTA INICIO -->
 <div id="vista-inicio" class="vista activa">
   <section class="hero">
-    <!-- MARCA DE AGUA PATRÓN -->
-    <div style="position:absolute;inset:0;z-index:1;pointer-events:none;overflow:hidden;">
-      <svg viewBox="0 0 800 500" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:100%;position:absolute;top:0;left:0;" preserveAspectRatio="xMidYMid slice">
-        <defs>
-          <!-- Símbolo flecha: cuadrado con flecha diagonal arriba-derecha con corte -->
-          <symbol id="sym" viewBox="0 0 100 100">
-            <rect x="2" y="2" width="96" height="96" fill="none" stroke="white" stroke-width="2.5"/>
-            <!-- cuerpo flecha -->
-            <polygon points="15,85 15,42 8,42 50,5 92,42 85,42 85,72 58,72 58,55 35,78" fill="none" stroke="white" stroke-width="2.5" stroke-linejoin="round"/>
-          </symbol>
-        </defs>
-        <!-- Capa 1 - muy grande, centro -->
-        <g opacity="0.06">
-          <use href="#sym" x="250" y="100" width="300" height="300"/>
-        </g>
-        <!-- Capa 2 - grande -->
-        <g opacity="0.055">
-          <use href="#sym" x="175" y="62" width="450" height="450"/>
-        </g>
-        <!-- Capa 3 -->
-        <g opacity="0.05">
-          <use href="#sym" x="100" y="25" width="600" height="600"/>
-        </g>
-        <!-- Capa 4 -->
-        <g opacity="0.04">
-          <use href="#sym" x="25" y="-12" width="750" height="750"/>
-        </g>
-        <!-- Capa 5 - más grande aún -->
-        <g opacity="0.035">
-          <use href="#sym" x="-50" y="-50" width="900" height="900"/>
-        </g>
-        <!-- Líneas diagonales repetidas lado izquierdo -->
-        <g opacity="0.04" stroke="white" stroke-width="1.5">
-          <line x1="-100" y1="400" x2="300" y2="0"/>
-          <line x1="-70" y1="400" x2="330" y2="0"/>
-          <line x1="-40" y1="400" x2="360" y2="0"/>
-          <line x1="-10" y1="400" x2="390" y2="0"/>
-          <line x1="20" y1="500" x2="520" y2="0"/>
-          <line x1="50" y1="500" x2="550" y2="0"/>
-        </g>
-        <!-- Líneas diagonales lado derecho -->
-        <g opacity="0.04" stroke="white" stroke-width="1.5">
-          <line x1="500" y1="500" x2="900" y2="100"/>
-          <line x1="530" y1="500" x2="930" y2="100"/>
-          <line x1="560" y1="500" x2="960" y2="100"/>
-          <line x1="590" y1="500" x2="990" y2="100"/>
-          <line x1="450" y1="500" x2="850" y2="100"/>
-          <line x1="420" y1="500" x2="820" y2="100"/>
-        </g>
-      </svg>
-    </div>
+
     <div class="hero-contenido">
       <span class="hero-tag">Eje Cafetero · Colombia</span>
       <h1>tu próximo<br><span>hogar</span><br>te espera</h1>
