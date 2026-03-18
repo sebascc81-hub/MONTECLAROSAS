@@ -211,7 +211,7 @@
     .carrusel-precio span{font-size:12px;font-weight:500;color:var(--texto-suave);margin-left:4px;}
     .carrusel-nombre{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;line-height:1.3;}
     .carrusel-ubicacion{font-size:12px;color:var(--texto-suave);margin-bottom:12px;}
-    .carrusel-detalles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--gris-medio);margin-top:12px;}
+    .carrusel-detalles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--gris-medio);margin-top:12px;width:100%;}
     .carrusel-detalle{font-size:12px;color:var(--texto-suave);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border-right:1px solid var(--gris-medio);text-align:center;}
     .carrusel-detalle:last-child{border-right:none;}
     .carrusel-detalle .det-label{font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:2px;}
@@ -258,9 +258,13 @@
       .footer-links{flex-wrap:wrap;gap:12px;}
       /* Carrusel móvil — 1 slide, sin gap */
       .seccion-destacados{padding:40px 16px 24px;}
-      .carrusel-outer{padding:0 44px;}
+      .carrusel-outer{padding:0 40px;}
       .carrusel-track{gap:0;}
-      .carrusel-slide{min-width:100%;}
+      .carrusel-slide{min-width:100%;width:100%;overflow:hidden;}
+      .carrusel-precio{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+      .carrusel-nombre{white-space:normal;overflow:hidden;}
+      .carrusel-info{overflow:hidden;}
+      .carrusel-precio span{display:inline;}
       .carrusel-btn.izq{left:0;}
       .carrusel-btn.der{right:0;}
       .destacados-titulo{padding:0 4px;}
