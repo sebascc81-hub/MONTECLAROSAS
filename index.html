@@ -279,7 +279,7 @@
     }
     /* ── DROPDOWN MENÚ ── */
     .nav-item{position:relative;}
-    .nav-dropdown{display:none;position:absolute;top:100%;left:0;background:var(--blanco);border:1px solid var(--gris-medio);border-radius:8px;box-shadow:0 8px 24px rgba(38,56,191,0.12);min-width:220px;z-index:200;padding:8px 0;margin-top:8px;}
+    .nav-dropdown{display:none;position:absolute;top:100%;left:0;background:var(--blanco);border:1px solid var(--gris-medio);border-radius:8px;box-shadow:0 8px 24px rgba(38,56,191,0.12);min-width:220px;z-index:200;padding:8px 0;margin-top:0;}
     .nav-item:hover .nav-dropdown{display:block;}
     .nav-dropdown a{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;font-weight:600;color:var(--texto);cursor:pointer;transition:background 0.15s;text-decoration:none;}
     .nav-dropdown a:hover{background:var(--gris-claro);color:var(--azul);}
@@ -550,7 +550,6 @@ async function cargarPropiedades() {
         area: parseInt(obj.area) || 0,
         descripcion: obj.descripcion || '',
         video: obj.video || '',
-        codigo: obj.codigo || '',
         destacado: (obj.destacado||'').toLowerCase().trim() === 'si',
         fotos
       };
@@ -873,7 +872,7 @@ function renderDetalle() {
         <div class="ficha-item"><div class="ficha-item-label">País</div><div class="ficha-item-valor">${p.pais||'Colombia'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Departamento</div><div class="ficha-item-valor">${p.departamento||'—'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Ciudad</div><div class="ficha-item-valor">${p.ciudad||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">${p.codigo||''}</div></div>
+        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">#${p.id}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Estado</div><div class="ficha-item-valor">${p.estado||'—'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Área construida</div><div class="ficha-item-valor">${p.area>0?p.area+' m²':'—'}</div></div>
         <div class="ficha-item"><div class="ficha-item-label">Alcobas</div><div class="ficha-item-valor">${p.alcobas||'—'}</div></div>
