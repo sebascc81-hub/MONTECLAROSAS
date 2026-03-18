@@ -291,8 +291,12 @@
 
 <!-- NAV -->
 <nav>
- <div class="nav-logo" onclick="irInicio()">
-    <img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:44px;width:auto;">
+  <div class="nav-logo" onclick="irInicio()">
+    <div class="nav-logo-icono"></div>
+    <div>
+      <span class="nav-logo-texto">monteclaro</span>
+      <span class="nav-logo-sub">Inmobiliaria · SAS</span>
+    </div>
   </div>
   <ul class="nav-links">
     <li><a onclick="irInicio()">Inicio</a></li>
@@ -334,6 +338,21 @@
 <!-- VISTA INICIO -->
 <div id="vista-inicio" class="vista activa">
   <section class="hero">
+    <!-- MARCA DE AGUA -->
+    <div style="position:absolute;right:3%;top:50%;transform:translateY(-50%);width:48%;max-width:600px;opacity:0.07;z-index:1;pointer-events:none;">
+      <svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg" style="width:100%;height:auto;">
+        <!-- Rectángulo exterior -->
+        <rect x="20" y="20" width="360" height="360" fill="none" stroke="white" stroke-width="6"/>
+        <!-- Flecha diagonal hacia arriba-derecha -->
+        <!-- Línea diagonal -->
+        <line x1="80" y1="310" x2="290" y2="100" stroke="white" stroke-width="6"/>
+        <!-- Punta de flecha -->
+        <polyline points="180,95 290,100 285,210" fill="none" stroke="white" stroke-width="6" stroke-linejoin="round"/>
+        <!-- Muesca/corte en la esquina derecha -->
+        <polyline points="290,20 380,20 380,110 320,110 320,20" fill="var(--azul)" stroke="none"/>
+        <polyline points="290,20 320,20 320,110 380,110" fill="none" stroke="white" stroke-width="6"/>
+      </svg>
+    </div>
     <div class="hero-contenido">
       <span class="hero-tag">Eje Cafetero · Colombia</span>
       <h1>tu próximo<br><span>hogar</span><br>te espera</h1>
