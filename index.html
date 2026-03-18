@@ -618,7 +618,7 @@ function filtrarYIr(negocio) {
       const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
       const foto = p.fotos.length?p.fotos[0]:fd;
       return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-        <div class="carrusel-img"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"></div>
+        <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
         <div class="carrusel-info">
           <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
           <div class="carrusel-nombre">${p.titulo}</div>
@@ -820,7 +820,7 @@ function renderCarrusel() {
     const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
     const foto = p.fotos.length?p.fotos[0]:fd;
     return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-      <div class="carrusel-img"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"></div>
+      <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
       <div class="carrusel-info">
         <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
         <div class="carrusel-nombre">${p.titulo}</div>
@@ -881,7 +881,7 @@ function renderCarrusel2() {
     const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
     const foto = p.fotos.length?p.fotos[0]:fd;
     return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-      <div class="carrusel-img"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"></div>
+      <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
       <div class="carrusel-info">
         <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
         <div class="carrusel-nombre">${p.titulo}</div>
