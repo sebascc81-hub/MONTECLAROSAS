@@ -1018,8 +1018,15 @@ window.addEventListener('resize', () => {
 // Ocultar vista inicial si hay hash de propiedad
 if(window.location.hash.startsWith('#propiedad-')){
   document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-detalle').classList.add('activa');
+  document.getElementById('detalle-contenido').innerHTML=`
+    <div style="padding:40px 0;">
+      <div style="height:24px;width:120px;background:var(--gris-medio);border-radius:6px;margin-bottom:24px;animation:pulse 1s infinite alternate;"></div>
+      <div style="height:40px;width:80%;background:var(--gris-medio);border-radius:6px;margin-bottom:16px;animation:pulse 1s infinite alternate;"></div>
+      <div style="height:480px;background:var(--gris-medio);border-radius:12px;animation:pulse 1s infinite alternate;"></div>
+    </div>
+    <style>@keyframes pulse{from{opacity:0.5}to{opacity:1}}</style>`;
 }
 cargarPropiedades().then(()=>verificarRuta());
-</script>
 </body>
 </html>
