@@ -1060,6 +1060,10 @@ window.addEventListener('resize', () => {
 });
 
 // ── INICIO ──
+if(window.location.hash.startsWith('#propiedad-')){
+  document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-detalle').classList.add('activa');
+}
 cargarPropiedades().then(()=>verificarRuta());
 </script>
 </body>
