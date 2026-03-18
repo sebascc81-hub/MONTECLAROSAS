@@ -712,6 +712,42 @@ function aplicarFiltros() {
     actualizarCarrusel2();
   }
 
+  // Actualizar también carrusel de destacados
+  const track1 = document.getElementById('carrusel-track');
+  const seccionDest = document.getElementById('destacados');
+  const destacadosFiltrados = res.filter(p => p.destacado);
+
+  if(!destacadosFiltrados.length){
+    seccionDest.style.display='none';
+  } else {
+    seccionDest.style.display='block';
+    track1.innerHTML = destacadosFiltrados.map(p => {
+      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+      const foto = p.fotos.length?p.fotos[0]:fd;
+      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
+        <div class="carrusel-img" style="position:relative;">
+          <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
+          <span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span>
+        </div>
+        <div class="carrusel-info">
+          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
+          <div class="carrusel-nombre">${p.titulo}</div>
+          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
+          <div class="carrusel-detalles">
+            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
+          </div>
+        </div>
+      </div>`;
+    }).join('');
+    carruselIndex = 0;
+    carruselVisible = getCarruselVisible();
+    const grupos = Math.ceil(destacadosFiltrados.length / carruselVisible);
+    document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
+    actualizarCarrusel();
+  }
+
   seccion.scrollIntoView({behavior:'smooth'});
 }
 
