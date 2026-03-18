@@ -551,7 +551,7 @@ async function cargarPropiedades() {
         area: parseInt(obj.area) || 0,
         descripcion: obj.descripcion || '',
         video: obj.video || '',
-        codigo: obj.codigo || '',
+        codigo: obj.id || '',
         destacado: (obj.destacado||'').toLowerCase().trim() === 'si',
         fotos
       };
