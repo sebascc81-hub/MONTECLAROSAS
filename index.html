@@ -1015,6 +1015,10 @@ window.addEventListener('resize', () => {
 });
 
 // ── INICIO ──
+// Ocultar vista inicial si hay hash de propiedad
+if(window.location.hash.startsWith('#propiedad-')){
+  document.getElementById('vista-inicio').classList.remove('activa');
+}
 cargarPropiedades().then(()=>verificarRuta());
 </script>
 </body>
