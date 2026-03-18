@@ -1013,9 +1013,6 @@ window.addEventListener('resize', () => {
     actualizarCarrusel2();
   }, 150);
 });
-
-// ── INICIO ──
-// Ocultar vista inicial si hay hash de propiedad
 if(window.location.hash.startsWith('#propiedad-')){
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
@@ -1028,5 +1025,6 @@ if(window.location.hash.startsWith('#propiedad-')){
     <style>@keyframes pulse{from{opacity:0.5}to{opacity:1}}</style>`;
 }
 cargarPropiedades().then(()=>verificarRuta());
+</script>
 </body>
 </html>
