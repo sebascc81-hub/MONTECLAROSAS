@@ -45,7 +45,8 @@
 
     /* ── HERO ── */
     .hero{min-height:100vh;background:url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
-    .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:600px;height:600px;background:var(--azul-claro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.2;}
+    /* ÚNICO CAMBIO: overlay negro para mejorar legibilidad del texto sobre el wallpaper */
+    .hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:1;}
     .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
     .hero-contenido{position:relative;z-index:2;max-width:680px;animation:fadeUp 0.8s ease both;}
     @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
@@ -625,7 +626,6 @@ function cerrarModal() { document.getElementById('modal-proximamente').classList
 
 function filtrarYIr(negocio, tipo='') {
   detenerSlideshow();
-  // Mostrar vista listado
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   document.getElementById('vista-listado').classList.add('activa');
@@ -713,7 +713,6 @@ function aplicarFiltros() {
   const track2 = document.getElementById('carrusel-track-2');
   const seccion = document.getElementById('seccion-todos');
 
-  // Actualizar título
   const negocioFiltro = g('f-negocio');
   if(negocioFiltro) {
     seccion.querySelector('h2').innerHTML = negocioFiltro === 'Venta'
@@ -752,7 +751,6 @@ function aplicarFiltros() {
     actualizarCarrusel2();
   }
 
-  // Actualizar también carrusel de destacados
   const track1 = document.getElementById('carrusel-track');
   const seccionDest = document.getElementById('destacados');
   const destacadosFiltrados = res.filter(p => p.destacado);
@@ -787,7 +785,6 @@ function aplicarFiltros() {
     document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
     actualizarCarrusel();
   }
-
 }
 
 // ── GRID ──
