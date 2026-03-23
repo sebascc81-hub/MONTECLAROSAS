@@ -110,6 +110,7 @@
     .listado-filtros .btn-lf-limpiar:hover{border-color:var(--azul);color:var(--azul);}
     .listado-resultados{font-size:13px;color:var(--texto-suave);margin-bottom:16px;}
     .listado-resultados strong{color:var(--texto);font-weight:700;}
+    #listado-inner{padding:32px 48px 64px;}
 
     /* ── DETALLE ── */
     .vista-detalle{padding:100px 48px 64px;}
@@ -259,7 +260,6 @@
       .captacion-card{padding:28px 20px;}
       .form-fila{grid-template-columns:1fr;}
       .vista-detalle{padding:85px 16px 48px;}
-      #listado-inner{padding:85px 16px 48px!important;}
       .galeria-principal{height:260px;}
       .galeria-thumbs{gap:6px;}
       .thumb{width:58px;height:44px;}
@@ -496,7 +496,7 @@
     <button class="btn-lf-aplicar" onclick="aplicarFiltroListado()">Filtrar →</button>
     <button class="btn-lf-limpiar" onclick="limpiarFiltroListado()">Limpiar</button>
   </div>
-  <div style="padding:100px 48px 64px;" id="listado-inner">
+  <div id="listado-inner">
     <button class="btn-volver" onclick="irInicio()">← Volver al inicio</button>
     <p class="seccion-tag" id="listado-tag">Propiedades</p>
     <h2 class="seccion-titulo" id="listado-titulo">todas</h2>
