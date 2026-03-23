@@ -3,288 +3,473 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Monteclaro Inmobiliaria Monteclaro SAS</title>
+  <title>Monteclaro Inmobiliaria SAS</title>
   <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
   <style>
-    :root{--azul:#2638bf;--azul-oscuro:#1a2590;--azul-claro:#3547d4;--negro:#000000;--gris:#b2b8bf;--blanco:#ffffff;--gris-claro:#f4f5fb;--gris-medio:#e8e9f5;--texto:#1a1a2e;--texto-suave:#555577;}
-    *{margin:0;padding:0;box-sizing:border-box;}
-    html{scroll-behavior:smooth;}
-    body{font-family:'Outfit',sans-serif;color:var(--texto);background:var(--blanco);overflow-x:hidden;}
+    :root {
+      --azul: #2638bf;
+      --azul-oscuro: #1a2590;
+      --azul-claro: #3547d4;
+      --negro: #000000;
+      --gris: #b2b8bf;
+      --blanco: #ffffff;
+      --gris-claro: #f4f5fb;
+      --gris-medio: #e8e9f5;
+      --texto: #1a1a2e;
+      --texto-suave: #555577;
+      --sombra: 0 4px 24px rgba(38,56,191,0.10);
+      --sombra-hover: 0 16px 48px rgba(38,56,191,0.18);
+      --radio: 14px;
+      --transicion: 0.28s cubic-bezier(.4,0,.2,1);
+    }
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { font-family: 'Outfit', sans-serif; color: var(--texto); background: var(--blanco); overflow-x: hidden; -webkit-font-smoothing: antialiased; }
+
+    /* ── SKELETON LOADER ── */
+    @keyframes shimmer {
+      0% { background-position: -600px 0; }
+      100% { background-position: 600px 0; }
+    }
+    .skeleton {
+      background: linear-gradient(90deg, #e8e9f5 25%, #f4f5fb 50%, #e8e9f5 75%);
+      background-size: 600px 100%;
+      animation: shimmer 1.4s infinite linear;
+      border-radius: 8px;
+    }
+    .skeleton-img { width: 100%; height: 100%; }
+    .skeleton-texto { height: 14px; margin-bottom: 8px; border-radius: 4px; }
+    .skeleton-precio { height: 28px; width: 60%; border-radius: 4px; margin-bottom: 8px; }
+
+    /* ── IMAGEN LAZY CON FADE ── */
+    .img-lazy { opacity: 0; transition: opacity 0.5s ease; }
+    .img-lazy.cargada { opacity: 1; }
+    .img-container { position: relative; overflow: hidden; }
+    .img-container .skeleton-img { position: absolute; inset: 0; z-index: 1; }
+    .img-container img { position: relative; z-index: 2; }
+    .img-container img.cargada + .skeleton-img,
+    .img-container.lista .skeleton-img { display: none; }
 
     /* ── NAV ── */
-    nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;align-items:center;justify-content:space-between;padding:0 48px;height:70px;background:rgba(0,0,0,0.97);border-bottom:1px solid #222;backdrop-filter:blur(8px);}
-    .nav-logo{display:flex;align-items:center;gap:10px;text-decoration:none;cursor:pointer;}
-    .nav-logo-icono{width:36px;height:36px;background:var(--azul);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);}
-    .nav-logo-texto{font-family:'Outfit',sans-serif;font-size:22px;font-weight:900;color:var(--blanco);letter-spacing:-0.5px;text-transform:lowercase;}
-    .nav-logo-sub{font-size:10px;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:rgba(255,255,255,0.5);display:block;margin-top:-4px;}
-    .nav-links{display:flex;gap:24px;list-style:none;align-items:center;}
-    .nav-links a{text-decoration:none;font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);letter-spacing:0.5px;transition:color 0.2s;cursor:pointer;text-transform:uppercase;}
-    .nav-links a:hover{color:var(--azul);}
-    .nav-cta{background:var(--azul)!important;color:var(--blanco)!important;padding:10px 20px;border-radius:6px;}
-    .nav-cta:hover{background:var(--azul-oscuro)!important;color:var(--blanco)!important;}
-    .nav-menu-btn{display:none;background:none;border:none;font-size:24px;cursor:pointer;color:var(--blanco);padding:4px 8px;}
+    nav {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 0 48px; height: 68px;
+      background: rgba(0,0,0,0.96);
+      border-bottom: 1px solid rgba(255,255,255,0.06);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+    }
+    .nav-logo { display: flex; align-items: center; gap: 10px; text-decoration: none; cursor: pointer; }
+    .nav-links { display: flex; gap: 8px; list-style: none; align-items: center; }
+    .nav-links a {
+      text-decoration: none; font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.65); letter-spacing: 0.8px;
+      transition: color var(--transicion); cursor: pointer;
+      text-transform: uppercase; padding: 6px 10px; border-radius: 6px;
+    }
+    .nav-links a:hover { color: var(--blanco); background: rgba(255,255,255,0.06); }
+    .nav-cta {
+      background: var(--azul) !important; color: var(--blanco) !important;
+      padding: 9px 18px !important; border-radius: 7px !important;
+    }
+    .nav-cta:hover { background: var(--azul-claro) !important; }
+    .nav-menu-btn {
+      display: none; background: none; border: none;
+      font-size: 22px; cursor: pointer; color: var(--blanco); padding: 4px 8px;
+    }
 
     /* ── MENÚ MÓVIL ── */
-    .nav-mobile{display:none;position:fixed;top:70px;left:0;right:0;background:var(--blanco);z-index:99;border-bottom:2px solid var(--gris-medio);flex-direction:column;padding:16px 24px;gap:0;}
-    .nav-mobile.abierto{display:flex;}
-    .nav-mobile a{font-size:15px;font-weight:600;color:var(--texto);padding:14px 0;border-bottom:1px solid var(--gris-claro);cursor:pointer;letter-spacing:0.5px;text-transform:uppercase;}
-    .nav-mobile a:last-child{border-bottom:none;color:var(--azul);font-weight:700;}
+    .nav-mobile {
+      display: none; position: fixed; top: 68px; left: 0; right: 0;
+      background: var(--negro); z-index: 99;
+      flex-direction: column; padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      box-shadow: 0 8px 32px rgba(0,0,0,0.3);
+    }
+    .nav-mobile.abierto { display: flex; }
+    .nav-mobile a {
+      font-size: 14px; font-weight: 600; color: rgba(255,255,255,0.75);
+      padding: 14px 24px; border-bottom: 1px solid rgba(255,255,255,0.05);
+      cursor: pointer; letter-spacing: 0.5px; text-transform: uppercase;
+    }
+    .nav-mobile a:last-child { border-bottom: none; color: #60a5fa; }
 
-    /* ── MODAL PRÓXIMAMENTE ── */
-    .modal-overlay{display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:300;align-items:center;justify-content:center;}
-    .modal-overlay.activo{display:flex;}
-    .modal-box{background:var(--blanco);border-radius:16px;padding:40px 32px;text-align:center;max-width:360px;width:90%;margin:0 16px;}
-    .modal-icono{font-size:48px;margin-bottom:16px;}
-    .modal-box h3{font-family:'Outfit',sans-serif;font-size:24px;font-weight:800;color:var(--texto);margin-bottom:8px;text-transform:uppercase;}
-    .modal-box p{font-size:15px;color:var(--texto-suave);line-height:1.6;margin-bottom:24px;}
-    .modal-box button{background:var(--azul);color:var(--blanco);font-family:'Outfit',sans-serif;font-size:14px;font-weight:700;padding:12px 32px;border:none;border-radius:6px;cursor:pointer;}
+    /* ── MODAL ── */
+    .modal-overlay {
+      display: none; position: fixed; inset: 0;
+      background: rgba(0,0,0,0.6); z-index: 300;
+      align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .modal-overlay.activo { display: flex; }
+    .modal-box {
+      background: var(--blanco); border-radius: 20px; padding: 44px 36px;
+      text-align: center; max-width: 380px; width: 90%;
+      box-shadow: 0 24px 80px rgba(0,0,0,0.2);
+      animation: modalIn 0.3s cubic-bezier(.34,1.56,.64,1);
+    }
+    @keyframes modalIn { from { opacity:0; transform:scale(0.88) translateY(12px); } to { opacity:1; transform:scale(1) translateY(0); } }
+    .modal-icono { font-size: 48px; margin-bottom: 16px; }
+    .modal-box h3 { font-size: 22px; font-weight: 800; color: var(--texto); margin-bottom: 8px; text-transform: uppercase; letter-spacing: -0.5px; }
+    .modal-box p { font-size: 15px; color: var(--texto-suave); line-height: 1.7; margin-bottom: 28px; }
+    .modal-box button {
+      background: var(--azul); color: var(--blanco); font-family: 'Outfit', sans-serif;
+      font-size: 14px; font-weight: 700; padding: 13px 36px;
+      border: none; border-radius: 8px; cursor: pointer;
+      transition: background var(--transicion);
+    }
+    .modal-box button:hover { background: var(--azul-oscuro); }
 
     /* ── VISTAS ── */
-    .vista{display:none;}.vista.activa{display:block;}
+    .vista { display: none; } .vista.activa { display: block; }
 
     /* ── HERO ── */
-    .hero{min-height:100vh;background:url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
-    .hero::before{content:'';position:absolute;top:-100px;right:-100px;width:600px;height:600px;background:var(--azul-claro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.2;}
-    .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
-    .hero-contenido{position:relative;z-index:2;max-width:680px;animation:fadeUp 0.8s ease both;}
-    @keyframes fadeUp{from{opacity:0;transform:translateY(30px)}to{opacity:1;transform:translateY(0)}}
-    .hero-tag{display:inline-block;background:rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:12px;font-weight:600;letter-spacing:3px;text-transform:uppercase;padding:8px 16px;border-radius:4px;margin-bottom:28px;}
-    .hero h1{font-family:'Outfit',sans-serif;font-size:clamp(52px,8vw,88px);font-weight:900;color:var(--blanco);line-height:0.95;text-transform:lowercase;letter-spacing:-2px;margin-bottom:24px;}
-    .hero h1 span{color:rgba(255,255,255,0.35);}
-    .hero p{font-size:18px;font-weight:300;color:rgba(255,255,255,0.8);line-height:1.6;max-width:480px;margin-bottom:40px;}
-    .hero-botones{display:flex;gap:16px;flex-wrap:wrap;}
-    .btn-primario{background:var(--blanco);color:var(--azul);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:16px 32px;border-radius:6px;text-decoration:none;transition:transform 0.2s,box-shadow 0.2s;display:inline-block;cursor:pointer;border:none;}
-    .btn-primario:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(0,0,0,0.2);}
-    .btn-secundario{background:transparent;color:var(--blanco);font-family:'Outfit',sans-serif;font-size:15px;font-weight:600;padding:16px 32px;border-radius:6px;border:2px solid rgba(255,255,255,0.4);text-decoration:none;transition:border-color 0.2s,background 0.2s;display:inline-block;cursor:pointer;}
-    .btn-secundario:hover{border-color:var(--blanco);background:rgba(255,255,255,0.1);}
-
-    .hero-stats{position:relative;z-index:2;display:flex;gap:32px;flex-wrap:wrap;margin-top:48px;animation:fadeUp 0.8s 0.3s ease both;}
-    .stat-num{font-family:'Outfit',sans-serif;font-size:42px;font-weight:800;color:var(--blanco);line-height:1;}
-    .stat-label{font-size:12px;color:rgba(255,255,255,0.6);letter-spacing:1px;text-transform:uppercase;}
+    .hero {
+      min-height: 100vh;
+      background: url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;
+      display: flex; flex-direction: column; justify-content: flex-end;
+      position: relative; padding: 0 48px 80px;
+    }
+    .hero-overlay {
+      position: absolute; inset: 0;
+      background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.35) 55%, rgba(0,0,0,0.1) 100%);
+    }
+    .hero-contenido { position: relative; z-index: 2; max-width: 720px; animation: fadeUp 0.9s ease both; }
+    @keyframes fadeUp { from { opacity:0; transform:translateY(36px); } to { opacity:1; transform:translateY(0); } }
+    .hero-tag {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(38,56,191,0.8); color: var(--blanco);
+      font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase;
+      padding: 8px 16px; border-radius: 6px; margin-bottom: 24px;
+      border: 1px solid rgba(255,255,255,0.15);
+    }
+    .hero-tag::before { content: ''; width: 6px; height: 6px; background: #60efca; border-radius: 50%; }
+    .hero h1 {
+      font-size: clamp(52px,8vw,92px); font-weight: 900; color: var(--blanco);
+      line-height: 0.93; text-transform: lowercase; letter-spacing: -3px; margin-bottom: 20px;
+    }
+    .hero h1 em { font-style: normal; color: rgba(255,255,255,0.32); }
+    .hero p { font-size: 17px; font-weight: 300; color: rgba(255,255,255,0.78); line-height: 1.7; max-width: 480px; margin-bottom: 36px; }
+    .hero-botones { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 56px; }
+    .btn-primario {
+      background: var(--blanco); color: var(--azul);
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800;
+      padding: 15px 30px; border-radius: 8px; text-decoration: none;
+      transition: transform var(--transicion), box-shadow var(--transicion), background var(--transicion);
+      display: inline-block; cursor: pointer; border: none; letter-spacing: 0.3px;
+    }
+    .btn-primario:hover { transform: translateY(-2px); box-shadow: 0 10px 32px rgba(0,0,0,0.25); }
+    .btn-secundario {
+      background: transparent; color: var(--blanco);
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+      padding: 15px 30px; border-radius: 8px; border: 1.5px solid rgba(255,255,255,0.35);
+      text-decoration: none;
+      transition: border-color var(--transicion), background var(--transicion);
+      display: inline-block; cursor: pointer;
+    }
+    .btn-secundario:hover { border-color: var(--blanco); background: rgba(255,255,255,0.08); }
+    .hero-stats { display: flex; gap: 40px; flex-wrap: wrap; animation: fadeUp 0.9s 0.25s ease both; }
+    .stat-sep { width: 1px; background: rgba(255,255,255,0.2); height: 40px; align-self: center; }
+    .stat-num { font-size: 40px; font-weight: 900; color: var(--blanco); line-height: 1; }
+    .stat-label { font-size: 11px; color: rgba(255,255,255,0.5); letter-spacing: 1.5px; text-transform: uppercase; margin-top: 2px; }
 
     /* ── FILTROS ── */
-    .seccion-filtros{background:var(--gris-claro);padding:64px 48px;}
-    .seccion-tag{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--azul);margin-bottom:12px;}
-    .seccion-titulo{font-family:'Outfit',sans-serif;font-size:clamp(36px,5vw,56px);font-weight:900;color:var(--texto);text-transform:lowercase;letter-spacing:-1px;line-height:1;margin-bottom:32px;}
-    .filtros-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:16px;margin-bottom:24px;}
-    .filtro-grupo label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);display:block;margin-bottom:6px;}
-    .filtro-grupo select,.filtro-grupo input{width:100%;padding:12px 14px;border:1.5px solid var(--gris-medio);border-radius:6px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--texto);background:var(--blanco);outline:none;transition:border-color 0.2s;}
-    .filtro-grupo select:focus,.filtro-grupo input:focus{border-color:var(--azul);}
-    .btn-buscar{background:var(--azul);color:var(--blanco);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px 40px;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s,transform 0.2s;}
-    .btn-buscar:hover{background:var(--azul-oscuro);transform:translateY(-2px);}
-
-    /* ── GRID ── */
-    .seccion-propiedades{padding:80px 48px;}
-    .props-header{display:flex;align-items:flex-end;justify-content:space-between;margin-bottom:40px;flex-wrap:wrap;gap:16px;}
-    .props-header .seccion-titulo{margin-bottom:0;}
-    .grid-props{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:24px;}
-    .prop-card{background:var(--blanco);border-radius:12px;overflow:hidden;box-shadow:0 2px 12px rgba(38,56,191,0.06);border:1px solid var(--gris-medio);transition:transform 0.25s,box-shadow 0.25s;cursor:pointer;}
-    .prop-card:hover{transform:translateY(-5px);box-shadow:0 16px 40px rgba(38,56,191,0.14);border-color:var(--azul);}
-    .prop-img-wrap{position:relative;height:210px;overflow:hidden;background:var(--gris-medio);}
-    .prop-img-wrap img{width:100%;height:100%;object-fit:cover;transition:transform 0.4s;}
-    .prop-card:hover .prop-img-wrap img{transform:scale(1.04);}
-    .prop-badge{position:absolute;top:14px;left:14px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;padding:5px 10px;border-radius:4px;}
-    .badge-venta{background:var(--azul);color:var(--blanco);}
-    .badge-arriendo{background:#1a8a5a;color:var(--blanco);}
-    .prop-info{padding:20px;}
-    .prop-precio{font-family:'Outfit',sans-serif;font-size:26px;font-weight:800;color:var(--azul);margin-bottom:4px;}
-    .prop-nombre{font-size:15px;font-weight:700;color:var(--texto);margin-bottom:4px;}
-    .prop-ubicacion{font-size:13px;color:var(--texto-suave);margin-bottom:14px;}
-    .prop-detalles{display:flex;gap:16px;border-top:1px solid var(--gris-medio);padding-top:14px;}
-    .prop-detalle{font-size:13px;color:var(--texto-suave);}
-    .prop-detalle strong{color:var(--texto);font-weight:700;}
-    .sin-resultados{text-align:center;padding:64px;color:var(--texto-suave);font-size:16px;grid-column:1/-1;}
-    .cargando{text-align:center;padding:64px;color:var(--texto-suave);font-size:16px;grid-column:1/-1;}
-
-    /* ── DETALLE ── */
-    .vista-detalle{padding:100px 48px 64px;}
-    .btn-volver{background:none;border:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;color:var(--azul);letter-spacing:1px;text-transform:uppercase;cursor:pointer;display:flex;align-items:center;gap:8px;margin-bottom:40px;padding:0;transition:gap 0.2s;}
-    .btn-volver:hover{gap:12px;}
-    .detalle-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;margin-bottom:64px;}
-    .galeria-principal{position:relative;height:480px;overflow:hidden;border-radius:12px;background:var(--gris-medio);}
-    .galeria-principal img{width:100%;height:100%;object-fit:contain;background:var(--gris-claro);transition:opacity 0.4s;}
-    .galeria-thumbs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
-    .thumb{width:72px;height:56px;object-fit:cover;border-radius:6px;cursor:pointer;border:2px solid transparent;transition:border-color 0.2s;}
-    .thumb:hover,.thumb.activo{border-color:var(--azul);}
-    .nav-foto{position:absolute;top:50%;transform:translateY(-50%);background:rgba(0,0,0,0.35);color:white;border:none;width:40px;height:40px;border-radius:50%;cursor:pointer;font-size:14px;transition:background 0.2s;z-index:5;}
-    .nav-foto:hover{background:var(--azul);}
-    .nav-foto.izq{left:12px;}.nav-foto.der{right:12px;}
-    .detalle-info{display:flex;flex-direction:column;}
-    .detalle-negocio{font-size:12px;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:var(--azul);margin-bottom:8px;}
-    .detalle-titulo{font-family:'Outfit',sans-serif;font-size:clamp(28px,4vw,48px);font-weight:900;text-transform:uppercase;line-height:1;margin-bottom:16px;}
-    .detalle-precio{font-family:'Outfit',sans-serif;font-size:40px;font-weight:900;color:var(--azul);margin-bottom:8px;}
-    .detalle-precio-sub{font-size:13px;color:var(--texto-suave);margin-bottom:24px;}
-    .vis-badge{background:#e8f5e9;color:#2e7d32;font-size:12px;font-weight:700;padding:8px 16px;border-radius:4px;display:inline-block;margin-bottom:20px;}
-    .contacto-rapido{background:var(--gris-claro);border-radius:12px;padding:24px;border:1px solid var(--gris-medio);margin-top:24px;}
-    .contacto-rapido h3{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:16px;}
-    .form-grupo{margin-bottom:12px;}
-    .form-grupo label{font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);display:block;margin-bottom:4px;}
-    .form-grupo input{width:100%;padding:12px;border:1.5px solid var(--gris-medio);border-radius:6px;font-family:'Outfit',sans-serif;font-size:14px;color:var(--texto);background:var(--blanco);outline:none;transition:border-color 0.2s;}
-    .form-grupo input:focus{border-color:var(--azul);}
-    .btn-contactar{width:100%;background:var(--azul);color:var(--blanco);font-family:'Outfit',sans-serif;font-size:15px;font-weight:700;padding:14px;border:none;border-radius:6px;cursor:pointer;margin-top:8px;transition:background 0.2s;}
-    .btn-contactar:hover{background:var(--azul-oscuro);}
-    .ficha-tecnica{border-top:1px solid var(--gris-medio);padding-top:48px;margin-bottom:48px;}
-    .ficha-tecnica h3{font-family:'Outfit',sans-serif;font-size:28px;font-weight:900;text-transform:uppercase;margin-bottom:24px;}
-    .ficha-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:0;border:1px solid var(--gris-medio);border-radius:8px;overflow:hidden;margin-bottom:40px;}
-    .ficha-item{padding:14px 18px;border-bottom:1px solid var(--gris-medio);border-right:1px solid var(--gris-medio);}
-    .ficha-item-label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:4px;}
-    .ficha-item-valor{font-size:15px;font-weight:700;color:var(--texto);}
-    .caract-seccion{margin-bottom:32px;}
-    .caract-seccion h4{font-size:18px;font-weight:700;color:var(--texto);margin-bottom:8px;padding-bottom:8px;border-bottom:2px solid var(--gris-medio);}
-    .caract-lista{display:grid;grid-template-columns:repeat(3,1fr);gap:8px 16px;}
-    .caract-item{font-size:14px;color:var(--texto-suave);padding:4px 0;}
-    .descripcion h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:12px;}
-    .descripcion p{font-size:15px;color:var(--texto-suave);line-height:1.8;}
-    .video-wrap{margin-top:40px;}
-    .video-wrap h4{font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--texto);margin-bottom:16px;}
-    .video-wrap iframe{width:100%;height:400px;border-radius:12px;border:none;}
-
-    /* ── POR QUÉ ELEGIRNOS ── */
-    .seccion-porque{background:var(--azul);padding:96px 48px;}
-    .seccion-porque .seccion-tag{color:rgba(255,255,255,0.6);}
-    .seccion-porque .seccion-titulo{color:var(--blanco);}
-    .grid-razones{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:32px;}
-    .razon{padding:32px;background:rgba(255,255,255,0.08);border-radius:12px;border:1px solid rgba(255,255,255,0.12);transition:background 0.2s;}
-    .razon:hover{background:rgba(255,255,255,0.13);}
-    .razon-icono{width:48px;height:48px;background:rgba(255,255,255,0.15);border-radius:10px;display:flex;align-items:center;justify-content:center;margin-bottom:16px;font-size:22px;}
-    .razon h3{font-size:17px;font-weight:700;color:var(--blanco);margin-bottom:8px;}
-    .razon p{font-size:14px;font-weight:300;color:rgba(255,255,255,0.7);line-height:1.6;}
-
-    /* ── CAPTACIÓN ── */
-    .seccion-captacion{background:var(--gris-claro);padding:96px 48px;}
-    .captacion-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;}
-    .captacion-card{padding:48px 40px;border-radius:16px;position:relative;overflow:hidden;}
-    .captacion-card-venta{background:var(--azul);color:var(--blanco);}
-    .captacion-card-arriendo{background:var(--blanco);border:2px solid var(--gris-medio);}
-    .captacion-card::before{content:'';position:absolute;bottom:-40px;right:-40px;width:180px;height:180px;background:rgba(255,255,255,0.07);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);}
-    .captacion-card h3{font-family:'Outfit',sans-serif;font-size:36px;font-weight:900;text-transform:lowercase;letter-spacing:-1px;margin-bottom:12px;}
-    .captacion-card p{font-size:15px;font-weight:300;line-height:1.6;opacity:0.85;margin-bottom:28px;}
-    .captacion-card-arriendo p{color:var(--texto-suave);opacity:1;}
-    .btn-blanco{display:inline-block;background:var(--blanco);color:var(--azul);font-size:14px;font-weight:700;padding:14px 28px;border-radius:6px;cursor:pointer;transition:transform 0.2s;border:none;font-family:'Outfit',sans-serif;}
-    .btn-blanco:hover{transform:translateY(-2px);}
-    .btn-azul{display:inline-block;background:var(--azul);color:var(--blanco);font-size:14px;font-weight:700;padding:14px 28px;border-radius:6px;cursor:pointer;transition:background 0.2s,transform 0.2s;border:none;font-family:'Outfit',sans-serif;}
-    .btn-azul:hover{background:var(--azul-oscuro);transform:translateY(-2px);}
-
-    /* ── CONTACTO ── */
-    .seccion-contacto{padding:96px 48px;}
-    .contacto-grid{display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:start;}
-    .contacto-info h2{font-family:'Outfit',sans-serif;font-size:48px;font-weight:900;text-transform:lowercase;letter-spacing:-1px;margin-bottom:16px;}
-    .contacto-info p{font-size:16px;color:var(--texto-suave);line-height:1.7;margin-bottom:32px;}
-    .contacto-datos{display:flex;flex-direction:column;gap:16px;}
-    .contacto-dato{display:flex;align-items:center;gap:12px;font-size:15px;}
-    .contacto-dato-icono{width:40px;height:40px;background:var(--gris-claro);border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
-    .contacto-form{display:flex;flex-direction:column;gap:16px;}
-    .form-fila{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
-    .form-input{width:100%;padding:12px 14px;border:1.5px solid var(--gris-medio);border-radius:6px;font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;color:var(--texto);background:var(--blanco);outline:none;transition:border-color 0.2s;}
-    .form-input:focus{border-color:var(--azul);}
-    .btn-enviar{background:var(--azul);color:var(--blanco);font-family:'Outfit',sans-serif;font-size:16px;font-weight:700;padding:16px;border:none;border-radius:8px;cursor:pointer;transition:background 0.2s,transform 0.2s;}
-    .btn-enviar:hover{background:var(--azul-oscuro);transform:translateY(-2px);}
-
-    /* ── FOOTER ── */
-    footer{background:var(--negro);color:rgba(255,255,255,0.7);padding:48px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:24px;}
-    .footer-logo{font-family:'Outfit',sans-serif;font-size:24px;font-weight:900;color:var(--blanco);text-transform:lowercase;}
-    .footer-logo span{color:var(--azul-claro);}
-    .footer-links{display:flex;gap:24px;list-style:none;}
-    .footer-links a{text-decoration:none;font-size:13px;color:rgba(255,255,255,0.5);transition:color 0.2s;cursor:pointer;}
-    .footer-links a:hover{color:var(--blanco);}
-
-    /* ── WA ── */
-    .wa-flotante{position:fixed;bottom:28px;right:28px;z-index:200;width:58px;height:58px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 20px rgba(37,211,102,0.4);text-decoration:none;transition:transform 0.2s;}
-    .wa-flotante:hover{transform:scale(1.1);}
-    .wa-flotante svg{width:30px;height:30px;}
+    .seccion-filtros {
+      background: var(--blanco); padding: 56px 48px;
+      border-bottom: 1px solid var(--gris-medio);
+    }
+    .seccion-tag { font-size: 11px; font-weight: 700; letter-spacing: 3px; text-transform: uppercase; color: var(--azul); margin-bottom: 10px; }
+    .seccion-titulo { font-size: clamp(32px,5vw,52px); font-weight: 900; color: var(--texto); text-transform: lowercase; letter-spacing: -1.5px; line-height: 1; margin-bottom: 28px; }
+    .filtros-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px,1fr)); gap: 12px; margin-bottom: 20px; }
+    .filtro-grupo label { font-size: 10px; font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; color: var(--texto-suave); display: block; margin-bottom: 6px; }
+    .filtro-grupo select, .filtro-grupo input {
+      width: 100%; padding: 11px 14px;
+      border: 1.5px solid var(--gris-medio); border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-size: 13px; font-weight: 600;
+      color: var(--texto); background: var(--blanco); outline: none;
+      transition: border-color var(--transicion), box-shadow var(--transicion);
+      appearance: none; -webkit-appearance: none;
+    }
+    .filtro-grupo select { background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='%23555577' d='M1 1l5 5 5-5'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; padding-right: 32px; }
+    .filtro-grupo select:focus, .filtro-grupo input:focus { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(38,56,191,0.10); }
+    .btn-buscar {
+      background: var(--azul); color: var(--blanco);
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800;
+      padding: 13px 36px; border: none; border-radius: 8px; cursor: pointer;
+      transition: background var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+      letter-spacing: 0.3px;
+    }
+    .btn-buscar:hover { background: var(--azul-oscuro); transform: translateY(-2px); box-shadow: 0 6px 20px rgba(38,56,191,0.3); }
 
     /* ── CARRUSEL ── */
-    .seccion-destacados{padding:64px 48px 32px;}
-    .destacados-titulo{text-align:center;margin-bottom:40px;padding:0 8px;}
-    .destacados-titulo h2{font-family:'Outfit',sans-serif;font-size:clamp(22px,5vw,42px);font-weight:900;color:var(--texto);text-transform:uppercase;letter-spacing:-1px;word-break:break-word;}
-    .destacados-titulo h2 span{color:var(--azul);}
-    .carrusel-wrapper{position:relative;overflow:hidden;}
-    .carrusel-track{display:flex;transition:transform 0.4s ease;gap:24px;}
-    .carrusel-slide{min-width:calc(25% - 18px);background:var(--blanco);border-radius:12px;overflow:hidden;border:1px solid var(--gris-medio);box-shadow:0 2px 12px rgba(38,56,191,0.06);cursor:pointer;transition:transform 0.25s,box-shadow 0.25s;flex-shrink:0;}
-    .carrusel-slide:hover{transform:translateY(-4px);box-shadow:0 12px 32px rgba(38,56,191,0.12);}
-    .carrusel-img{height:200px;overflow:hidden;background:var(--gris-medio);}
-    .carrusel-img img{width:100%;height:100%;object-fit:contain;background:var(--gris-claro);transition:transform 0.4s;}
-    .carrusel-slide:hover .carrusel-img img{transform:scale(1.04);}
-    .carrusel-info{padding:16px;}
-    .carrusel-precio{font-family:'Outfit',sans-serif;font-size:20px;font-weight:800;color:var(--azul);margin-bottom:4px;}
-    .carrusel-precio span{font-size:12px;font-weight:500;color:var(--texto-suave);margin-left:4px;}
-    .carrusel-nombre{font-size:14px;font-weight:700;color:var(--azul);margin-bottom:4px;line-height:1.3;}
-    .carrusel-ubicacion{font-size:12px;color:var(--texto-suave);margin-bottom:12px;}
-    .carrusel-detalles{display:grid;grid-template-columns:repeat(3,1fr);gap:0;border-top:1px solid var(--gris-medio);margin-top:12px;width:100%;}
-    .carrusel-detalle{font-size:12px;color:var(--texto-suave);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:10px 4px;border-right:1px solid var(--gris-medio);text-align:center;}
-    .carrusel-detalle:last-child{border-right:none;}
-    .carrusel-detalle .det-label{font-size:10px;font-weight:600;letter-spacing:0.5px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:2px;}
-    .carrusel-detalle strong{color:var(--texto);font-weight:800;font-size:15px;}
-    .carrusel-outer{position:relative;padding:0 48px;}
-    .carrusel-btn{position:absolute;top:50%;transform:translateY(-50%);background:var(--azul);color:var(--blanco);border:none;width:36px;height:36px;border-radius:4px;cursor:pointer;font-size:16px;z-index:10;transition:background 0.2s;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
-    .carrusel-btn:hover{background:var(--azul-oscuro);}
-    .carrusel-btn.izq{left:4px;}
-    .carrusel-btn.der{right:4px;}
-    .carrusel-dots{display:flex;justify-content:center;gap:8px;margin-top:20px;}
-    .carrusel-dot{width:10px;height:10px;border-radius:50%;background:var(--gris-medio);border:none;cursor:pointer;transition:background 0.2s;}
-    .carrusel-dot.activo{background:var(--azul);}
+    .seccion-destacados { padding: 64px 0 40px; }
+    .seccion-destacados-inner { padding: 0 48px; }
+    .destacados-header { display: flex; align-items: flex-end; justify-content: space-between; margin-bottom: 32px; padding: 0 48px; }
+    .destacados-header h2 { font-size: clamp(24px,4vw,40px); font-weight: 900; color: var(--texto); text-transform: uppercase; letter-spacing: -1px; }
+    .destacados-header h2 span { color: var(--azul); }
+    .carrusel-nav { display: flex; gap: 8px; align-items: center; }
+    .carrusel-btn {
+      background: var(--azul); color: var(--blanco);
+      border: none; width: 38px; height: 38px; border-radius: 8px;
+      cursor: pointer; font-size: 16px; transition: background var(--transicion), transform var(--transicion);
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .carrusel-btn:hover { background: var(--azul-oscuro); transform: scale(1.05); }
+    .carrusel-btn:disabled { background: var(--gris-medio); color: var(--gris); cursor: default; transform: none; }
+    .carrusel-outer { position: relative; overflow: hidden; padding: 0 48px; cursor: grab; user-select: none; }
+    .carrusel-outer:active { cursor: grabbing; }
+    .carrusel-track { display: flex; transition: transform 0.38s cubic-bezier(.4,0,.2,1); gap: 20px; will-change: transform; }
+    .carrusel-track.dragging { transition: none; }
+
+    /* ── CARD PROPIEDAD ── */
+    .carrusel-slide, .prop-card {
+      background: var(--blanco); border-radius: var(--radio); overflow: hidden;
+      border: 1px solid var(--gris-medio); box-shadow: var(--sombra);
+      cursor: pointer; transition: transform var(--transicion), box-shadow var(--transicion), border-color var(--transicion);
+      flex-shrink: 0;
+    }
+    .carrusel-slide { min-width: calc(25% - 15px); }
+    .carrusel-slide:hover, .prop-card:hover { transform: translateY(-5px); box-shadow: var(--sombra-hover); border-color: rgba(38,56,191,0.25); }
+    .carrusel-img, .prop-img-wrap { position: relative; height: 210px; overflow: hidden; background: var(--gris-claro); }
+    .carrusel-img img, .prop-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
+    .carrusel-slide:hover .carrusel-img img, .prop-card:hover .prop-img-wrap img { transform: scale(1.06); }
+    .prop-badge {
+      position: absolute; top: 12px; left: 12px;
+      font-size: 10px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;
+      padding: 5px 10px; border-radius: 5px; z-index: 3;
+    }
+    .badge-venta { background: var(--azul); color: var(--blanco); }
+    .badge-arriendo { background: #059669; color: var(--blanco); }
+
+    /* ── INFO CARD ── */
+    .carrusel-info, .prop-info { padding: 18px 20px 16px; }
+    .carrusel-precio, .prop-precio { font-size: 22px; font-weight: 900; color: var(--azul); margin-bottom: 3px; letter-spacing: -0.5px; }
+    .carrusel-precio span { font-size: 11px; font-weight: 500; color: var(--texto-suave); margin-left: 4px; letter-spacing: 0; }
+    .carrusel-nombre, .prop-nombre { font-size: 14px; font-weight: 700; color: var(--texto); margin-bottom: 3px; line-height: 1.35; }
+    .carrusel-ubicacion, .prop-ubicacion { font-size: 12px; color: var(--texto-suave); margin-bottom: 14px; }
+    .carrusel-detalles {
+      display: grid; grid-template-columns: repeat(3,1fr);
+      border-top: 1px solid var(--gris-medio); margin-top: 14px; margin-left: -20px; margin-right: -20px;
+    }
+    .carrusel-detalle {
+      font-size: 11px; color: var(--texto-suave);
+      display: flex; flex-direction: column; align-items: center;
+      padding: 10px 4px; border-right: 1px solid var(--gris-medio); text-align: center;
+    }
+    .carrusel-detalle:last-child { border-right: none; }
+    .carrusel-detalle .det-label { font-size: 9px; font-weight: 700; letter-spacing: 0.8px; text-transform: uppercase; color: var(--texto-suave); margin-bottom: 3px; }
+    .carrusel-detalle strong { color: var(--texto); font-weight: 800; font-size: 15px; }
+    .prop-detalles { display: flex; gap: 14px; border-top: 1px solid var(--gris-medio); padding-top: 12px; margin-top: 12px; }
+    .prop-detalle { font-size: 12px; color: var(--texto-suave); }
+    .prop-detalle strong { color: var(--texto); font-weight: 700; }
+
+    /* ── DOTS ── */
+    .carrusel-dots { display: flex; justify-content: center; gap: 6px; margin-top: 20px; }
+    .carrusel-dot {
+      width: 8px; height: 8px; border-radius: 50%;
+      background: var(--gris-medio); border: none; cursor: pointer;
+      transition: background var(--transicion), width var(--transicion); padding: 0;
+    }
+    .carrusel-dot.activo { background: var(--azul); width: 22px; border-radius: 4px; }
+
+    /* ── GRID LISTADO ── */
+    .grid-props { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px,1fr)); gap: 20px; }
+    .sin-resultados { text-align: center; padding: 64px; color: var(--texto-suave); font-size: 16px; grid-column: 1/-1; }
+
+    /* ── POR QUÉ ── */
+    .seccion-porque { background: var(--azul); padding: 88px 48px; }
+    .seccion-porque .seccion-tag { color: rgba(255,255,255,0.55); }
+    .seccion-porque .seccion-titulo { color: var(--blanco); }
+    .grid-razones { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 20px; margin-top: 40px; }
+    .razon {
+      padding: 28px 24px; background: rgba(255,255,255,0.07);
+      border-radius: 12px; border: 1px solid rgba(255,255,255,0.10);
+      transition: background var(--transicion), transform var(--transicion);
+    }
+    .razon:hover { background: rgba(255,255,255,0.12); transform: translateY(-3px); }
+    .razon-icono { width: 44px; height: 44px; background: rgba(255,255,255,0.12); border-radius: 10px; display: flex; align-items: center; justify-content: center; margin-bottom: 14px; font-size: 20px; }
+    .razon h3 { font-size: 16px; font-weight: 700; color: var(--blanco); margin-bottom: 8px; }
+    .razon p { font-size: 13px; font-weight: 300; color: rgba(255,255,255,0.68); line-height: 1.7; }
+
+    /* ── CAPTACIÓN ── */
+    .seccion-captacion { background: var(--gris-claro); padding: 88px 48px; }
+    .captacion-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 40px; }
+    .captacion-card { padding: 44px 36px; border-radius: 16px; position: relative; overflow: hidden; }
+    .captacion-card-venta { background: var(--azul); color: var(--blanco); }
+    .captacion-card-arriendo { background: var(--blanco); border: 1.5px solid var(--gris-medio); }
+    .captacion-card::before { content: ''; position: absolute; bottom: -40px; right: -40px; width: 180px; height: 180px; background: rgba(255,255,255,0.06); clip-path: polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%); }
+    .captacion-card h3 { font-size: 30px; font-weight: 900; text-transform: lowercase; letter-spacing: -1px; margin-bottom: 10px; }
+    .captacion-card p { font-size: 14px; font-weight: 300; line-height: 1.7; opacity: 0.85; margin-bottom: 24px; }
+    .captacion-card-arriendo p { color: var(--texto-suave); opacity: 1; }
+    .btn-blanco { display: inline-block; background: var(--blanco); color: var(--azul); font-size: 13px; font-weight: 800; padding: 13px 26px; border-radius: 8px; cursor: pointer; transition: transform var(--transicion); border: none; font-family: 'Outfit', sans-serif; letter-spacing: 0.2px; }
+    .btn-blanco:hover { transform: translateY(-2px); }
+    .btn-azul { display: inline-block; background: var(--azul); color: var(--blanco); font-size: 13px; font-weight: 800; padding: 13px 26px; border-radius: 8px; cursor: pointer; transition: background var(--transicion), transform var(--transicion); border: none; font-family: 'Outfit', sans-serif; }
+    .btn-azul:hover { background: var(--azul-oscuro); transform: translateY(-2px); }
+
+    /* ── CONTACTO ── */
+    .seccion-contacto { padding: 88px 48px; }
+    .contacto-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: start; }
+    .contacto-info h2 { font-size: 44px; font-weight: 900; text-transform: lowercase; letter-spacing: -1.5px; margin-bottom: 14px; line-height: 1.05; }
+    .contacto-info p { font-size: 15px; color: var(--texto-suave); line-height: 1.8; margin-bottom: 28px; }
+    .contacto-datos { display: flex; flex-direction: column; gap: 14px; }
+    .contacto-dato { display: flex; align-items: center; gap: 12px; font-size: 14px; }
+    .contacto-dato-icono { width: 40px; height: 40px; background: var(--gris-claro); border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 17px; flex-shrink: 0; }
+    .contacto-form { display: flex; flex-direction: column; gap: 14px; }
+    .form-fila { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+    .form-input {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--gris-medio); border-radius: 8px;
+      font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 600;
+      color: var(--texto); background: var(--blanco); outline: none;
+      transition: border-color var(--transicion), box-shadow var(--transicion);
+    }
+    .form-input:focus { border-color: var(--azul); box-shadow: 0 0 0 3px rgba(38,56,191,0.10); }
+    .btn-enviar {
+      background: var(--azul); color: var(--blanco);
+      font-family: 'Outfit', sans-serif; font-size: 15px; font-weight: 800;
+      padding: 15px; border: none; border-radius: 9px; cursor: pointer;
+      transition: background var(--transicion), transform var(--transicion), box-shadow var(--transicion);
+      letter-spacing: 0.2px;
+    }
+    .btn-enviar:hover { background: var(--azul-oscuro); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(38,56,191,0.3); }
+
+    /* ── DETALLE ── */
+    .vista-detalle { padding: 100px 48px 64px; }
+    .btn-volver {
+      background: none; border: none; font-family: 'Outfit', sans-serif;
+      font-size: 12px; font-weight: 800; color: var(--azul); letter-spacing: 1.5px;
+      text-transform: uppercase; cursor: pointer; display: flex; align-items: center;
+      gap: 8px; margin-bottom: 36px; padding: 0; transition: gap var(--transicion);
+    }
+    .btn-volver:hover { gap: 12px; }
+    .detalle-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 56px; margin-bottom: 56px; }
+    .galeria-principal { position: relative; height: 460px; overflow: hidden; border-radius: 14px; background: var(--gris-claro); }
+    .galeria-principal img { width: 100%; height: 100%; object-fit: contain; background: var(--gris-claro); transition: opacity 0.35s ease; }
+    .galeria-thumbs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+    .thumb { width: 72px; height: 56px; object-fit: cover; border-radius: 7px; cursor: pointer; border: 2px solid transparent; transition: border-color var(--transicion), opacity var(--transicion); opacity: 0.7; }
+    .thumb:hover { opacity: 1; }
+    .thumb.activo { border-color: var(--azul); opacity: 1; }
+    .nav-foto {
+      position: absolute; top: 50%; transform: translateY(-50%);
+      background: rgba(0,0,0,0.4); color: white; border: none;
+      width: 40px; height: 40px; border-radius: 50%; cursor: pointer;
+      font-size: 14px; transition: background var(--transicion); z-index: 5;
+      display: flex; align-items: center; justify-content: center;
+      backdrop-filter: blur(4px);
+    }
+    .nav-foto:hover { background: var(--azul); }
+    .nav-foto.izq { left: 12px; } .nav-foto.der { right: 12px; }
+    .detalle-info { display: flex; flex-direction: column; }
+    .detalle-negocio { font-size: 11px; font-weight: 800; letter-spacing: 3px; text-transform: uppercase; color: var(--azul); margin-bottom: 8px; }
+    .detalle-titulo { font-size: clamp(26px,4vw,42px); font-weight: 900; text-transform: uppercase; line-height: 1; margin-bottom: 14px; letter-spacing: -0.5px; }
+    .detalle-precio { font-size: 38px; font-weight: 900; color: var(--azul); margin-bottom: 6px; letter-spacing: -1px; }
+    .vis-badge { background: #ecfdf5; color: #065f46; font-size: 11px; font-weight: 700; padding: 7px 14px; border-radius: 6px; display: inline-block; margin-bottom: 18px; border: 1px solid #a7f3d0; }
+    .contacto-rapido { background: var(--gris-claro); border-radius: 12px; padding: 24px; border: 1px solid var(--gris-medio); margin-top: 20px; }
+    .contacto-rapido h3 { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--texto); margin-bottom: 16px; }
+    .form-grupo { margin-bottom: 10px; }
+    .form-grupo label { font-size: 10px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--texto-suave); display: block; margin-bottom: 5px; }
+    .form-grupo input { width: 100%; padding: 11px 12px; border: 1.5px solid var(--gris-medio); border-radius: 7px; font-family: 'Outfit', sans-serif; font-size: 13px; color: var(--texto); background: var(--blanco); outline: none; transition: border-color var(--transicion); }
+    .form-grupo input:focus { border-color: var(--azul); }
+    .btn-contactar { width: 100%; background: var(--azul); color: var(--blanco); font-family: 'Outfit', sans-serif; font-size: 14px; font-weight: 800; padding: 13px; border: none; border-radius: 8px; cursor: pointer; margin-top: 8px; transition: background var(--transicion); }
+    .btn-contactar:hover { background: var(--azul-oscuro); }
+    .ficha-tecnica { border-top: 1px solid var(--gris-medio); padding-top: 44px; margin-bottom: 44px; }
+    .ficha-tecnica h3 { font-size: 26px; font-weight: 900; text-transform: uppercase; margin-bottom: 20px; letter-spacing: -0.5px; }
+    .ficha-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 0; border: 1.5px solid var(--gris-medio); border-radius: 10px; overflow: hidden; margin-bottom: 36px; }
+    .ficha-item { padding: 14px 18px; border-bottom: 1px solid var(--gris-medio); border-right: 1px solid var(--gris-medio); transition: background var(--transicion); }
+    .ficha-item:hover { background: var(--gris-claro); }
+    .ficha-item-label { font-size: 9px; font-weight: 800; letter-spacing: 1px; text-transform: uppercase; color: var(--texto-suave); margin-bottom: 4px; }
+    .ficha-item-valor { font-size: 14px; font-weight: 700; color: var(--texto); }
+    .caract-seccion { margin-bottom: 28px; }
+    .caract-seccion h4 { font-size: 16px; font-weight: 700; color: var(--texto); margin-bottom: 10px; padding-bottom: 8px; border-bottom: 2px solid var(--gris-medio); }
+    .caract-lista { display: grid; grid-template-columns: repeat(3,1fr); gap: 6px 16px; }
+    .caract-item { font-size: 13px; color: var(--texto-suave); padding: 4px 0; }
+    .descripcion h4 { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--texto); margin-bottom: 10px; }
+    .descripcion p { font-size: 15px; color: var(--texto-suave); line-height: 1.9; }
+    .video-wrap { margin-top: 36px; }
+    .video-wrap h4 { font-size: 11px; font-weight: 800; letter-spacing: 2px; text-transform: uppercase; color: var(--texto); margin-bottom: 14px; }
+    .video-wrap iframe { width: 100%; height: 380px; border-radius: 12px; border: none; }
+
+    /* ── FOOTER ── */
+    footer { background: var(--negro); color: rgba(255,255,255,0.6); padding: 44px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 20px; }
+    .footer-links { display: flex; gap: 20px; list-style: none; }
+    .footer-links a { text-decoration: none; font-size: 12px; color: rgba(255,255,255,0.45); transition: color var(--transicion); cursor: pointer; letter-spacing: 0.5px; }
+    .footer-links a:hover { color: var(--blanco); }
+
+    /* ── WA ── */
+    .wa-flotante {
+      position: fixed; bottom: 24px; right: 24px; z-index: 200;
+      width: 56px; height: 56px; background: #25D366; border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 6px 24px rgba(37,211,102,0.45); text-decoration: none;
+      transition: transform var(--transicion), box-shadow var(--transicion);
+    }
+    .wa-flotante:hover { transform: scale(1.1); box-shadow: 0 10px 36px rgba(37,211,102,0.55); }
+    .wa-flotante svg { width: 28px; height: 28px; }
+
+    /* ── DROPDOWN ── */
+    .nav-item { position: relative; }
+    .nav-item::after { content: ''; display: block; position: absolute; height: 12px; width: 100%; bottom: -12px; left: 0; }
+    .nav-dropdown {
+      display: none; position: absolute; top: calc(100% + 12px); left: 50%; transform: translateX(-50%);
+      background: var(--blanco); border: 1px solid var(--gris-medio);
+      border-radius: 10px; box-shadow: 0 12px 40px rgba(38,56,191,0.14);
+      min-width: 220px; z-index: 200; padding: 6px; overflow: hidden;
+    }
+    .nav-item:hover .nav-dropdown { display: block; animation: dropIn 0.2s ease; }
+    @keyframes dropIn { from { opacity:0; transform:translateX(-50%) translateY(-6px); } to { opacity:1; transform:translateX(-50%) translateY(0); } }
+    .nav-dropdown a {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 9px 12px; font-size: 13px; font-weight: 600; color: var(--texto);
+      cursor: pointer; transition: background var(--transicion); text-decoration: none;
+      border-radius: 6px;
+    }
+    .nav-dropdown a:hover { background: var(--gris-claro); color: var(--azul); }
+    .nav-dropdown-count { background: var(--gris-claro); color: var(--texto-suave); font-size: 10px; font-weight: 800; padding: 2px 8px; border-radius: 10px; }
+
+    /* ── LISTADO ── */
+    .vista-listado-inner { padding: 100px 48px 64px; }
 
     /* ── RESPONSIVE ── */
-    @media(max-width:768px){
-      nav{padding:0 16px;}
-      .nav-links{display:none!important;}
-      .nav-menu-btn{display:block;}
-      .hero{padding:90px 16px 48px;min-height:auto;}
-      .hero h1{font-size:clamp(40px,12vw,60px);letter-spacing:-1px;}
-      .hero-tag{font-size:11px;letter-spacing:1px;padding:6px 12px;margin-bottom:20px;}
-      .hero p{font-size:15px;margin-bottom:24px;}
-      .hero-botones{flex-direction:column;gap:10px;}
-      .btn-primario,.btn-secundario{padding:14px 24px;text-align:center;width:100%;}
-      .hero-stats{margin-top:32px;gap:24px;justify-content:flex-start;}
-      .stat-num{font-size:30px;}
-      .stat-label{font-size:10px;}
-      .seccion-filtros,.seccion-propiedades,.seccion-porque,.seccion-captacion,.seccion-contacto{padding:48px 16px;}
-      .seccion-titulo{font-size:34px;}
-      .captacion-grid,.contacto-grid,.detalle-grid{grid-template-columns:1fr;}
-      .captacion-card{padding:28px 20px;}
-      .form-fila{grid-template-columns:1fr;}
-      .vista-detalle{padding:85px 16px 48px;}
-      #listado-inner{padding:85px 16px 48px!important;}
-      .galeria-principal{height:260px;}
-      .galeria-thumbs{gap:6px;}
-      .thumb{width:58px;height:44px;}
-      .detalle-titulo{font-size:20px;margin-bottom:8px;}
-      .detalle-precio{font-size:28px;}
-      .ficha-grid{grid-template-columns:1fr 1fr;}
-      .caract-lista{grid-template-columns:1fr 1fr;}
-      .video-wrap iframe{height:220px;}
-      .grid-razones{grid-template-columns:1fr;}
-      footer{flex-direction:column;align-items:flex-start;padding:32px 16px;}
-      .footer-links{flex-wrap:wrap;gap:12px;}
-      /* Carrusel móvil — 1 slide, sin gap */
-      .seccion-destacados{padding:40px 16px 24px;}
-      .carrusel-outer{padding:0 40px;}
-      .carrusel-track{gap:0;}
-      .carrusel-slide{min-width:100%;width:100%;overflow:hidden;}
-      .carrusel-precio{white-space:normal;font-size:22px;}
-      .carrusel-nombre{white-space:normal;overflow:hidden;}
-      .carrusel-info{overflow:hidden;}
-      .carrusel-precio span{display:inline;}
-      .carrusel-btn.izq{left:0;}
-      .carrusel-btn.der{right:0;}
-      .destacados-titulo{padding:0 4px;}
-      .carrusel-img{height:280px;}
-      .carrusel-info{padding:20px 16px 8px;}
-      .carrusel-precio{font-size:24px;}
-      .carrusel-nombre{font-size:15px;margin-bottom:6px;}
-      .carrusel-ubicacion{font-size:13px;margin-bottom:0;}
-      .carrusel-detalle .det-label{font-size:11px;}
-      .carrusel-detalle strong{font-size:16px;}
+    @media(max-width:1024px) {
+      .carrusel-slide { min-width: calc(50% - 10px); }
     }
-    /* ── DROPDOWN MENÚ ── */
-    .nav-item{position:relative;}
-    .nav-item::after{content:'';display:block;position:absolute;height:10px;width:100%;bottom:-10px;left:0;}
-    .nav-dropdown{display:none;position:absolute;top:100%;left:0;background:var(--blanco);border:1px solid var(--gris-medio);border-radius:8px;box-shadow:0 8px 24px rgba(38,56,191,0.12);min-width:220px;z-index:200;padding:8px 0;margin-top:0;}
-    .nav-item:hover .nav-dropdown{display:block;}
-    .nav-dropdown a{display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;font-weight:600;color:var(--texto);cursor:pointer;transition:background 0.15s;text-decoration:none;}
-    .nav-dropdown a:hover{background:var(--gris-claro);color:var(--azul);}
-    .nav-dropdown-count{background:var(--gris-medio);color:var(--texto-suave);font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;}
+    @media(max-width:768px) {
+      nav { padding: 0 16px; }
+      .nav-links { display: none !important; }
+      .nav-menu-btn { display: block; }
+      .hero { padding: 0 16px 48px; min-height: 100svh; }
+      .hero h1 { font-size: clamp(40px,12vw,56px); letter-spacing: -1.5px; }
+      .hero-botones { flex-direction: column; gap: 10px; }
+      .btn-primario, .btn-secundario { padding: 14px 24px; text-align: center; width: 100%; }
+      .hero-stats { gap: 20px; }
+      .stat-sep { display: none; }
+      .stat-num { font-size: 32px; }
+      .seccion-filtros, .seccion-propiedades, .seccion-porque, .seccion-captacion, .seccion-contacto { padding: 48px 16px; }
+      .seccion-titulo { font-size: 32px; }
+      .captacion-grid, .contacto-grid, .detalle-grid { grid-template-columns: 1fr; }
+      .captacion-card { padding: 28px 22px; }
+      .form-fila { grid-template-columns: 1fr; }
+      .vista-detalle { padding: 85px 16px 48px; }
+      .vista-listado-inner { padding: 85px 16px 48px; }
+      .galeria-principal { height: 280px; }
+      .detalle-titulo { font-size: 22px; }
+      .detalle-precio { font-size: 30px; }
+      .ficha-grid { grid-template-columns: 1fr 1fr; }
+      .caract-lista { grid-template-columns: 1fr 1fr; }
+      .video-wrap iframe { height: 220px; }
+      .grid-razones { grid-template-columns: 1fr; }
+      footer { flex-direction: column; align-items: flex-start; padding: 32px 16px; }
+      .footer-links { flex-wrap: wrap; gap: 12px; }
+      /* Carrusel móvil */
+      .carrusel-slide { min-width: 100%; }
+      .carrusel-outer { padding: 0 16px; }
+      .destacados-header { padding: 0 16px; }
+      .carrusel-track { gap: 0; }
+      .seccion-destacados { padding: 44px 0 28px; }
+      .carrusel-img { height: 260px; }
+    }
   </style>
 </head>
 <body>
@@ -292,14 +477,16 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo" onclick="irInicio()">
-    <img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:44px;width:auto;">
+    <img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:42px;width:auto;">
   </div>
   <ul class="nav-links">
     <li><a onclick="irInicio()">Inicio</a></li>
-    <li class="nav-item"><a onclick="filtrarYIr('Venta')">Ventas</a>
+    <li class="nav-item">
+      <a onclick="filtrarYIr('Venta')">Ventas</a>
       <div class="nav-dropdown" id="dropdown-venta"></div>
     </li>
-    <li class="nav-item"><a onclick="filtrarYIr('Arriendo')">Arriendos</a>
+    <li class="nav-item">
+      <a onclick="filtrarYIr('Arriendo')">Arriendos</a>
       <div class="nav-dropdown" id="dropdown-arriendo"></div>
     </li>
     <li><a onclick="mostrarProximamente('Permutar')">Permutar</a></li>
@@ -321,7 +508,7 @@
   <a onclick="cerrarMenu();irInicio();setTimeout(()=>document.getElementById('contacto').scrollIntoView({behavior:'smooth'}),100)">Contáctenos</a>
 </div>
 
-<!-- MODAL PRÓXIMAMENTE -->
+<!-- MODAL -->
 <div id="modal-proximamente" class="modal-overlay" onclick="cerrarModal()">
   <div class="modal-box" onclick="event.stopPropagation()">
     <div class="modal-icono">🚀</div>
@@ -333,24 +520,28 @@
 
 <!-- VISTA INICIO -->
 <div id="vista-inicio" class="vista activa">
-  <section class="hero">
 
+  <section class="hero">
+    <div class="hero-overlay"></div>
     <div class="hero-contenido">
       <span class="hero-tag">Eje Cafetero · Colombia</span>
-      <h1>tu próximo<br><span>hogar</span><br>te espera</h1>
+      <h1>tu próximo<br><em>hogar</em><br>te espera</h1>
       <p>Venta y arriendo de propiedades en Pereira, Manizales, Armenia y todo el Eje Cafetero. Asesoría personalizada, procesos claros.</p>
       <div class="hero-botones">
         <button class="btn-primario" onclick="document.getElementById('propiedades').scrollIntoView({behavior:'smooth'})">Ver propiedades</button>
         <button class="btn-secundario" onclick="document.getElementById('contacto').scrollIntoView({behavior:'smooth'})">Hablar con un asesor</button>
       </div>
-    </div>
-    <div class="hero-stats">
-      <div class="stat"><div class="stat-num" id="stat-total">0</div><div class="stat-label">Propiedades</div></div>
-      <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Años</div></div>
-      <div class="stat"><div class="stat-num">300+</div><div class="stat-label">Clientes</div></div>
+      <div class="hero-stats">
+        <div class="stat"><div class="stat-num" id="stat-total">—</div><div class="stat-label">Propiedades</div></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><div class="stat-num">5+</div><div class="stat-label">Años</div></div>
+        <div class="stat-sep"></div>
+        <div class="stat"><div class="stat-num">300+</div><div class="stat-label">Clientes</div></div>
+      </div>
     </div>
   </section>
 
+  <!-- FILTROS -->
   <section class="seccion-filtros" id="propiedades">
     <p class="seccion-tag">Encuentra tu propiedad ideal</p>
     <h2 class="seccion-titulo">busca aquí</h2>
@@ -360,36 +551,41 @@
 
   <!-- CARRUSEL DESTACADOS -->
   <section class="seccion-destacados" id="destacados" style="display:none;">
-    <div class="destacados-titulo">
-      <h2>INMUEBLES <span>DESTACADOS</span></h2>
-    </div>
-    <div class="carrusel-outer">
-      <button class="carrusel-btn izq" onclick="moverCarrusel(-1)">&#8249;</button>
-      <div class="carrusel-wrapper">
-        <div class="carrusel-track" id="carrusel-track"></div>
+    <div class="destacados-header">
+      <div>
+        <p class="seccion-tag">Selección especial</p>
+        <h2>INMUEBLES <span>DESTACADOS</span></h2>
       </div>
-      <button class="carrusel-btn der" onclick="moverCarrusel(1)">&#8250;</button>
+      <div class="carrusel-nav">
+        <button class="carrusel-btn" id="btn-c1-izq" onclick="moverCarrusel(-1)">&#8249;</button>
+        <button class="carrusel-btn" id="btn-c1-der" onclick="moverCarrusel(1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="carrusel-outer" id="carrusel-outer-1">
+      <div class="carrusel-track" id="carrusel-track"></div>
     </div>
     <div class="carrusel-dots" id="carrusel-dots"></div>
   </section>
 
-  <!-- CARRUSEL ÚLTIMOS INMUEBLES -->
+  <!-- CARRUSEL TODOS -->
   <section class="seccion-destacados" id="seccion-todos" style="background:var(--gris-claro);">
-    <div class="destacados-titulo">
-      <h2>ÚLTIMOS <span>INMUEBLES</span></h2>
-    </div>
-    <div class="carrusel-outer">
-      <button class="carrusel-btn izq" onclick="moverCarrusel2(-1)">&#8249;</button>
-      <div class="carrusel-wrapper">
-        <div class="carrusel-track" id="carrusel-track-2"></div>
+    <div class="destacados-header">
+      <div>
+        <p class="seccion-tag">Catálogo completo</p>
+        <h2 id="titulo-todos">ÚLTIMOS <span>INMUEBLES</span></h2>
       </div>
-      <button class="carrusel-btn der" onclick="moverCarrusel2(1)">&#8250;</button>
+      <div class="carrusel-nav">
+        <button class="carrusel-btn" id="btn-c2-izq" onclick="moverCarrusel2(-1)">&#8249;</button>
+        <button class="carrusel-btn" id="btn-c2-der" onclick="moverCarrusel2(1)">&#8250;</button>
+      </div>
+    </div>
+    <div class="carrusel-outer" id="carrusel-outer-2">
+      <div class="carrusel-track" id="carrusel-track-2"></div>
     </div>
     <div class="carrusel-dots" id="carrusel-dots-2"></div>
   </section>
 
-  <div id="grid-propiedades" style="display:none;"></div>
-
+  <!-- POR QUÉ -->
   <section class="seccion-porque" id="nosotros">
     <p class="seccion-tag">Por qué elegirnos</p>
     <h2 class="seccion-titulo">tu confianza,<br>nuestra prioridad</h2>
@@ -401,6 +597,7 @@
     </div>
   </section>
 
+  <!-- CAPTACIÓN -->
   <section class="seccion-captacion">
     <p class="seccion-tag">Propietarios</p>
     <h2 class="seccion-titulo">¿tienes una<br>propiedad?</h2>
@@ -418,6 +615,7 @@
     </div>
   </section>
 
+  <!-- CONTACTO -->
   <section class="seccion-contacto" id="contacto">
     <div class="contacto-grid">
       <div class="contacto-info">
@@ -453,8 +651,11 @@
   </section>
 
   <footer>
-    <div><img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:36px;width:auto;"><p style="margin-top:6px;font-size:12px;">Inmobiliaria Monteclaro SAS</p></div>
-    <p style="font-size:13px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+    <div>
+      <img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:34px;width:auto;">
+      <p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">Inmobiliaria Monteclaro SAS</p>
+    </div>
+    <p style="font-size:12px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
     <ul class="footer-links">
       <li><a onclick="filtrarYIr('Venta')">Ventas</a></li>
       <li><a onclick="filtrarYIr('Arriendo')">Arriendos</a></li>
@@ -466,15 +667,15 @@
 
 <!-- VISTA LISTADO -->
 <div id="vista-listado" class="vista">
-  <div style="padding:100px 48px 64px;" id="listado-inner">
+  <div class="vista-listado-inner">
     <button class="btn-volver" onclick="irInicio()">← Volver al inicio</button>
     <p class="seccion-tag" id="listado-tag">Propiedades</p>
     <h2 class="seccion-titulo" id="listado-titulo">todas</h2>
-    <div class="grid-props" id="listado-grid" style="margin-top:32px;"></div>
+    <div class="grid-props" id="listado-grid" style="margin-top:28px;"></div>
   </div>
   <footer>
-    <div><img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:36px;width:auto;"><p style="margin-top:6px;font-size:12px;">Inmobiliaria Monteclaro SAS</p></div>
-    <p style="font-size:13px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+    <div><img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:34px;width:auto;"><p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">Inmobiliaria Monteclaro SAS</p></div>
+    <p style="font-size:12px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
   </footer>
 </div>
 
@@ -485,28 +686,184 @@
     <div id="detalle-contenido"></div>
   </div>
   <footer>
-    <div><img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:36px;width:auto;"><p style="margin-top:6px;font-size:12px;">Inmobiliaria Monteclaro SAS</p></div>
-    <p style="font-size:13px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
+    <div><img src="https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/MONTECLARO3.png" alt="Monteclaro" style="height:34px;width:auto;"><p style="margin-top:6px;font-size:11px;color:rgba(255,255,255,0.4);">Inmobiliaria Monteclaro SAS</p></div>
+    <p style="font-size:12px;">© 2026 Monteclaro Inmobiliaria. Todos los derechos reservados.</p>
   </footer>
 </div>
 
-<!-- WA FLOTANTE -->
-<a href="https://wa.me/573107333139?text=Hola%2C%20me%20interesa%20una%20propiedad%20de%20Monteclaro%20Inmobiliaria" target="_blank" class="wa-flotante">
+<!-- WA -->
+<a href="https://wa.me/573107333139?text=Hola%2C%20me%20interesa%20una%20propiedad%20de%20Monteclaro%20Inmobiliaria" target="_blank" class="wa-flotante" aria-label="WhatsApp">
   <svg viewBox="0 0 24 24" fill="white"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/></svg>
 </a>
 
 <script>
+// ── CONFIGURACIÓN ──
 const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJvooDmMPA6kJ46J66ur70Ykx_1DDOUJap23arMVX-HSdZA5OVHCMeI_yIkkZlWh83R/pub?gid=0&single=true&output=csv';
+const FD = 'https://via.placeholder.com/600x400/e8e9f5/9999bb?text=Monteclaro';
 
 let propiedades = [];
 let propiedadActual = null, fotoActual = 0, slideshow = null;
 
-// ── CARRUSEL VISIBLE ──
-function getCarruselVisible() {
-  return window.innerWidth <= 768 ? 1 : window.innerWidth <= 1024 ? 2 : 4;
-}
-let carruselVisible = getCarruselVisible();
+// ── LAZY LOADING NATIVO + IntersectionObserver fallback ──
+const imgObserver = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (!entry.isIntersecting) return;
+    const img = entry.target;
+    const src = img.dataset.src;
+    if (!src) return;
+    img.src = src;
+    img.onload = () => {
+      img.classList.add('cargada');
+      const wrap = img.closest('.img-container');
+      if (wrap) wrap.classList.add('lista');
+    };
+    img.onerror = () => { img.src = FD; img.classList.add('cargada'); };
+    imgObserver.unobserve(img);
+  });
+}, { rootMargin: '200px 0px' });
 
+function crearImgLazy(src, alt, clase = '') {
+  return `<div class="img-container">
+    <div class="skeleton skeleton-img"></div>
+    <img data-src="${src || FD}" alt="${alt}" class="img-lazy ${clase}" loading="lazy">
+  </div>`;
+}
+
+function observarImagenes() {
+  document.querySelectorAll('img[data-src]').forEach(img => {
+    if (!img.dataset.observado) {
+      img.dataset.observado = '1';
+      imgObserver.observe(img);
+    }
+  });
+}
+
+// ── CARRUSEL ──
+function getVisible() {
+  if (window.innerWidth <= 640) return 1;
+  if (window.innerWidth <= 1024) return 2;
+  return 4;
+}
+
+// Clase genérica de carrusel con swipe
+class Carrusel {
+  constructor(trackId, dotsId, btnIzqId, btnDerId, outerId) {
+    this.track = document.getElementById(trackId);
+    this.dotsEl = document.getElementById(dotsId);
+    this.btnIzq = document.getElementById(btnIzqId);
+    this.btnDer = document.getElementById(btnDerId);
+    this.outer = document.getElementById(outerId);
+    this.index = 0;
+    this.items = 0;
+    this._bindSwipe();
+  }
+
+  _bindSwipe() {
+    if (!this.outer) return;
+    let startX = 0, startY = 0, isDragging = false, startIndex = 0, dx = 0;
+
+    const onStart = (e) => {
+      const t = e.touches ? e.touches[0] : e;
+      startX = t.clientX; startY = t.clientY;
+      isDragging = true; dx = 0; startIndex = this.index;
+      this.track.classList.add('dragging');
+    };
+    const onMove = (e) => {
+      if (!isDragging) return;
+      const t = e.touches ? e.touches[0] : e;
+      dx = t.clientX - startX;
+      const dy = t.clientY - startY;
+      if (Math.abs(dy) > Math.abs(dx)) { isDragging = false; this.track.classList.remove('dragging'); return; }
+      if (e.cancelable) e.preventDefault();
+    };
+    const onEnd = () => {
+      if (!isDragging) return;
+      isDragging = false;
+      this.track.classList.remove('dragging');
+      if (Math.abs(dx) > 40) { dx < 0 ? this.mover(1) : this.mover(-1); }
+      else { this._actualizar(); }
+    };
+
+    this.outer.addEventListener('touchstart', onStart, { passive: true });
+    this.outer.addEventListener('touchmove', onMove, { passive: false });
+    this.outer.addEventListener('touchend', onEnd);
+    this.outer.addEventListener('mousedown', onStart);
+    window.addEventListener('mousemove', (e) => { if (isDragging) onMove(e); });
+    window.addEventListener('mouseup', () => { if (isDragging) onEnd(); });
+  }
+
+  cargar(html, total) {
+    if (!this.track) return;
+    this.track.innerHTML = html;
+    this.items = total;
+    this.index = 0;
+    this._renderDots();
+    this._actualizar();
+    observarImagenes();
+  }
+
+  mover(dir) {
+    const v = getVisible();
+    const max = Math.max(0, this.items - v);
+    this.index = Math.max(0, Math.min(this.index + dir, max));
+    this._actualizar();
+  }
+
+  irGrupo(g) {
+    const v = getVisible();
+    this.index = g * v;
+    this._actualizar();
+  }
+
+  _actualizar() {
+    if (!this.track) return;
+    const v = getVisible();
+    const gap = v === 1 ? 0 : 20;
+    const w = this.track.parentElement.offsetWidth;
+    const slideW = (w - gap * (v - 1)) / v;
+    this.track.style.transform = `translateX(-${this.index * (slideW + gap)}px)`;
+    const g = Math.floor(this.index / v);
+    if (this.dotsEl) this.dotsEl.querySelectorAll('.carrusel-dot').forEach((d,i) => d.classList.toggle('activo', i === g));
+    const max = Math.max(0, this.items - v);
+    if (this.btnIzq) this.btnIzq.disabled = this.index === 0;
+    if (this.btnDer) this.btnDer.disabled = this.index >= max;
+  }
+
+  _renderDots() {
+    if (!this.dotsEl) return;
+    const v = getVisible();
+    const grupos = Math.ceil(this.items / v);
+    const self = this;
+    this.dotsEl.innerHTML = Array.from({length: grupos}, (_,i) =>
+      `<button class="carrusel-dot ${i===0?'activo':''}" onclick=""></button>`
+    ).join('');
+    this.dotsEl.querySelectorAll('.carrusel-dot').forEach((d,i) => {
+      d.onclick = () => self.irGrupo(i);
+    });
+  }
+
+  resize() { this._actualizar(); this._renderDots(); }
+}
+
+const c1 = new Carrusel('carrusel-track','carrusel-dots','btn-c1-izq','btn-c1-der','carrusel-outer-1');
+const c2 = new Carrusel('carrusel-track-2','carrusel-dots-2','btn-c2-izq','btn-c2-der','carrusel-outer-2');
+
+function moverCarrusel(d) { c1.mover(d); }
+function moverCarrusel2(d) { c2.mover(d); }
+
+// ── PARSEO CSV ──
+function parsearCSV(fila) {
+  const res = []; let actual = '', comillas = false;
+  for (let i = 0; i < fila.length; i++) {
+    if (fila[i] === '"') { comillas = !comillas; }
+    else if (fila[i] === ',' && !comillas) { res.push(actual); actual = ''; }
+    else { actual += fila[i]; }
+  }
+  res.push(actual);
+  return res;
+}
+
+// ── CARGA ──
 async function cargarPropiedades() {
   try {
     const resp = await fetch(CSV_URL);
@@ -517,7 +874,7 @@ async function cargarPropiedades() {
     propiedades = filas.slice(1).map((fila, idx) => {
       const cols = parsearCSV(fila);
       const obj = {};
-      enc.forEach((h, i) => obj[h] = (cols[i]||'').trim().replace(/^"|"$/g,''));
+      enc.forEach((h,i) => obj[h] = (cols[i]||'').trim().replace(/^"|"$/g,''));
 
       const fotos = [];
       for (let i = 1; i <= 10; i++) {
@@ -556,301 +913,255 @@ async function cargarPropiedades() {
 
     document.getElementById('stat-total').textContent = propiedades.length + '+';
     iniciarFiltros();
-    renderGrid(propiedades);
-    renderCarrusel();
-    renderCarrusel2();
+    renderCarrusel1(propiedades.filter(p => p.destacado));
+    renderCarrusel2Data(propiedades);
     llenarDropdowns();
   } catch(e) {
-    document.getElementById('grid-propiedades').innerHTML = '<div class="sin-resultados">No se pudieron cargar las propiedades.</div>';
+    console.error('Error al cargar propiedades:', e);
   }
 }
 
-function parsearCSV(fila) {
-  const res=[]; let actual='', comillas=false;
-  for(let i=0;i<fila.length;i++){
-    if(fila[i]==='"'){comillas=!comillas;}
-    else if(fila[i]===','&&!comillas){res.push(actual);actual='';}
-    else{actual+=fila[i];}
-  }
-  res.push(actual);
-  return res;
+// ── HTML SLIDE ──
+function slideHTML(p) {
+  const precio = p.negocio === 'Arriendo'
+    ? `$${p.precio.toLocaleString('es-CO')}/mes`
+    : `$${p.precio.toLocaleString('es-CO')}`;
+  const foto = p.fotos.length ? p.fotos[0] : FD;
+  const badge = p.negocio === 'Venta' ? 'badge-venta' : 'badge-arriendo';
+  return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
+    <div class="carrusel-img">
+      ${crearImgLazy(foto, p.titulo)}
+      <span class="prop-badge ${badge}">${p.negocio}</span>
+    </div>
+    <div class="carrusel-info">
+      <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
+      <div class="carrusel-nombre">${p.titulo}</div>
+      <div class="carrusel-ubicacion">📍 ${[p.localidad,p.ciudad].filter(Boolean).join(', ') || 'Colombia'}</div>
+      <div class="carrusel-detalles">
+        <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
+        <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
+        <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
+      </div>
+    </div>
+  </div>`;
+}
+
+function cardHTML(p) {
+  const precio = p.negocio === 'Arriendo'
+    ? `$${p.precio.toLocaleString('es-CO')}/mes`
+    : `$${p.precio.toLocaleString('es-CO')}`;
+  const foto = p.fotos.length ? p.fotos[0] : FD;
+  const badge = p.negocio === 'Venta' ? 'badge-venta' : 'badge-arriendo';
+  return `<div class="prop-card" onclick="irDetalle(${p.id})">
+    <div class="prop-img-wrap">
+      ${crearImgLazy(foto, p.titulo)}
+      <span class="prop-badge ${badge}">${p.negocio}</span>
+    </div>
+    <div class="prop-info">
+      <div class="prop-precio">${precio}</div>
+      <div class="prop-nombre">${p.titulo}</div>
+      <div class="prop-ubicacion">📍 ${[p.localidad,p.ciudad].filter(Boolean).join(', ')}</div>
+      <div class="prop-detalles">
+        ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
+        ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
+        ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
+      </div>
+    </div>
+  </div>`;
+}
+
+function renderCarrusel1(data) {
+  const seccion = document.getElementById('destacados');
+  if (!data.length) { seccion.style.display = 'none'; return; }
+  seccion.style.display = 'block';
+  c1.cargar(data.map(slideHTML).join(''), data.length);
+}
+
+function renderCarrusel2Data(data) {
+  const seccion = document.getElementById('seccion-todos');
+  if (!data.length) { seccion.style.display = 'none'; return; }
+  seccion.style.display = 'block';
+  c2.cargar(data.map(slideHTML).join(''), data.length);
 }
 
 // ── NAVEGACIÓN ──
 function irInicio() {
+  ['vista-detalle','vista-listado'].forEach(id => document.getElementById(id).classList.remove('activa'));
   document.getElementById('vista-inicio').classList.add('activa');
-  document.getElementById('vista-detalle').classList.remove('activa');
-  document.getElementById('vista-listado').classList.remove('activa');
   detenerSlideshow();
-  history.pushState('',document.title,window.location.pathname+window.location.search);
-  window.scrollTo({top:0,behavior:'smooth'});
+  history.pushState('', document.title, window.location.pathname + window.location.search);
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function irDetalle(id) {
-  propiedadActual = propiedades.find(p=>p.id===id);
-  if(!propiedadActual) return;
+  propiedadActual = propiedades.find(p => p.id === id);
+  if (!propiedadActual) return;
   fotoActual = 0;
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-listado').classList.remove('activa');
   document.getElementById('vista-detalle').classList.add('activa');
-  window.location.hash = 'propiedad-'+id;
+  window.location.hash = 'propiedad-' + id;
   renderDetalle();
-  window.scrollTo({top:0,behavior:'smooth'});
+  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
 function verificarRuta() {
   const hash = window.location.hash;
-  if(hash.startsWith('#propiedad-')){
+  if (hash.startsWith('#propiedad-')) {
     const id = parseInt(hash.replace('#propiedad-',''));
-    if(!isNaN(id)) irDetalle(id);
+    if (!isNaN(id)) irDetalle(id);
   }
 }
 
-window.addEventListener('popstate',()=>{
-  if(!window.location.hash){
-    document.getElementById('vista-inicio').classList.add('activa');
-    document.getElementById('vista-detalle').classList.remove('activa');
-    detenerSlideshow();
-  } else { verificarRuta(); }
+window.addEventListener('popstate', () => {
+  if (!window.location.hash) irInicio();
+  else verificarRuta();
 });
 
 // ── MENÚ ──
 function toggleMenu() { document.getElementById('nav-mobile').classList.toggle('abierto'); }
 function cerrarMenu() { document.getElementById('nav-mobile').classList.remove('abierto'); }
-function mostrarProximamente(seccion) {
-  document.getElementById('modal-titulo').textContent = seccion;
+function mostrarProximamente(s) {
+  document.getElementById('modal-titulo').textContent = s;
   document.getElementById('modal-proximamente').classList.add('activo');
 }
 function cerrarModal() { document.getElementById('modal-proximamente').classList.remove('activo'); }
-
-function filtrarYIr(negocio, tipo='') {
-  detenerSlideshow();
-  // Mostrar vista listado
-  document.getElementById('vista-inicio').classList.remove('activa');
-  document.getElementById('vista-detalle').classList.remove('activa');
-  document.getElementById('vista-listado').classList.add('activa');
-  window.scrollTo({top:0,behavior:'smooth'});
-
-  const resultado = propiedades.filter(p => p.negocio === negocio && (tipo==='' || p.tipo===tipo));
-  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
-
-  document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
-  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
-
-  const grid = document.getElementById('listado-grid');
-  if(!resultado.length){
-    grid.innerHTML='<div class="sin-resultados">No encontramos propiedades.</div>';
-    return;
-  }
-  grid.innerHTML = resultado.map(p => {
-    const badge = p.negocio==='Venta'?'badge-venta':'badge-arriendo';
-    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-    const foto = p.fotos.length?p.fotos[0]:fd;
-    return `<div class="prop-card" onclick="irDetalle(${p.id})">
-      <div class="prop-img-wrap">
-        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
-        <span class="prop-badge ${badge}">${p.negocio}</span>
-      </div>
-      <div class="prop-info">
-        <div class="prop-precio">${precio}</div>
-        <div class="prop-nombre">${p.titulo}</div>
-        <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
-        <div class="prop-detalles">
-          ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
-          ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
-          ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-}
 
 // ── DROPDOWNS ──
 function llenarDropdowns() {
   ['Venta','Arriendo'].forEach(negocio => {
     const id = negocio === 'Venta' ? 'dropdown-venta' : 'dropdown-arriendo';
     const tipos = {};
-    propiedades.filter(p=>p.negocio===negocio).forEach(p=>{
-      if(p.tipo) tipos[p.tipo] = (tipos[p.tipo]||0) + 1;
-    });
-    const total = propiedades.filter(p=>p.negocio===negocio).length;
+    propiedades.filter(p => p.negocio === negocio).forEach(p => { if(p.tipo) tipos[p.tipo] = (tipos[p.tipo]||0)+1; });
+    const total = propiedades.filter(p => p.negocio === negocio).length;
     const el = document.getElementById(id);
-    if(!el) return;
+    if (!el) return;
     el.innerHTML = `<a onclick="filtrarYIr('${negocio}')">Todos <span class="nav-dropdown-count">${total}</span></a>`
-      + Object.entries(tipos).sort().map(([tipo,count])=>
+      + Object.entries(tipos).sort().map(([tipo,count]) =>
         `<a onclick="filtrarYIr('${negocio}','${tipo}')">${tipo} <span class="nav-dropdown-count">${count}</span></a>`
       ).join('');
   });
 }
 
+// ── LISTADO ──
+function filtrarYIr(negocio, tipo = '') {
+  detenerSlideshow();
+  document.getElementById('vista-inicio').classList.remove('activa');
+  document.getElementById('vista-detalle').classList.remove('activa');
+  document.getElementById('vista-listado').classList.add('activa');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+
+  const resultado = propiedades.filter(p =>
+    p.negocio === negocio && (tipo === '' || p.tipo === tipo)
+  );
+
+  document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
+  document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
+
+  const grid = document.getElementById('listado-grid');
+  if (!resultado.length) {
+    grid.innerHTML = '<div class="sin-resultados">No encontramos propiedades.</div>';
+    return;
+  }
+  grid.innerHTML = resultado.map(cardHTML).join('');
+  observarImagenes();
+}
+
 // ── FILTROS ──
 function iniciarFiltros() {
   const c = document.getElementById('filtros-container');
-  const campos=[{key:'negocio',label:'Tipo'},{key:'tipo',label:'Inmueble'},{key:'ciudad',label:'Ciudad'},{key:'localidad',label:'Localidad'},{key:'alcobas',label:'Habitaciones'}];
-  let html='';
-  campos.forEach(({key,label})=>{
-    const ops=[...new Set(propiedades.map(p=>p[key]).filter(v=>v))].sort();
-    html+=`<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${ops.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
+  const campos = [
+    {key:'negocio',label:'Tipo'},
+    {key:'tipo',label:'Inmueble'},
+    {key:'ciudad',label:'Ciudad'},
+    {key:'localidad',label:'Localidad'},
+    {key:'alcobas',label:'Habitaciones'}
+  ];
+  let html = '';
+  campos.forEach(({key,label}) => {
+    const ops = [...new Set(propiedades.map(p => p[key]).filter(v => v))].sort();
+    html += `<div class="filtro-grupo"><label>${label}</label><select id="f-${key}"><option value="">Todos</option>${ops.map(o=>`<option value="${o}">${o}</option>`).join('')}</select></div>`;
   });
-  html+=`<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
-  html+=`<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
-  c.innerHTML=html;
+  html += `<div class="filtro-grupo"><label>Precio mínimo</label><input type="number" id="f-min" placeholder="Desde..."></div>`;
+  html += `<div class="filtro-grupo"><label>Precio máximo</label><input type="number" id="f-max" placeholder="Hasta..."></div>`;
+  c.innerHTML = html;
 }
 
 function aplicarFiltros() {
-  const g=id=>document.getElementById(id)?.value||'';
-  const res=propiedades.filter(p=>
-    (g('f-negocio')===''||p.negocio===g('f-negocio'))&&
-    (g('f-tipo')===''||p.tipo===g('f-tipo'))&&
-    (g('f-ciudad')===''||p.ciudad===g('f-ciudad'))&&
-    (g('f-localidad')===''||p.localidad===g('f-localidad'))&&
-    (g('f-alcobas')===''||p.alcobas==g('f-alcobas'))&&
-    (g('f-min')===''||p.precio>=Number(g('f-min')))&&
+  const g = id => document.getElementById(id)?.value || '';
+  const res = propiedades.filter(p =>
+    (g('f-negocio')===''||p.negocio===g('f-negocio')) &&
+    (g('f-tipo')===''||p.tipo===g('f-tipo')) &&
+    (g('f-ciudad')===''||p.ciudad===g('f-ciudad')) &&
+    (g('f-localidad')===''||p.localidad===g('f-localidad')) &&
+    (g('f-alcobas')===''||p.alcobas==g('f-alcobas')) &&
+    (g('f-min')===''||p.precio>=Number(g('f-min'))) &&
     (g('f-max')===''||p.precio<=Number(g('f-max')))
   );
 
-  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
-  const track2 = document.getElementById('carrusel-track-2');
-  const seccion = document.getElementById('seccion-todos');
-
-  // Actualizar título
   const negocioFiltro = g('f-negocio');
-  if(negocioFiltro) {
-    seccion.querySelector('h2').innerHTML = negocioFiltro === 'Venta'
+  const tituloEl = document.getElementById('titulo-todos');
+  if (tituloEl) {
+    tituloEl.innerHTML = negocioFiltro === 'Venta'
       ? 'PROPIEDADES EN <span>VENTA</span>'
-      : 'PROPIEDADES EN <span>ARRIENDO</span>';
-  } else {
-    seccion.querySelector('h2').innerHTML = 'ÚLTIMOS <span>INMUEBLES</span>';
+      : negocioFiltro === 'Arriendo'
+      ? 'PROPIEDADES EN <span>ARRIENDO</span>'
+      : 'ÚLTIMOS <span>INMUEBLES</span>';
   }
 
-  if(!res.length){
-    track2.innerHTML='<div style="padding:40px;text-align:center;color:var(--texto-suave);font-size:16px;width:100%;">No encontramos propiedades con esos filtros.</div>';
-    document.getElementById('carrusel-dots-2').innerHTML='';
+  // Carrusel todos
+  if (!res.length) {
+    const track2 = document.getElementById('carrusel-track-2');
+    if (track2) track2.innerHTML = '<div style="padding:40px;text-align:center;color:var(--texto-suave);font-size:16px;width:100%;">No encontramos propiedades con esos filtros.</div>';
+    document.getElementById('carrusel-dots-2').innerHTML = '';
   } else {
-    track2.innerHTML = res.map(p => {
-      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-      const foto = p.fotos.length?p.fotos[0]:fd;
-      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-        <div class="carrusel-img" style="position:relative;">
-          <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
-          <span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span>
-        </div>
-        <div class="carrusel-info">
-          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
-          <div class="carrusel-nombre">${p.titulo}</div>
-          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
-          <div class="carrusel-detalles">
-            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    carrusel2Index = 0;
-    carruselVisible = getCarruselVisible();
-    actualizarCarrusel2();
+    c2.cargar(res.map(slideHTML).join(''), res.length);
   }
 
-  // Actualizar también carrusel de destacados
-  const track1 = document.getElementById('carrusel-track');
-  const seccionDest = document.getElementById('destacados');
+  // Carrusel destacados
   const destacadosFiltrados = res.filter(p => p.destacado);
+  renderCarrusel1(destacadosFiltrados);
 
-  if(!destacadosFiltrados.length){
-    seccionDest.style.display='none';
-  } else {
-    seccionDest.style.display='block';
-    track1.innerHTML = destacadosFiltrados.map(p => {
-      const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-      const foto = p.fotos.length?p.fotos[0]:fd;
-      return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-        <div class="carrusel-img" style="position:relative;">
-          <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
-          <span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span>
-        </div>
-        <div class="carrusel-info">
-          <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
-          <div class="carrusel-nombre">${p.titulo}</div>
-          <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
-          <div class="carrusel-detalles">
-            <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
-            <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
-          </div>
-        </div>
-      </div>`;
-    }).join('');
-    carruselIndex = 0;
-    carruselVisible = getCarruselVisible();
-    const grupos = Math.ceil(destacadosFiltrados.length / carruselVisible);
-    document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
-    actualizarCarrusel();
-  }
-
-}
-
-// ── GRID ──
-function renderGrid(datos) {
-  const grid=document.getElementById('grid-propiedades');
-  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
-  if(!datos.length){grid.innerHTML='<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>';return;}
-  grid.innerHTML=datos.map(p=>{
-    const badge=p.negocio==='Venta'?'badge-venta':'badge-arriendo';
-    const precio=p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-    const foto=p.fotos.length?p.fotos[0]:fd;
-    return `<div class="prop-card" onclick="irDetalle(${p.id})">
-      <div class="prop-img-wrap">
-        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
-        <span class="prop-badge ${badge}">${p.negocio}</span>
-      </div>
-      <div class="prop-info">
-        <div class="prop-precio">${precio}</div>
-        <div class="prop-nombre">${p.titulo}</div>
-        <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
-        <div class="prop-detalles">
-          ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
-          ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
-          ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
-        </div>
-      </div>
-    </div>`;
-  }).join('');
+  document.getElementById('seccion-todos').scrollIntoView({ behavior: 'smooth' });
 }
 
 // ── DETALLE ──
 function renderDetalle() {
-  const p=propiedadActual;
-  const fd='https://via.placeholder.com/800x480/e8e9f5/555577?text=Sin+foto';
-  const precio=p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-  const esVIS=p.precio>0&&p.precio<=262635750;
-  const fotos=p.fotos.length?p.fotos:[fd];
-  const thumbs=fotos.map((f,i)=>`<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${fd}'" loading="lazy">`).join('');
+  const p = propiedadActual;
+  const precio = p.negocio === 'Arriendo'
+    ? `$${p.precio.toLocaleString('es-CO')}/mes`
+    : `$${p.precio.toLocaleString('es-CO')}`;
+  const esVIS = p.precio > 0 && p.precio <= 262635750;
+  const fotos = p.fotos.length ? p.fotos : [FD];
 
-  let videoHTML='';
-  if(p.video){
-    if(p.video.includes('instagram.com')){
-      const url=p.video.endsWith('/')?p.video:p.video+'/';
-      videoHTML=`<div class="video-wrap"><h4>Reel de la propiedad</h4><blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="width:100%;min-width:280px;max-width:540px;margin:0 auto;border-radius:12px;"></blockquote><script async src="//www.instagram.com/embed.js"><\/script></div>`;
+  const thumbs = fotos.map((f,i) =>
+    `<img src="${f}" class="thumb ${i===0?'activo':''}" onclick="cambiarFoto(${i})" onerror="this.src='${FD}'" loading="lazy">`
+  ).join('');
+
+  let videoHTML = '';
+  if (p.video) {
+    if (p.video.includes('instagram.com')) {
+      const url = p.video.endsWith('/') ? p.video : p.video + '/';
+      videoHTML = `<div class="video-wrap"><h4>Reel de la propiedad</h4><blockquote class="instagram-media" data-instgrm-permalink="${url}" data-instgrm-version="14" style="width:100%;min-width:280px;max-width:540px;margin:0 auto;border-radius:12px;"></blockquote><script async src="//www.instagram.com/embed.js"><\/script></div>`;
     } else {
-      let embedUrl=p.video;
-      if(p.video.includes('youtube.com/watch')){const vid=p.video.split('v=')[1]?.split('&')[0];if(vid)embedUrl=`https://www.youtube.com/embed/${vid}`;}
-      else if(p.video.includes('youtu.be/')){const vid=p.video.split('youtu.be/')[1]?.split('?')[0];if(vid)embedUrl=`https://www.youtube.com/embed/${vid}`;}
-      videoHTML=`<div class="video-wrap"><h4>Video de la propiedad</h4><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
+      let embedUrl = p.video;
+      if (p.video.includes('youtube.com/watch')) { const v = p.video.split('v=')[1]?.split('&')[0]; if(v) embedUrl=`https://www.youtube.com/embed/${v}`; }
+      else if (p.video.includes('youtu.be/')) { const v = p.video.split('youtu.be/')[1]?.split('?')[0]; if(v) embedUrl=`https://www.youtube.com/embed/${v}`; }
+      videoHTML = `<div class="video-wrap"><h4>Video de la propiedad</h4><iframe src="${embedUrl}" allowfullscreen></iframe></div>`;
     }
   }
 
-  document.getElementById('detalle-contenido').innerHTML=`
+  document.getElementById('detalle-contenido').innerHTML = `
     <div style="margin-bottom:20px;">
       <span class="detalle-negocio">${p.negocio}</span>
       <h2 class="detalle-titulo">${p.titulo}</h2>
       <div class="detalle-precio">${precio}</div>
-      ${esVIS?'<div class="vis-badge">✓ Apta para subsidios de vivienda 2025</div>':''}
+      ${esVIS ? '<div class="vis-badge">✓ Apta para subsidios de vivienda 2025</div>' : ''}
     </div>
     <div class="detalle-grid">
       <div>
         <div class="galeria-principal">
-          <img id="foto-principal" src="${fotos[0]}" alt="${p.titulo}" onerror="this.src='${fd}'">
+          <img id="foto-principal" src="${fotos[0]}" alt="${p.titulo}" onerror="this.src='${FD}'" style="width:100%;height:100%;object-fit:contain;background:var(--gris-claro);">
           ${fotos.length>1?`<button class="nav-foto izq" onclick="fotoAnterior()"><i class="fas fa-chevron-left"></i></button><button class="nav-foto der" onclick="fotoSiguiente()"><i class="fas fa-chevron-right"></i></button>`:''}
         </div>
         <div class="galeria-thumbs">${thumbs}</div>
@@ -868,21 +1179,23 @@ function renderDetalle() {
     <div class="ficha-tecnica">
       <h3>Detalles del inmueble</h3>
       <div class="ficha-grid">
-        <div class="ficha-item"><div class="ficha-item-label">País</div><div class="ficha-item-valor">${p.pais||'Colombia'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Departamento</div><div class="ficha-item-valor">${p.departamento||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Ciudad</div><div class="ficha-item-valor">${p.ciudad||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Código</div><div class="ficha-item-valor">${p.codigo||''}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Estado</div><div class="ficha-item-valor">${p.estado||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Área construida</div><div class="ficha-item-valor">${p.area>0?p.area+' m²':'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Alcobas</div><div class="ficha-item-valor">${p.alcobas||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Baños</div><div class="ficha-item-valor">${p.banos||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Garaje</div><div class="ficha-item-valor">${p.garaje||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Estrato</div><div class="ficha-item-valor">${p.estrato||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Pisos</div><div class="ficha-item-valor">${p.pisos||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Año construcción</div><div class="ficha-item-valor">${p.ano||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Administración</div><div class="ficha-item-valor">${p.admin>0?'$'+p.admin.toLocaleString('es-CO'):'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Tipo de negocio</div><div class="ficha-item-valor">${p.negocio||'—'}</div></div>
-        <div class="ficha-item"><div class="ficha-item-label">Tipo de inmueble</div><div class="ficha-item-valor">${p.tipo||'—'}</div></div>
+        ${[
+          ['País', p.pais||'Colombia'],
+          ['Departamento', p.departamento||'—'],
+          ['Ciudad', p.ciudad||'—'],
+          ['Código', p.codigo||'—'],
+          ['Estado', p.estado||'—'],
+          ['Área construida', p.area>0?p.area+' m²':'—'],
+          ['Alcobas', p.alcobas||'—'],
+          ['Baños', p.banos||'—'],
+          ['Garaje', p.garaje||'—'],
+          ['Estrato', p.estrato||'—'],
+          ['Pisos', p.pisos||'—'],
+          ['Año construcción', p.ano||'—'],
+          ['Administración', p.admin>0?'$'+p.admin.toLocaleString('es-CO'):'—'],
+          ['Tipo de negocio', p.negocio||'—'],
+          ['Tipo de inmueble', p.tipo||'—'],
+        ].map(([l,v]) => `<div class="ficha-item"><div class="ficha-item-label">${l}</div><div class="ficha-item-valor">${v}</div></div>`).join('')}
       </div>
       ${p.internas.length?`<div class="caract-seccion"><h4>Características internas</h4><div class="caract-lista">${p.internas.map(i=>`<div class="caract-item">• ${i}</div>`).join('')}</div></div>`:''}
       ${p.externas.length?`<div class="caract-seccion"><h4>Características externas</h4><div class="caract-lista">${p.externas.map(e=>`<div class="caract-item">• ${e}</div>`).join('')}</div></div>`:''}
@@ -892,157 +1205,38 @@ function renderDetalle() {
 }
 
 // ── GALERÍA ──
-function cambiarFoto(i){
-  const fotos=propiedadActual.fotos.length?propiedadActual.fotos:[''];
-  fotoActual=i;
-  const img=document.getElementById('foto-principal');
-  if(img){img.style.opacity=0;setTimeout(()=>{img.src=fotos[fotoActual];img.style.opacity=1;},300);}
-  document.querySelectorAll('.thumb').forEach((t,idx)=>t.classList.toggle('activo',idx===i));
+function cambiarFoto(i) {
+  const fotos = propiedadActual.fotos.length ? propiedadActual.fotos : [FD];
+  fotoActual = i;
+  const img = document.getElementById('foto-principal');
+  if (img) {
+    img.style.opacity = '0';
+    setTimeout(() => { img.src = fotos[fotoActual]; img.style.opacity = '1'; }, 300);
+  }
+  document.querySelectorAll('.thumb').forEach((t,idx) => t.classList.toggle('activo', idx === i));
   reiniciarSlideshow();
 }
-function fotoSiguiente(){const n=propiedadActual.fotos.length||1;cambiarFoto((fotoActual+1)%n);}
-function fotoAnterior(){const n=propiedadActual.fotos.length||1;cambiarFoto((fotoActual-1+n)%n);}
-function iniciarSlideshow(){if((propiedadActual.fotos.length||0)>1)slideshow=setInterval(fotoSiguiente,4500);}
-function detenerSlideshow(){clearInterval(slideshow);}
-function reiniciarSlideshow(){detenerSlideshow();iniciarSlideshow();}
+function fotoSiguiente() { const n = propiedadActual.fotos.length||1; cambiarFoto((fotoActual+1)%n); }
+function fotoAnterior() { const n = propiedadActual.fotos.length||1; cambiarFoto((fotoActual-1+n)%n); }
+function iniciarSlideshow() { if ((propiedadActual?.fotos.length||0)>1) slideshow = setInterval(fotoSiguiente, 4500); }
+function detenerSlideshow() { clearInterval(slideshow); slideshow = null; }
+function reiniciarSlideshow() { detenerSlideshow(); iniciarSlideshow(); }
 
 // ── WHATSAPP ──
-function contactarPropiedad(titulo){
-  const nombre=document.getElementById('d-nombre')?.value||'';
-  const tel=document.getElementById('d-telefono')?.value||'';
-  const msg=`Hola Monteclaro%2C soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
-  window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
+function contactarPropiedad(titulo) {
+  const nombre = document.getElementById('d-nombre')?.value || '';
+  const tel = document.getElementById('d-telefono')?.value || '';
+  const msg = `Hola Monteclaro%2C soy *${nombre||'un interesado'}*${tel?' ('+tel+')':''}.%0A🏠 Me interesa: *${titulo}*%0A¿Pueden darme más información?`;
+  window.open(`https://wa.me/573107333139?text=${msg}`, '_blank');
 }
-function enviarContacto(){
-  const nombre=document.getElementById('c-nombre').value;
-  const telefono=document.getElementById('c-telefono').value;
-  const interes=document.getElementById('c-interes').value;
-  const mensaje=document.getElementById('c-mensaje').value;
-  if(!nombre||!telefono||!interes){alert('Por favor completa nombre, teléfono e interés.');return;}
-  const msg=`Hola Monteclaro%2C soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
-  window.open(`https://wa.me/573107333139?text=${msg}`,'_blank');
-}
-
-// ── CARRUSEL 1 ──
-let carruselIndex = 0;
-
-function renderCarrusel() {
-  const destacados = propiedades.filter(p => p.destacado);
-  const seccion = document.getElementById('destacados');
-  if(!destacados.length){ seccion.style.display='none'; return; }
-  seccion.style.display='block';
-
-  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
-  const track = document.getElementById('carrusel-track');
-  track.innerHTML = destacados.map(p => {
-    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-    const foto = p.fotos.length?p.fotos[0]:fd;
-    return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-      <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
-      <div class="carrusel-info">
-        <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
-        <div class="carrusel-nombre">${p.titulo}</div>
-        <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
-        <div class="carrusel-detalles">
-          <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
-          <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
-          <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  carruselVisible = getCarruselVisible();
-  const dots = document.getElementById('carrusel-dots');
-  const grupos = Math.ceil(destacados.length / carruselVisible);
-  dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
-  carruselIndex = 0;
-  actualizarCarrusel();
-}
-
-function moverCarrusel(dir) {
-  const destacados = propiedades.filter(p=>p.destacado);
-  const maxIndex = Math.max(0, destacados.length - carruselVisible);
-  carruselIndex = Math.max(0, Math.min(carruselIndex + dir, maxIndex));
-  actualizarCarrusel();
-}
-
-function irAGrupo(grupo) {
-  carruselIndex = grupo * carruselVisible;
-  actualizarCarrusel();
-}
-
-function actualizarCarrusel() {
-  const track = document.getElementById('carrusel-track');
-  if(!track) return;
-  const wrapper = track.parentElement;
-  const gap = carruselVisible === 1 ? 0 : 24;
-  const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
-  track.style.transform = `translateX(-${carruselIndex * (slideWidth + gap)}px)`;
-  const dots = document.querySelectorAll('#carrusel-dots .carrusel-dot');
-  const grupoActual = Math.floor(carruselIndex / carruselVisible);
-  dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
-}
-
-// ── CARRUSEL 2 ──
-let carrusel2Index = 0;
-
-function renderCarrusel2() {
-  const todos = propiedades.filter(p => !p.destacado);
-  const seccion = document.getElementById('seccion-todos');
-  if(!todos.length){ seccion.style.display='none'; return; }
-  seccion.style.display='block';
-
-  const fd='https://via.placeholder.com/400x200/e8e9f5/555577?text=Sin+foto';
-  const track = document.getElementById('carrusel-track-2');
-  track.innerHTML = todos.map(p => {
-    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
-    const foto = p.fotos.length?p.fotos[0]:fd;
-    return `<div class="carrusel-slide" onclick="irDetalle(${p.id})">
-      <div class="carrusel-img" style="position:relative;"><img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy"><span class="prop-badge ${p.negocio==='Venta'?'badge-venta':'badge-arriendo'}">${p.negocio}</span></div>
-      <div class="carrusel-info">
-        <div class="carrusel-precio">${precio} <span>COP | ${p.negocio}</span></div>
-        <div class="carrusel-nombre">${p.titulo}</div>
-        <div class="carrusel-ubicacion">📍 ${p.ciudad||'Colombia'}</div>
-        <div class="carrusel-detalles">
-          <span class="carrusel-detalle"><span class="det-label">Área m²</span><strong>${p.area>0?p.area:'—'}</strong></span>
-          <span class="carrusel-detalle"><span class="det-label">Alcobas</span><strong>${p.alcobas>0?p.alcobas:'—'}</strong></span>
-          <span class="carrusel-detalle"><span class="det-label">Baño(s)</span><strong>${p.banos>0?p.banos:'—'}</strong></span>
-        </div>
-      </div>
-    </div>`;
-  }).join('');
-
-  carruselVisible = getCarruselVisible();
-  const dots = document.getElementById('carrusel-dots-2');
-  const grupos = Math.ceil(todos.length / carruselVisible);
-  dots.innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo2(${i})"></button>`).join('');
-  carrusel2Index = 0;
-  actualizarCarrusel2();
-}
-
-function moverCarrusel2(dir) {
-  const todos = propiedades.filter(p=>!p.destacado);
-  const maxIndex = Math.max(0, todos.length - carruselVisible);
-  carrusel2Index = Math.max(0, Math.min(carrusel2Index + dir, maxIndex));
-  actualizarCarrusel2();
-}
-
-function irAGrupo2(grupo) {
-  carrusel2Index = grupo * carruselVisible;
-  actualizarCarrusel2();
-}
-
-function actualizarCarrusel2() {
-  const track = document.getElementById('carrusel-track-2');
-  if(!track) return;
-  const wrapper = track.parentElement;
-  const gap = carruselVisible === 1 ? 0 : 24;
-  const slideWidth = (wrapper.offsetWidth - gap * (carruselVisible - 1)) / carruselVisible;
-  track.style.transform = `translateX(-${carrusel2Index * (slideWidth + gap)}px)`;
-  const dots = document.querySelectorAll('#carrusel-dots-2 .carrusel-dot');
-  const grupoActual = Math.floor(carrusel2Index / carruselVisible);
-  dots.forEach((d,i) => d.classList.toggle('activo', i===grupoActual));
+function enviarContacto() {
+  const nombre = document.getElementById('c-nombre').value;
+  const telefono = document.getElementById('c-telefono').value;
+  const interes = document.getElementById('c-interes').value;
+  const mensaje = document.getElementById('c-mensaje').value;
+  if (!nombre || !telefono || !interes) { alert('Por favor completa nombre, teléfono e interés.'); return; }
+  const msg = `Hola Monteclaro%2C soy *${nombre}*.%0A📞 Teléfono: ${telefono}%0A🏠 Interés: ${interes}%0A💬 ${mensaje||'Sin mensaje adicional'}`;
+  window.open(`https://wa.me/573107333139?text=${msg}`, '_blank');
 }
 
 // ── RESIZE ──
@@ -1050,14 +1244,13 @@ let resizeTimer;
 window.addEventListener('resize', () => {
   clearTimeout(resizeTimer);
   resizeTimer = setTimeout(() => {
-    carruselVisible = getCarruselVisible();
-    actualizarCarrusel();
-    actualizarCarrusel2();
+    c1.resize();
+    c2.resize();
   }, 150);
 });
 
 // ── INICIO ──
-cargarPropiedades().then(()=>verificarRuta());
+cargarPropiedades().then(() => verificarRuta());
 </script>
 </body>
 </html>
