@@ -45,7 +45,7 @@
 
     /* ── HERO ── */
     .hero{min-height:100vh;background:url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
-    /* ÚNICO CAMBIO: overlay negro para mejorar legibilidad del texto sobre el wallpaper */
+    /* ÚNICO CAMBIO: overlay oscuro para legibilidad del texto */
     .hero::before{content:'';position:absolute;inset:0;background:rgba(0,0,0,0.55);z-index:1;}
     .hero::after{content:'';position:absolute;bottom:-80px;left:200px;width:400px;height:400px;background:var(--azul-oscuro);clip-path:polygon(0 100%,0 30%,30% 0,100% 0,100% 70%,70% 100%);opacity:0.4;}
     .hero-contenido{position:relative;z-index:2;max-width:680px;animation:fadeUp 0.8s ease both;}
@@ -97,6 +97,19 @@
     .prop-detalle strong{color:var(--texto);font-weight:700;}
     .sin-resultados{text-align:center;padding:64px;color:var(--texto-suave);font-size:16px;grid-column:1/-1;}
     .cargando{text-align:center;padding:64px;color:var(--texto-suave);font-size:16px;grid-column:1/-1;}
+
+    /* ── NUEVO: FILTRO EN VISTA LISTADO ── */
+    .listado-filtros{background:var(--gris-claro);border-bottom:2px solid var(--gris-medio);padding:14px 48px;display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end;position:sticky;top:70px;z-index:50;}
+    .listado-filtros .lf-grupo{display:flex;flex-direction:column;flex:1;min-width:120px;}
+    .listado-filtros .lf-grupo label{font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--texto-suave);margin-bottom:4px;}
+    .listado-filtros .lf-grupo select,.listado-filtros .lf-grupo input{width:100%;padding:9px 11px;border:1.5px solid var(--gris-medio);border-radius:6px;font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;color:var(--texto);background:var(--blanco);outline:none;transition:border-color 0.2s;}
+    .listado-filtros .lf-grupo select:focus,.listado-filtros .lf-grupo input:focus{border-color:var(--azul);}
+    .listado-filtros .btn-lf-aplicar{background:var(--azul);color:var(--blanco);font-family:'Outfit',sans-serif;font-size:13px;font-weight:700;padding:9px 22px;border:none;border-radius:6px;cursor:pointer;transition:background 0.2s;white-space:nowrap;align-self:flex-end;}
+    .listado-filtros .btn-lf-aplicar:hover{background:var(--azul-oscuro);}
+    .listado-filtros .btn-lf-limpiar{background:var(--blanco);color:var(--texto-suave);font-family:'Outfit',sans-serif;font-size:12px;font-weight:600;padding:9px 14px;border:1.5px solid var(--gris-medio);border-radius:6px;cursor:pointer;transition:all 0.2s;white-space:nowrap;align-self:flex-end;}
+    .listado-filtros .btn-lf-limpiar:hover{border-color:var(--azul);color:var(--azul);}
+    .listado-resultados{font-size:13px;color:var(--texto-suave);margin-bottom:16px;}
+    .listado-resultados strong{color:var(--texto);font-weight:700;}
 
     /* ── DETALLE ── */
     .vista-detalle{padding:100px 48px 64px;}
@@ -277,6 +290,10 @@
       .carrusel-ubicacion{font-size:13px;margin-bottom:0;}
       .carrusel-detalle .det-label{font-size:11px;}
       .carrusel-detalle strong{font-size:16px;}
+      /* Filtro listado móvil */
+      .listado-filtros{padding:12px 16px;position:static;}
+      .listado-filtros .lf-grupo{min-width:calc(50% - 5px);flex:none;}
+      .listado-filtros .btn-lf-aplicar,.listado-filtros .btn-lf-limpiar{flex:1;}
     }
     /* ── DROPDOWN MENÚ ── */
     .nav-item{position:relative;}
@@ -467,10 +484,22 @@
 
 <!-- VISTA LISTADO -->
 <div id="vista-listado" class="vista">
+  <!-- NUEVO: Panel de filtros sticky -->
+  <div class="listado-filtros">
+    <div class="lf-grupo"><label>Tipo inmueble</label><select id="lf-tipo"><option value="">Todos</option></select></div>
+    <div class="lf-grupo"><label>Ciudad</label><select id="lf-ciudad"><option value="">Todas</option></select></div>
+    <div class="lf-grupo"><label>Localidad</label><select id="lf-localidad"><option value="">Todas</option></select></div>
+    <div class="lf-grupo"><label>Habitaciones</label><select id="lf-alcobas"><option value="">Todas</option></select></div>
+    <div class="lf-grupo"><label>Precio mínimo</label><input type="number" id="lf-min" placeholder="Desde..."></div>
+    <div class="lf-grupo"><label>Precio máximo</label><input type="number" id="lf-max" placeholder="Hasta..."></div>
+    <button class="btn-lf-aplicar" onclick="aplicarFiltroListado()">Filtrar →</button>
+    <button class="btn-lf-limpiar" onclick="limpiarFiltroListado()">Limpiar</button>
+  </div>
   <div style="padding:100px 48px 64px;" id="listado-inner">
     <button class="btn-volver" onclick="irInicio()">← Volver al inicio</button>
     <p class="seccion-tag" id="listado-tag">Propiedades</p>
     <h2 class="seccion-titulo" id="listado-titulo">todas</h2>
+    <p class="listado-resultados" id="listado-resultados" style="display:none;"></p>
     <div class="grid-props" id="listado-grid" style="margin-top:32px;"></div>
   </div>
   <footer>
@@ -501,6 +530,7 @@ const CSV_URL = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRtjvmrg08yraJv
 
 let propiedades = [];
 let propiedadActual = null, fotoActual = 0, slideshow = null;
+let negocioListadoActual = ''; // NUEVO
 
 // ── CARRUSEL VISIBLE ──
 function getCarruselVisible() {
@@ -626,18 +656,26 @@ function cerrarModal() { document.getElementById('modal-proximamente').classList
 
 function filtrarYIr(negocio, tipo='') {
   detenerSlideshow();
+  negocioListadoActual = negocio; // NUEVO
   document.getElementById('vista-inicio').classList.remove('activa');
   document.getElementById('vista-detalle').classList.remove('activa');
   document.getElementById('vista-listado').classList.add('activa');
   window.scrollTo({top:0,behavior:'smooth'});
 
-  const resultado = propiedades.filter(p => p.negocio === negocio && (tipo==='' || p.tipo===tipo));
-  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
-
   document.getElementById('listado-tag').textContent = negocio === 'Venta' ? 'Propiedades en venta' : 'Propiedades en arriendo';
   document.getElementById('listado-titulo').textContent = negocio === 'Venta' ? 'ventas' : 'arriendos';
 
+  // NUEVO: poblar y resetear filtros del listado
+  poblarFiltrosListado(negocio);
+  if (tipo) { const s = document.getElementById('lf-tipo'); if(s) s.value = tipo; }
+
+  const resultado = propiedades.filter(p => p.negocio === negocio && (tipo==='' || p.tipo===tipo));
+  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
+
   const grid = document.getElementById('listado-grid');
+  const resEl = document.getElementById('listado-resultados');
+  if(resEl){ resEl.style.display='block'; resEl.innerHTML='<strong>'+resultado.length+'</strong> propiedad'+(resultado.length!==1?'es':'')+' encontrada'+(resultado.length!==1?'s':''); }
+
   if(!resultado.length){
     grid.innerHTML='<div class="sin-resultados">No encontramos propiedades.</div>';
     return;
@@ -663,6 +701,70 @@ function filtrarYIr(negocio, tipo='') {
       </div>
     </div>`;
   }).join('');
+}
+
+// ── NUEVO: FILTROS DEL LISTADO ──
+function poblarFiltrosListado(negocio) {
+  const base = propiedades.filter(p => p.negocio === negocio);
+  const unicos = campo => [...new Set(base.map(p=>p[campo]).filter(v=>v))].sort();
+  const alcobas = [...new Set(base.map(p=>p.alcobas).filter(v=>v>0))].sort((a,b)=>a-b);
+
+  const llenar = (id, ops, label) => {
+    const el = document.getElementById(id); if(!el) return;
+    el.innerHTML = `<option value="">${label}</option>` + ops.map(o=>`<option value="${o}">${o}</option>`).join('');
+  };
+  llenar('lf-tipo', unicos('tipo'), 'Todos');
+  llenar('lf-ciudad', unicos('ciudad'), 'Todas');
+  llenar('lf-localidad', unicos('localidad'), 'Todas');
+  llenar('lf-alcobas', alcobas, 'Todas');
+  document.getElementById('lf-min').value = '';
+  document.getElementById('lf-max').value = '';
+}
+
+function aplicarFiltroListado() {
+  const g = id => document.getElementById(id)?.value || '';
+  const res = propiedades.filter(p =>
+    p.negocio === negocioListadoActual &&
+    (g('lf-tipo')==='' || p.tipo===g('lf-tipo')) &&
+    (g('lf-ciudad')==='' || p.ciudad===g('lf-ciudad')) &&
+    (g('lf-localidad')==='' || p.localidad===g('lf-localidad')) &&
+    (g('lf-alcobas')==='' || p.alcobas==g('lf-alcobas')) &&
+    (g('lf-min')==='' || p.precio>=Number(g('lf-min'))) &&
+    (g('lf-max')==='' || p.precio<=Number(g('lf-max')))
+  );
+  const fd='https://via.placeholder.com/400x210/e8e9f5/555577?text=Sin+foto';
+  const grid = document.getElementById('listado-grid');
+  const resEl = document.getElementById('listado-resultados');
+  if(resEl){ resEl.style.display='block'; resEl.innerHTML='<strong>'+res.length+'</strong> propiedad'+(res.length!==1?'es':'')+' encontrada'+(res.length!==1?'s':''); }
+  if(!res.length){ grid.innerHTML='<div class="sin-resultados">No encontramos propiedades con esos filtros.</div>'; return; }
+  grid.innerHTML = res.map(p => {
+    const badge = p.negocio==='Venta'?'badge-venta':'badge-arriendo';
+    const precio = p.negocio==='Arriendo'?`$${p.precio.toLocaleString('es-CO')}/mes`:`$${p.precio.toLocaleString('es-CO')}`;
+    const foto = p.fotos.length?p.fotos[0]:fd;
+    return `<div class="prop-card" onclick="irDetalle(${p.id})">
+      <div class="prop-img-wrap">
+        <img src="${foto}" alt="${p.titulo}" onerror="this.src='${fd}'" loading="lazy">
+        <span class="prop-badge ${badge}">${p.negocio}</span>
+      </div>
+      <div class="prop-info">
+        <div class="prop-precio">${precio}</div>
+        <div class="prop-nombre">${p.titulo}</div>
+        <div class="prop-ubicacion">📍 ${p.localidad}${p.localidad&&p.ciudad?', ':''}${p.ciudad}</div>
+        <div class="prop-detalles">
+          ${p.alcobas>0?`<span class="prop-detalle"><strong>${p.alcobas}</strong> hab</span>`:''}
+          ${p.banos>0?`<span class="prop-detalle"><strong>${p.banos}</strong> baños</span>`:''}
+          ${p.area>0?`<span class="prop-detalle"><strong>${p.area}</strong> m²</span>`:''}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function limpiarFiltroListado() {
+  ['lf-tipo','lf-ciudad','lf-localidad','lf-alcobas'].forEach(id=>{ const el=document.getElementById(id); if(el) el.value=''; });
+  document.getElementById('lf-min').value='';
+  document.getElementById('lf-max').value='';
+  filtrarYIr(negocioListadoActual);
 }
 
 // ── DROPDOWNS ──
@@ -713,6 +815,7 @@ function aplicarFiltros() {
   const track2 = document.getElementById('carrusel-track-2');
   const seccion = document.getElementById('seccion-todos');
 
+  // Actualizar título
   const negocioFiltro = g('f-negocio');
   if(negocioFiltro) {
     seccion.querySelector('h2').innerHTML = negocioFiltro === 'Venta'
@@ -751,6 +854,7 @@ function aplicarFiltros() {
     actualizarCarrusel2();
   }
 
+  // Actualizar también carrusel de destacados
   const track1 = document.getElementById('carrusel-track');
   const seccionDest = document.getElementById('destacados');
   const destacadosFiltrados = res.filter(p => p.destacado);
@@ -785,6 +889,7 @@ function aplicarFiltros() {
     document.getElementById('carrusel-dots').innerHTML = Array.from({length:grupos},(_,i)=>`<button class="carrusel-dot ${i===0?'activo':''}" onclick="irAGrupo(${i})"></button>`).join('');
     actualizarCarrusel();
   }
+
 }
 
 // ── GRID ──
