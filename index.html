@@ -232,8 +232,8 @@
     }
     .carrusel-slide { min-width: calc(25% - 15px); }
     .carrusel-slide:hover, .prop-card:hover { transform: translateY(-5px); box-shadow: var(--sombra-hover); border-color: rgba(38,56,191,0.25); }
-    .carrusel-img, .prop-img-wrap { position: relative; height: 210px; overflow: hidden; background: var(--gris-claro); }
-    .carrusel-img img, .prop-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.5s ease; display: block; }
+    .carrusel-img, .prop-img-wrap { position: relative; height: 200px; overflow: hidden; background: var(--gris-claro); }
+    .carrusel-img img, .prop-img-wrap img { width: 100%; height: 100%; object-fit: cover; object-position: center; transition: transform 0.5s ease; display: block; }
     .carrusel-slide:hover .carrusel-img img, .prop-card:hover .prop-img-wrap img { transform: scale(1.06); }
     .prop-badge {
       position: absolute; top: 12px; left: 12px;
@@ -468,7 +468,14 @@
       .destacados-header { padding: 0 16px; }
       .carrusel-track { gap: 0; }
       .seccion-destacados { padding: 44px 0 28px; }
-      .carrusel-img { height: 260px; }
+      .carrusel-img { height: 220px; }
+      .carrusel-img img { object-fit: cover !important; width: 100% !important; height: 100% !important; }
+      .carrusel-info { padding: 14px 16px 12px; }
+      .carrusel-precio { font-size: 20px; }
+      .carrusel-nombre { font-size: 13px; }
+      .carrusel-ubicacion { font-size: 12px; margin-bottom: 0; }
+      .carrusel-detalle strong { font-size: 14px; }
+      .carrusel-detalle .det-label { font-size: 9px; }
     }
   </style>
 </head>
