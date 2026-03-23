@@ -42,6 +42,9 @@
 
     /* ── VISTAS ── */
     .vista{display:none;}.vista.activa{display:block;}
+    /* Evita flash: oculta vistas hasta que JS cargue */
+    body.cargando-app .vista{visibility:hidden;}
+    body.cargando-app .vista.activa{visibility:hidden;}
 
     /* ── HERO ── */
     .hero{min-height:100vh;background:url('https://raw.githubusercontent.com/sebascc81-hub/MONTECLAROSAS/main/WALLPAPER.jpg') center/cover no-repeat;display:flex;flex-direction:column;justify-content:center;position:relative;overflow:hidden;padding:120px 48px 80px;}
@@ -315,7 +318,7 @@
     .nav-dropdown-count{background:var(--gris-medio);color:var(--texto-suave);font-size:11px;font-weight:700;padding:2px 7px;border-radius:10px;}
   </style>
 </head>
-<body>
+<body class="cargando-app">
 
 <!-- NAV -->
 <nav>
@@ -360,7 +363,7 @@
 </div>
 
 <!-- VISTA INICIO -->
-<div id="vista-inicio" class="vista activa">
+<div id="vista-inicio" class="vista">
   <section class="hero">
 
     <div class="hero-contenido">
@@ -1180,7 +1183,29 @@ window.addEventListener('resize', () => {
 });
 
 // ── INICIO ──
-cargarPropiedades().then(()=>verificarRuta());
+cargarPropiedades().then(()=>{
+  // Determinar qué vista mostrar ANTES de hacer visible cualquier cosa
+  const hash = window.location.hash;
+  if(hash.startsWith('#propiedad-')){
+    // Hay una propiedad en el hash: ir directo al detalle sin mostrar inicio
+    const id = parseInt(hash.replace('#propiedad-',''));
+    if(!isNaN(id)){
+      propiedadActual = propiedades.find(p=>p.id===id);
+      if(propiedadActual){
+        fotoActual = 0;
+        document.getElementById('vista-detalle').classList.add('activa');
+        renderDetalle();
+        window.scrollTo({top:0,behavior:'instant'});
+      } else {
+        document.getElementById('vista-inicio').classList.add('activa');
+      }
+    }
+  } else {
+    document.getElementById('vista-inicio').classList.add('activa');
+  }
+  // Ahora que la vista correcta ya está lista, hacerla visible
+  document.body.classList.remove('cargando-app');
+});
 </script>
 </body>
 </html>
